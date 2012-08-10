@@ -1,0 +1,23 @@
+.block, #tasks
+{
+  border: 1px solid #CECECE;
+}
+#menu a
+{
+  border: 1px solid #CECECE;
+  border-bottom: 0;
+}
+.sos #menu li a
+{
+  border: 0;
+  border-bottom: 1px solid #CECECE;
+}
+.sos #menu li:first-child a
+{
+  border-top: 1px solid #CECECE;
+}
+.sos #menu
+{
+  border-right: 1px solid #CECECE;
+  border-left: 0.3em solid #224466;
+}

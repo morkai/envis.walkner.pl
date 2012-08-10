@@ -1,0 +1,29 @@
+<?php
+
+include __DIR__ . '/../../_common.php';
+
+no_access_if_not_allowed('catalog/manage');
+
+bad_request_if(empty($_REQUEST['product']) || !is_numeric($_REQUEST['product']));
+
+$file = __DIR__ . '/../../' . ltrim($_REQUEST['file'], '/\\');
+
+bad_request_if(!file_exists($file));
+
+$currentUser = $_SESSION['user'];
+
+$dotPos = strrpos($_REQUEST['name'], '.');
+
+exec_insert('catalog_product_images', $bindings = array(
+  'product'      => $_REQUEST['product'],
+  'file'         => substr(strrchr($_REQUEST['file'], '/'), 1),
+  'description'  => $dotPos === false ? $_REQUEST['name'] : substr($_REQUEST['name'], 0, $dotPos)
+));
+
+$bindings['id']  = (int)get_conn()->lastInsertId();
+
+unset($bindings['product']);
+
+escape_vars($bindings['description']);
+
+output_json($bindings);

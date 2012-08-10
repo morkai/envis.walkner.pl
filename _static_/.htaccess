@@ -1,0 +1,22 @@
+ExpiresActive On
+ExpiresDefault "access plus 1 month"
+
+FileETag none
+# AddOutputFilterByType DEFLATE text/html text/css text/javascript text/plain text/xml
+# Insert filter
+SetOutputFilter DEFLATE
+
+# MSIE masquerades as Netscape, but it is fine
+# BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+# NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
+# the above regex won't work. You can use the following
+# workaround to get the desired effect:
+BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+
+# Don't compress images
+SetEnvIfNoCase Request_URI \
+\.(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+# Make sure proxies don't deliver the wrong content
+Header append Vary User-Agent env=!dont-vary
