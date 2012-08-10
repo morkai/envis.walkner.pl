@@ -57,7 +57,7 @@ escape_var($device->name);
 	<body>
 		<h1><?= $device->name ?></h1>
 		<p id="counter">0</p>
-		<script src="<?= url_for_media('jquery/1.5.2/jquery.min.js') ?>"></script>
+		<script src="<?= url_for_media('jquery/1.7.2/jquery.min.js') ?>"></script>
 		<script src="<?= url_for_media('main.js.php', $local=true) ?>"></script>
 		<script>
 			$(function()
