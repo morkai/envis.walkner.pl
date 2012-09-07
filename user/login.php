@@ -76,7 +76,7 @@ else
 				<? display_errors($errors) ?>
 				<ol class="form-fields">
 					<li>
-						<label for="username">E-mail</label>
+						<label for="login">E-mail</label>
 						<input id="login" name="login" type="text" value="<?= $login ?>">
 					<li>
 						<label for="password">Hasło</label>
