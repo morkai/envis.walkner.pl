@@ -98,9 +98,6 @@ if (!empty($errors))
           <?= label('editProductType', 'Typ') ?>
           <input id="editProductType" name="product[type]" type="text" value="<?= e($product['type']) ?>" maxlength="100">
         <li>
-          <?= label('editProductManufacturer', 'Marka') ?>
-          <input id="editProductManufacturer" name="product[manufacturer]" type="text" value="<?= e($product['manufacturer']) ?>" maxlength="100">
-        <li>
           <input id="editProductPublic" name="product[public]" type="checkbox" value="1" <?= checked_if($product['public']) ?>>
           <?= label('editProductPublic', 'Publiczny') ?>
         <li>

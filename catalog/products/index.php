@@ -33,8 +33,6 @@ $canManageProducts = is_allowed_to('catalog/manage');
       <dd><?= e($product->name) ?>
       <dt>Typ
       <dd><?= dash_if_empty($product->type) ?>
-      <dt>Marka
-      <dd><?= dash_if_empty($product->manufacturer) ?>
       <dt>Publiczny
       <dd><?= $product->public ? 'Tak' : 'Nie' ?>
     </dl>

@@ -53,7 +53,6 @@ else
   $product = array(
     'name'         => '',
     'type'         => '',
-    'manufacturer' => '',
     'description'  => '',
     'public'       => 0
   );
@@ -89,9 +88,6 @@ if (!empty($errors))
         <li>
           <?= label('addProductType', 'Typ') ?>
           <input id="addProductType" name="product[type]" type="text" value="<?= e($product['type']) ?>" maxlength="100">
-        <li>
-          <?= label('addProductManufacturer', 'Marka') ?>
-          <input id="addProductManufacturer" name="product[manufacturer]" type="text" value="<?= e($product['manufacturer']) ?>" maxlength="100">
         <li>
           <input id="addProductPublic" name="product[public]" type="checkbox" value="1" <?= checked_if($product['public']) ?>>
           <?= label('addProductPublic', 'Publiczny') ?>
