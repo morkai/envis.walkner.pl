@@ -1,10 +1,10 @@
 <?php
 
-include '../../_common.php';
+include __DIR__ . '/../../_common.php';
 
 no_access_if_not_allowed('catalog/manage');
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $query = <<<SQL
 SELECT p.*, c.name AS categoryName
@@ -16,20 +16,29 @@ SQL;
 
 $oldProduct = fetch_one($query, array(1 => $_GET['id']));
 
-if (empty($oldProduct)) bad_request();
+bad_request_if(empty($oldProduct));
 
-$errors  = array();
+$errors = array();
 $referer = get_referer('catalog/'); 
 
 if (is('put'))
 {
   $product = empty($_POST['product']) ? array() : $_POST['product'];
 
+  if (is_empty($product['nr']))
+  {
+    $errors[] = 'Nr produktu jest wymagany.';
+  }
+
   if (is_empty($product['name']))
-    $errors[] = 'Nazwa produktu jest wymagana';
+  {
+    $product['name'] = $product['nr'];
+  }
 
   if (!empty($errors))
+  {
     goto VIEW;
+  }
 
   try
   {
@@ -40,14 +49,16 @@ if (is('put'))
     log_info("Dodano produkt <{$product['name']}> do katalogu.");
 
     if (is_ajax())
+    {
       output_json(array(
         'success' => true,
-        'data'    => array(
-          'id'       => $oldProduct->id,
+        'data' => array(
+          'id' => $oldProduct->id,
           'category' => $oldProduct->category,
-          'name'     => $product['name']
+          'name' => $product['name']
         )
       ));
+    }
 
     set_flash("Produkt został zmodyfikowany pomyślnie.");
 
@@ -56,9 +67,13 @@ if (is('put'))
   catch (PDOException $x)
   {
     if ($x->getCode() == 23000)
-      $errors[] = 'Nazwa produktu musi być unikalna.';
+    {
+      $errors[] = 'Nr produktu musi być unikalny.';
+    }
     else
+    {
       $errors[] = $x->getMessage();
+    }
   }
 }
 else
@@ -69,7 +84,9 @@ else
 VIEW:
 
 if (!empty($errors))
+{
   output_json(array('status' => false, 'errors' => $errors));
+}
 
 ?>
 
@@ -89,14 +106,17 @@ if (!empty($errors))
           <?= label('editProductCategory', 'Kategoria') ?>
           <p id="editProductCategory"><?= e($oldProduct->categoryName) ?></p>
         <li>
-          <?= label('editProductName', 'Nazwa*') ?>
-          <input id="editProductName" name="product[name]" type="text" value="<?= e($product['name']) ?>" maxlength="100">
+          <?= label('editProductNr', 'Nr*') ?>
+          <input id="editProductNr" name="product[nr]" type="text" value="<?= e($product['nr']) ?>" maxlength="30">
         <li>
-          <?= label('editProductDescription', 'Opis') ?>
-          <textarea id="editProductDescription" name="product[description]" class="markdown"><?= e($product['description']) ?></textarea>
+          <?= label('editProductName', 'Nazwa') ?>
+          <input id="editProductName" name="product[name]" type="text" value="<?= e($product['name']) ?>" maxlength="100">
         <li>
           <?= label('editProductType', 'Typ') ?>
           <input id="editProductType" name="product[type]" type="text" value="<?= e($product['type']) ?>" maxlength="100">
+        <li>
+          <?= label('editProductDescription', 'Opis') ?>
+          <textarea id="editProductDescription" name="product[description]" class="markdown"><?= e($product['description']) ?></textarea>
         <li>
           <input id="editProductPublic" name="product[public]" type="checkbox" value="1" <?= checked_if($product['public']) ?>>
           <?= label('editProductPublic', 'Publiczny') ?>

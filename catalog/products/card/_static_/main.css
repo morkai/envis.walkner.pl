@@ -1,0 +1,225 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 1em;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #FFF;
+  color: #000;
+  text-align: center;
+}
+h1, h2, h3 {
+  margin: 0;
+}
+.page {
+  padding: 1cm;
+  margin: 0 auto 1em auto;
+  text-align: left;
+  width: 793px;
+  height: 1122px;
+  border: 1px solid #000;
+  box-shadow: 0 3px 6px #666;
+}
+.hd {
+  padding-bottom: 5mm;
+  margin-bottom: 5mm;
+  border-bottom: 1px solid #666;
+}
+.productNr {
+  float: right;
+}
+.companyName,
+.productNr {
+  text-transform: uppercase;
+  font-variant: small-caps;
+  font-size: 20px;
+}
+.companyName em,
+.productNr em {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+}
+.productId {
+  overflow: hidden;
+  box-sizing: content-box;
+  height: 197px;
+  margin-bottom: 5mm;
+}
+.productImage {
+  float: right;
+  border: 1px solid #666;
+}
+.productName {
+  font-size: 35px;
+  width: 350px;
+}
+.productType {
+  font-size: 20px;
+}
+.contentsContainer {
+  width: 717px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.4;
+  height: 900px;
+}
+.editing .contentsContainer {
+  overflow: visible;
+}
+.page[data-layout="frontPage"] .contentsContainer {
+  height: 688px;
+}
+.contents {
+  height: 100%;
+  outline: none;
+}
+.editable .contentsContainer:hover {
+  cursor: pointer;
+  outline: 2px dashed #e59700;
+  outline-offset: 4px;
+}
+.editing .contentsContainer,
+.editing .contentsContainer:hover {
+  cursor: text;
+  outline: 2px solid #e59700;
+  outline-offset: 4px;
+}
+.contents :first-child {
+  margin-top: 0;
+}
+.contents :last-child {
+  margin-bottom: 0;
+}
+.contents :only-child {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.contents p {
+  margin: 0 0 1em 0;
+}
+.contents h1 {
+  font-size: 1.4em;
+  margin-bottom: 1em;
+}
+.contents h2 {
+  font-size: 1.2em;
+  margin-bottom: 1em;
+}
+.contents h3 {
+  font-size: 1em;
+  margin-bottom: 1em;
+}
+.contents table {
+  width: 100%;
+}
+.contents th,
+.contents td {
+  border: 1px solid #666;
+}
+.ft {
+  padding-top: 5mm;
+  margin-top: 5mm;
+  border-top: 1px solid #666;
+  font-size: 10px;
+}
+.ft .address {
+  margin: 0;
+}
+.ft .contact {
+  margin: 0;
+  float: right;
+  text-align: right;
+}
+.layout {
+  display: none;
+}
+.pageContainer {
+  position: relative;
+  width: 850px;
+  margin: 0 auto;
+}
+.actions {
+  list-style: none;
+  display: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.actions li {
+  display: inline;
+}
+.actions a {
+  display: block;
+  margin: 0;
+  padding: .25em;
+  border-radius: .25em;
+}
+.actions a:hover {
+  background: rgba(0, 0, 0, .2);
+  cursor: pointer;
+}
+.pageContainer:hover .actions {
+  display: block;
+}
+.pageContainer:first-child .movePageUp,
+.pageContainer:last-child .movePageDown {
+  display: none;
+}
+.addPage {
+  width: 793px;
+  padding: 4px 4px 0 4px;
+  margin: 0 auto 1em auto;
+}
+.addPage img {
+  visibility: hidden;
+}
+.addPage:hover {
+  background: rgba(0, 0, 0, .2);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pageContainer:hover .addPage img {
+  visibility: visible;
+}
+#layouts {
+  display: none;
+}
+#layoutImage {
+  float: right;
+  border: 1px solid #333;
+  margin-left: 10px;
+}
+#toc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+#toc li {
+  margin-top: .5em;
+  padding: .5em;
+  width: 3em;
+  background: rgba(0, 0, 0, .2);
+  border-radius: 0 .25em .25em 0;
+}
+#toc li:hover {
+  background: rgba(0, 0, 0, .4);
+  cursor: pointer;
+  color: #EEE;
+}
+#toc :only-child {
+  display: none;
+}
+.ui-dialog {
+  text-align: left;
+}
+#templateId,
+#templateName {
+  display: block;
+  width: 100%;
+}

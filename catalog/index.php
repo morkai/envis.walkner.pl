@@ -6,6 +6,9 @@ no_access_if_not_allowed('catalog*');
 
 $canManageProducts = is_allowed_to('catalog/manage');
 
+$defaultImageUrlTpl = url_for('catalog/products/images/default.php?product={$product}&id={$image}');
+$deleteImageUrlTpl = url_for('catalog/products/images/delete.php?product={$product}&id={$image}');
+
 ?>
 
 <? begin_slot('head') ?>
@@ -38,7 +41,10 @@ $canManageProducts = is_allowed_to('catalog/manage');
   border: 1px solid transparent;
   padding: 0 2px 0 1px!important;
 }
-
+#tree {
+  max-width: 400px;
+  overflow: auto;
+}
 #tree .product > .jstree-icon
 {
   background: url('<?= url_for_media('fff/page.png') ?>') left top no-repeat;
@@ -67,13 +73,13 @@ $canManageProducts = is_allowed_to('catalog/manage');
 #productImages {
   margin: 1em 0 0 0;
 }
+#productImages:empty {
+  display: none;
+}
 #productImages li {
   display: inline-block;
   text-align: center;
-  margin: .5em;
-}
-#productImages li:first-child {
-  margin-left: 0;
+  margin: .5em 1em .5em 0;
 }
 #productImages .thumb {
   display: block;
@@ -82,6 +88,9 @@ $canManageProducts = is_allowed_to('catalog/manage');
 }
 #productImages .thumb:hover {
   background: #F50;
+}
+#productImages .thumb.default {
+  background: #adff2f;
 }
 #productImages img {
   max-width: 178px;
@@ -97,6 +106,7 @@ $canManageProducts = is_allowed_to('catalog/manage');
 <? begin_slot('js') ?>
 <script src="<?= url_for_media('jquery-plugins/hotkeys/0.8/jquery.hotkeys.js') ?>"></script>
 <script src="<?= url_for_media('jquery-plugins/jstree/1.0-rc1/jquery.jstree.min.js') ?>"></script>
+<script src="<?= url_for_media('jquery-plugins/jstree/1.0-rc1/_lib/jquery.cookie.js') ?>"></script>
 <script src="<?= url_for_media('jquery-plugins/simplemodal/1.3/jquery.simplemodal.min.js') ?>"></script>
 <script src="<?= url_for_media('jquery-plugins/lightbox/2.51/js/lightbox.js') ?>"></script>
 <script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
@@ -154,7 +164,7 @@ function fetchProduct(id, force)
         {
           $.ajax({
             type: 'POST',
-            url: '<?= url_for("catalog/products/upload.php") ?>',
+            url: '<?= url_for("catalog/products/images/upload.php") ?>',
             data: {
               product: currentProduct,
               file: response,
@@ -164,10 +174,21 @@ function fetchProduct(id, force)
             {
               $('#productImages').append('\
 <li>\
-<a href="/_files_/products/' + data.file + '" rel="lightbox[' + data.id + ']" title="' + data.description + '" data-id="' + data.id + '">\
-<img src="/_files_/products/' + data.file + '" alt="">\
+<a class="thumb" href="<?= url_for('/_files_/products/') ?>' + data.file + '" rel="lightbox[' + data.id + ']" title="' + data.description + '" data-id="' + data.id + '">\
+<img src="<?= url_for('/_files_/products/') ?>' + data.file + '" alt="">\
 </a>\
 ');
+              <? if ($canManageProducts): ?>
+              var defaultImageUrl = '<?= $defaultImageUrlTpl ?>'.replace('{$product}', data.product).replace('{$image}', data.id);
+              var deleteImageUrl = '<?= $deleteImageUrlTpl ?>'.replace('{$product}', data.product).replace('{$image}', data.id);
+
+              $('#productImages li:last-child').append('\
+<div class="actions">\
+<a class="fff default" href="' + defaultImageUrl + '"><?= fff('Ustaw jako domyślne', 'bullet_tick') ?></a>\
+<a class="fff delete" href="' + deleteImageUrl + '"><?= fff('Usuń obraz', 'bullet_cross') ?></a>\
+</div>\
+');
+              <? endif ?>
             }
           });
         }
@@ -479,6 +500,14 @@ $('#tree a').live('dblclick', function(e)
   return false;
 });
 
+tree.bind('reopen.jstree', function(e, data)
+{
+  setTimeout(function()
+  {
+    fetchProduct(tree.find('a.product.jstree-clicked').attr('data-id'));
+  }, 500);
+});
+
 tree.bind('contextmenu.jstree', function(e, data)
 {
   var items = $.jstree._reference(this)._get_settings().contextmenu.items;
@@ -501,7 +530,7 @@ $.jstree.defaults.contextmenu.items = {};
 
 tree.jstree(
 {
-  plugins: ['themes', 'json_data', 'ui', 'hotkeys', 'contextmenu'],
+  plugins: ['themes', 'json_data', 'ui', 'hotkeys', 'contextmenu', 'cookies'],
 
   core:
   {
@@ -591,6 +620,23 @@ $('body').on('click', '#productImages .delete', function(e)
     success: function()
     {
       parent.fadeOut(function() { parent.remove(); });
+    }
+  });
+
+  return false;
+});
+
+$('body').on('click', '#productImages .default', function(e)
+{
+  var parent = $(this).closest('li');
+
+  $.ajax({
+    type: 'POST',
+    url: this.href,
+    success: function()
+    {
+      $('#productImages').find('a.thumb.default').removeClass('default');
+      parent.find('a.thumb').addClass('default');
     }
   });
 

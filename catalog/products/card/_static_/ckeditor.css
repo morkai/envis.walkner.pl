@@ -1,0 +1,41 @@
+.cke_dialog_tabs {
+  position: static!important;
+  margin: 10px 10px 0 10px!important;
+}
+.cke_dialog_contents {
+  margin-top: 0!important;
+  border-top: none!important;
+}
+.cke_dialog_tab {
+  height: auto!important;
+}
+.cke_dialog_ui_button {
+  width: auto!important;
+}
+div.cke_dialog_ui_input_text,
+div.cke_dialog_ui_input_password {
+  border: 0!important;
+  background: transparent!important;
+  padding: 0!important;
+}
+input.cke_dialog_ui_input_text,
+input.cke_dialog_ui_input_password,
+select.cke_dialog_ui_input_select {
+  border: 1px solid #999!important;
+  background: #FFF!important;
+  padding: 2px!important;
+  height: auto!important;
+}
+.cke_dialog_ui_button {
+  cursor: pointer!important;
+}
+.editable .cke_show_border,
+.editable .cke_show_border th,
+.editable .cke_show_border td {
+  border: none!important;
+}
+.editing .cke_show_border,
+.editing .cke_show_border th,
+.editing .cke_show_border td {
+  border: 1px dotted #d3d3d3!important;
+}

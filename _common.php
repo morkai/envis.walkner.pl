@@ -257,10 +257,26 @@ function go_to($location)
 	exit;
 }
 
-function bad_request()
+function no_content()
+{
+  header('HTTP/1.1 204 No Content');
+
+  exit;
+}
+
+function internal_server_error($message = '')
+{
+  header('HTTP/1.1 500 Internal Server Error');
+
+  echo $message;
+  exit;
+}
+
+function bad_request($contents = '')
 {
 	header('HTTP/1.1 400 Bad Request');
 
+  echo $contents;
 	exit;
 }
 

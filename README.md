@@ -29,6 +29,7 @@ Code is in English, text is in Polish.
       * `tmpl/1.0.0beta1` directory with [tmpl 1.0.0beta1](http://api.jquery.com/category/plugins/templates/)
   * `ckeditor/3.0` directory with [CKEditor 3.0](http://ckeditor.com/)
   * `ckeditor/3.6.2` directory with [CKEditor 3.6.2](http://ckeditor.com/)
+  * `ckeditor/4.0beta` directory with [CKEditor 4.0 beta](http://ckeditor.com/)
 
 ## Installation
 

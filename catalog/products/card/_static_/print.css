@@ -1,0 +1,26 @@
+html {
+  -webkit-print-color-adjust: exact;
+}
+body {
+  margin: 0;
+}
+.pageContainer {
+  width: auto;
+  margin: 0 auto;
+  padding: 0;
+}
+.pageContainer .actions,
+.pageContainer .addPage {
+  display: none!important;
+}
+.page {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+.contentsContainer {
+  outline: none!important;
+}
+#toc {
+  display: none;
+}
