@@ -61,7 +61,7 @@ replace_slot();
 <head>
   <meta charset=UTF-8>
   <title><?= e($title) ?>enVis</title>
-  <link rel="stylesheet" href="<?= url_for_media('jquery-ui/1.8.11/css/smoothness/jquery-ui.css') ?>">
+  <link rel="stylesheet" href="<?= url_for_media('jquery-ui/1.8.23/css/smoothness/jquery-ui.css') ?>">
   <link rel="stylesheet" href="<?= url_for_media('common.css', true) ?>">
   <!--[if lt IE 9]>
   <link rel="stylesheet" href="<?= url_for_media('ie.css', true) ?>">
@@ -103,7 +103,7 @@ replace_slot();
   <p>&copy; Walkner elektronika przemysłowa Zbigniew Walukiewicz
 </div>
 
-<script src="<?= url_for_media('jquery/1.7.2/jquery.min.js') ?>"></script>
-<script src="<?= url_for_media('jquery-ui/1.8.11/js/jquery-ui.min.js') ?>"></script>
+<script src="<?= url_for_media('jquery/1.8.1/jquery.min.js') ?>"></script>
+<script src="<?= url_for_media('jquery-ui/1.8.23/js/jquery-ui.min.js') ?>"></script>
 <script src="<?= url_for_media('main.js.php', true) ?>"></script>
 <?= render_slot('js') ?>

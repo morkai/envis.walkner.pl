@@ -13,8 +13,8 @@ Code is in English, text is in Polish.
 * An HTTP server with PHP 5.3+ and MySQL 5+.
 * A directory accessible through the HTTP containing:
   * `fff` directory with [famfamfam Silk Icons Evolved](http://code.google.com/p/famfamfam/)
-  * `jquery-ui/1.8.11` directory with [jQuery UI 1.8.11](http://jqueryui.com/)
-  * `jquery/1.7.2` directory with [jQuery 1.7.2](http://jquery.com/)
+  * `jquery-ui/1.8.23` directory with [jQuery UI 1.8.23](http://jqueryui.com/)
+  * `jquery/1.8.1` directory with [jQuery 1.8.1](http://jquery.com/)
   * `jquery-plugins` directory containing:
       * `uploadify/2.0.3` directory with [Uploadify 2.0.3](http://www.uploadify.com/)
       * `colorpicker/2009.05.23` directory with [Colorpicker 2009.05.23](http://www.eyecon.ro/colorpicker/)
@@ -27,6 +27,7 @@ Code is in English, text is in Polish.
       * `jstree/1.0-rc1` directory with [jsTree 1.0-rc1](http://www.jstree.com/)
       * `inview/1.0.0` directory with [inview 1.0.0](https://github.com/protonet/jquery.inview)
       * `tmpl/1.0.0beta1` directory with [tmpl 1.0.0beta1](http://api.jquery.com/category/plugins/templates/)
+      * `scrollTo/1.4.3.1` directory with [scrollTo 1.4.3.1](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
   * `ckeditor/3.0` directory with [CKEditor 3.0](http://ckeditor.com/)
   * `ckeditor/3.6.2` directory with [CKEditor 3.6.2](http://ckeditor.com/)
   * `ckeditor/4.0beta` directory with [CKEditor 4.0 beta](http://ckeditor.com/)
