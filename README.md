@@ -34,7 +34,7 @@ Code is in English, text is in Polish.
 
 ## Installation
 
-1. Grant write permissions to `_files_/` directory and everything in in.
+1. Grant write permissions to `_files_/` directory and everything in it.
 2. Create a new MySQL database and import the `structure.sql` file into it.
 3. Create a super user:
 
