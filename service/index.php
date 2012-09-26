@@ -90,6 +90,7 @@ function construct_issues_grid_queries(array $options)
   $allowedMachines  = '"' . implode('", "', $_SESSION['user']->getAllowedMachineIds()) . '"';
 
   $query .= <<<SQL
+
 WHERE (1=:admin
   OR i.creator=:user
   OR i.owner=:user
@@ -151,7 +152,7 @@ SQL;
               $bindingValue = '%' . $escape($bindingValue);
               break;
 
-            case 'contains':
+            default:
               $bindingValue = '%' . $escape($bindingValue) . '%';
               break;
           }
@@ -255,7 +256,18 @@ SQL;
 
     if (!empty($conditions))
     {
+      if (!empty($options['AND']))
+      {
+        $queryConditions = array_slice($conditions, $options['AND']);
+        $conditions = array_slice($conditions, 0, $options['AND']);
+      }
+
       $query .= "\n\tAND (" . implode(' ' . ((int)$options['f']['j'] === 0 ? 'AND' : 'OR') . ' ', $conditions) . ')';
+
+      if (!empty($queryConditions))
+      {
+        $query .= "\n\tAND (" . implode('OR ', $queryConditions) . ')';
+      }
     }
   }
 
@@ -554,6 +566,40 @@ unset($v);
   }
   tr:hover .over100, tr:hover .lt100, tr:hover .lt75 { color: #FFF; }
   #view { font-size: 1em; }
+  #query {
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+    position: relative;
+  }
+  #query input { width: 200px; }
+  #queryHelp {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    width: 380px;
+    background: #FFF;
+    box-shadow: 0 1px 1px #909090;
+    white-space: normal;
+    padding: .5em;
+    box-sizing: border-box;
+    font-size: .9em;
+  }
+  #queryHelp ul {
+    margin-top: -.5em;
+  }
+  #queryHelp li {
+    display: list-item;
+    list-style: square;
+    list-style-position: inside;
+    padding-left: 0;
+    width: auto;
+    white-space: normal;
+  }
+  #queryHelp li > * {
+    display: inline;
+    margin-left: 0;
+  }
 </style>
 <? append_slot() ?>
 
@@ -583,6 +629,18 @@ $(function()
     return false;
   });
   <? endif ?>
+
+  $('#toggleQueryHelp').click(function()
+  {
+    $('#queryHelp').toggle();
+
+    if ($('#queryHelp').is(':visible'))
+    {
+      $('#query').find('input[name="q"]').focus();
+    }
+
+    return false;
+  }).click();
 });
 </script>
 <? append_slot() ?>
@@ -591,18 +649,67 @@ $(function()
 
 <div class="block" id="grid">
   <ul class="block-header">
-    <li><h1 class="block-name">
-      <? if ($related): ?>
-      Dodawanie powiązanych zgłoszeń do &lt;<?= e($related->subject) ?>&gt;
-      <? else: ?>
-      Zgłoszenia
-      <? endif ?>
-    </h1>
     <li>
+      <h1 class="block-name">
+        <? if ($related): ?>
+        Dodawanie powiązanych zgłoszeń do &lt;<?= e($related->subject) ?>&gt;
+        <? else: ?>
+        Zgłoszenia
+        <? endif ?>
+      </h1>
+    </li>
+    <li>
+      <? if (empty($_GET['v']) || is_string($_GET['v'])): ?>
+      <form id="query" action="<?= url_for("/service/") ?>">
+        <input type="hidden" name="v" value="<?= e(isset($_GET['v']) ? $_GET['v'] : '') ?>">
+        <? if ($related): ?>
+        <input type="hidden" name="relate" value="<?= $related->id ?>">
+        <? endif ?>
+        <?= fff('OCB?', 'help', '/service/#queryHelp', 'toggleQueryHelp') ?>
+        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>">
+        <div id="queryHelp">
+          <p>
+            <code>{FIELD}={VALUE}</code>
+            <br>
+            Pole <code>{FIELD}</code> równa się <code>{VALUE}</code>.
+            Np. <code>nr=123456789</code>
+          </p>
+          <p>
+            <code>{FIELD}:{VALUE}</code>
+            <br>
+            <code>{VALUE}</code> zawarte jest w polu <code>{FIELD}</code>.
+            Np. <code>nr:1234</code>
+          </p>
+          <p>
+            <code>{VALUE}</code>
+            <br>
+            <code>{VALUE}</code> zawarte jest w polu nr zamówienia (<code>nr</code>).
+            Np. <code>1234</code>
+          </p>
+          <p>Dostępne pola {FIELD}:</p>
+          <ul>
+            <li><code>id</code> - ID</li>
+            <li><code>subject</code> - Temat</li>
+            <li><code>status</code> - Status<br>0=Nowe, 1=Zaakceptowane, 2=Rozpoczęte, 3=Odrzucone, 4=Rozwiązane, 5=Wznowione, 6=Przekazane, 7=Dokumenty</li>
+            <li><code>priority</code> - Priorytet<br>1=Wysoki, 2=Normalny, 3=Niski</li>
+            <li><code>type</code> - Typ<br>1=Awaria, 2=Zmiana, 3=Prewencja, 4=Zamówienie</li>
+            <li><code>kind</code> - Rodzaj<br>1=Elektryczne, 2=Mechaniczne, 3=Inne</li>
+            <li><code>creator</code> - Zgłaszający</li>
+            <li><code>owner</code> - Właściciel</li>
+            <li><code>nr</code> lub <code>orderNumber</code> - Numer zamówienia</li>
+            <li><code>invoice</code> lub <code>orderInvoice</code> - Numer faktury</li>
+          </ul>
+          <p>W przypadku podania kilku warunków, wszystkie muszą być spełnione (AND).</p>
+        </div>
+      </form>
+    </li>
+    <li>
+      <? endif ?>
       <select id="view">
         <option value="standard">Standardowy widok
         <?= render_options($views, $currentView) ?>
       </select>
+    </li>
   </ul>
   <div class="block-body">
     <? if (!$issues->isEmpty()): ?>

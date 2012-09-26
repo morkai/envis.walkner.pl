@@ -175,7 +175,78 @@ function fetch_issues_grid_options($view = null)
   
   $options['n'] = trim($options['n']);
 
+  apply_issue_query($options);
+
   return $options;
+}
+
+function apply_issue_query(&$options)
+{
+  static $aliasToColumn = array('nr' => 'orderNumber', 'invoice' => 'orderInvoice');
+  global $columnNames;
+
+  if (empty($_GET['q']))
+  {
+    return;
+  }
+
+  $parts = preg_split('/(:|=)/', $_GET['q'], -1, PREG_SPLIT_DELIM_CAPTURE);
+  $partsCount = count($parts);
+
+  $k = count($options['f']['c']);
+
+  $options['AND'] = $k;
+
+  if ($partsCount === 1)
+  {
+    $options['f']['c'][$k] = 'orderNumber';
+    $options['f']['i'][$k] = 'contains';
+    $options['f']['v'][$k] = $_GET['q'];
+
+    if (!in_array($options['f']['c'][$k], $options['c']))
+    {
+      $options['c'][] = $options['f']['c'][$k];
+    }
+  }
+  else
+  {
+    $j = 0;
+
+    while ($j < $partsCount)
+    {
+      $c = $parts[$j++];
+
+      if (isset($aliasToColumn[$c]))
+      {
+        $c = $aliasToColumn[$c];
+      }
+
+      $i = $parts[$j++] === '=' ? 'equals' : 'contains';
+
+      if ($j + 1 === $partsCount)
+      {
+        $v = $parts[$j++];
+      }
+      else
+      {
+        $pos = strrpos($parts[$j], ' ');
+        $v = substr($parts[$j], 0, $pos);
+        $parts[$j] = substr($parts[$j], $pos + 1);
+      }
+
+      if (isset($columnNames[$c]))
+      {
+        $options['f']['c'][$k] = $c;
+        $options['f']['i'][$k] = $i;
+        $options['f']['v'][$k] = $v;
+
+        if (!in_array($c, $options['c']))
+        {
+          $options['c'][] = $c;
+        }
+      }
+    }
+  }
 }
 
 function prepare_issue_changes($change)
