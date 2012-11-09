@@ -17,7 +17,7 @@ if (empty($product->pages))
   $frontPage = array(
     'product' => $product->id,
     'position' => 1,
-    'layout' => 'frontPage',
+    'layout' => 'qrFrontPage',
     'contents' => markdown($product->description)
   );
 
