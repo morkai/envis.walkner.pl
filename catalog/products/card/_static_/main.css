@@ -71,6 +71,34 @@ h1, h2, h3 {
 .page[data-layout="frontPage"] .contentsContainer {
   height: 688px;
 }
+.page[data-layout="qrFrontPage"] .productId {
+  height: 206px;
+  position: relative;
+}
+.page[data-layout="qrFrontPage"] .hd {
+  margin-bottom: .25cm;
+}
+.page[data-layout="qrFrontPage"] .productName {
+  width: auto;
+  font-size: 15px;
+  margin-bottom: 5mm;
+  padding-bottom: .2cm;
+  line-height: 1;
+  border-bottom: 1px solid #666;
+}
+.page[data-layout="qrFrontPage"] .productType {
+  font-size: 45px;
+  line-height: 1;
+  margin-bottom: 5mm;
+}
+.page[data-layout="qrFrontPage"] .productQr {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.page[data-layout="qrFrontPage"] .contentsContainer {
+  height: 679px;
+}
 .contents {
   height: 100%;
   outline: none;
