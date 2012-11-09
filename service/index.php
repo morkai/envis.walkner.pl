@@ -699,7 +699,7 @@ $(function()
             <li><code>nr</code> lub <code>orderNumber</code> - Numer zamówienia</li>
             <li><code>invoice</code> lub <code>orderInvoice</code> - Numer faktury</li>
           </ul>
-          <p>W przypadku podania kilku warunków, wszystkie muszą być spełnione (AND).</p>
+          <p>W przypadku podania kilku warunków, dowolny z nich musi być spełniony (OR).</p>
         </div>
       </form>
     </li>
