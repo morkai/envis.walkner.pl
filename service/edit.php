@@ -233,11 +233,11 @@ escape_array($issue);
 <style>
   .form-choice label { cursor: pointer; }
   .form-choice legend label { cursor: default; }
-  #order { padding-top: 0; }
-  #order ol label { font-weight: normal; }
+  .order fieldset { padding-top: 0; }
+  .order ol label { font-weight: normal; }
   #issueDescription { height: 11.5em; }
   <? if ($issue['type'] != ISSUE_TYPE_ORDER): ?>
-  #order { display: none; }
+  .order { display: none; }
   <? endif ?>
   #issueExpectedFinishAt { width: 7.5em; text-align: center; }
   <? if (empty($machines)): ?>
@@ -254,15 +254,17 @@ escape_array($issue);
 <script>
 $(function()
 {
-  $(document.getElementById('issue')['issue[type]']).change(function()
+  var $order = $('.order');
+
+  $('#issue input[name="issue[type]"]').change(function()
   {
     if (this.value == 4)
     {
-      $('#order').fadeIn();
+      $order.fadeIn();
     }
     else
     {
-      $('#order').fadeOut();
+      $order.fadeOut();
     }
   });
 
