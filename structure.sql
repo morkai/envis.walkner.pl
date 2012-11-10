@@ -757,7 +757,7 @@ ALTER TABLE `issues`
   ADD CONSTRAINT `issues_ibfk_3` FOREIGN KEY (`relatedFactory`) REFERENCES `factories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `issues_ibfk_4` FOREIGN KEY (`relatedMachine`) REFERENCES `machines` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `issues_ibfk_5` FOREIGN KEY (`relatedDevice`) REFERENCES `engines` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `issues_ibfk_6` FOREIGN KEY (`relatedProduct`) REFERENCES `catalog_products` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `issues_ibfk_6` FOREIGN KEY (`relatedProduct`) REFERENCES `catalog_products` (`id`) ON DELETE SET NULL;
 
 ALTER TABLE `issue_assignees`
   ADD CONSTRAINT `issue_assignees_ibfk_1` FOREIGN KEY (`assignee`) REFERENCES `users` (`id`) ON DELETE CASCADE,
