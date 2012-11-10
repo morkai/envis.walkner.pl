@@ -10,12 +10,15 @@ SELECT
   o.name AS owner,
   f.name AS factoryName,
   m.name AS machineName,
-  d.name AS deviceName
+  d.name AS deviceName,
+  p.nr AS productNr,
+  p.name AS productName
 FROM issues i
 LEFT JOIN users o ON o.id=i.owner
 LEFT JOIN factories f ON f.id=i.relatedFactory
 LEFT JOIN machines m ON m.id=i.relatedMachine
 LEFT JOIN engines d ON d.id=i.relatedDevice
+LEFT JOIN catalog_products p ON p.id=i.relatedProduct
 WHERE i.id=?
 LIMIT 1
 SQL;
@@ -66,6 +69,17 @@ if (!empty($_POST['issue']))
     $issue['owner'] = null;
   }
 
+  if (!empty($issue['relatedProduct']))
+  {
+    $relatedProduct = fetch_one('SELECT id, nr, name FROM catalog_products WHERE id=? LIMIT 1', array(1 => $issue['relatedProduct']));
+  }
+
+  if (empty($relatedProduct))
+  {
+    $relatedProduct = (object)array('id' => 0, 'nr' => '-', 'name' => '-');
+    $issue['relatedProduct'] = null;
+  }
+
   if (!empty($errors)) goto VIEW;
 
   foreach (array('relatedFactory', 'relatedMachine', 'relatedDevice', 'kind', 'type', 'orderNumber', 'orderDate', 'orderInvoice', 'orderInvoiceDate', 'expectedFinishAt') as $field)
@@ -76,6 +90,7 @@ if (!empty($_POST['issue']))
 
   $changes              = array();
   $changedRelatedObject = false;
+  $relatedObjectFields = array('relatedFactory', 'relatedMachine', 'relatedDevice');
 
   foreach ($issue as $field => $newValue)
   {
@@ -83,9 +98,20 @@ if (!empty($_POST['issue']))
     {
       if ($field === 'tasks') continue;
       
-      if (substr($field, 0, 7) === 'related')
+      if (in_array($field, $relatedObjectFields))
       {
         $changedRelatedObject = true;
+
+        continue;
+      }
+
+      if ($field === 'relatedProduct')
+      {
+        $changes[] = array(
+          'field' => $field,
+          'old' => empty($oldIssue['relatedProduct']) ? '-' : "({$oldIssue['productNr']}) {$oldIssue['productName']}",
+          'new' => empty($relatedProduct) ? '-' : "({$relatedProduct->nr}) {$relatedProduct->name}"
+        );
 
         continue;
       }
@@ -226,6 +252,18 @@ if (!empty($issue['relatedMachine']) && has_access_to_machine($issue['relatedMac
 
 escape_array($issue);
 
+if (!empty($relatedProduct))
+{
+  $issue['productNr'] = $relatedProduct->nr;
+  $issue['productName'] = $relatedProduct->name;
+}
+
+$productName = '';
+
+if (!empty($issue['relatedProduct']))
+{
+  $productName = e("({$issue['productNr']}) {$issue['productName']}");
+}
 
 ?>
 
@@ -246,6 +284,20 @@ escape_array($issue);
   <? if (empty($devices)): ?>
   #issueRelatedDevice { display: none; }
   <? endif ?>
+  #relatedProductPreview {
+    margin: .5em 0;
+  }
+  .ui-autocomplete .nr {
+   display: block;
+    font-weight: bold;
+  }
+  .ui-autocomplete .name {
+    display: block;
+    font-size: .8em;
+  }
+  #removeRelatedProduct img {
+    vertical-align: top;
+  }
 </style>
 <? append_slot() ?>
 
@@ -254,6 +306,60 @@ escape_array($issue);
 <script>
 $(function()
 {
+  function fixAutocomplete(e, ui)
+  {
+    $(this).data('autocomplete').menu.element.css('width', $(this).width() + 'px');
+  }
+
+  var $relatedProductPreview = $('#relatedProductPreview');
+  var $relatedProduct = $('#issueRelatedProduct');
+
+  if ($relatedProduct.val() == 0)
+  {
+    $relatedProductPreview.hide();
+  }
+
+  $('#issueRelatedProductName').autocomplete({
+    source: '<?= url_for('catalog/products/fetch.php') ?>',
+    minLength: 2,
+    open: fixAutocomplete,
+    select: function(e, ui)
+    {
+      $('#issueRelatedProduct').val(ui.item.id);
+      $('#relatedProductNr').text(ui.item.nr);
+      $('#relatedProductName').text(ui.item.name);
+
+      $relatedProductPreview.fadeIn();
+    }
+  }).data('autocomplete')._renderItem = function(ul, item)
+  {
+    var label = '<a>';
+
+    if (item.nr)
+    {
+      label += '<span class="nr">' + item.nr + '</span>';
+    }
+
+    label += '<span class="name">' + item.name + '</span></a>';
+
+    return $('<li>')
+      .data('item.autocomplete', item)
+      .append(label)
+      .appendTo(ul);
+  };
+
+  $('#removeRelatedProduct').click(function()
+  {
+    $relatedProductPreview.fadeOut(function()
+    {
+      $('#issueRelatedProduct').val('0');
+      $('#relatedProductNr').text('-');
+      $('#relatedProductName').text('-');
+    });
+
+    return false;
+  });
+
   var $order = $('.order');
 
   $('#issue input[name="issue[type]"]').change(function()
@@ -267,11 +373,6 @@ $(function()
       $order.fadeOut();
     }
   });
-
-  function fixAutocomplete(e, ui)
-  {
-    $(this).data('autocomplete').menu.element.css('width', $(this).width() + 'px');
-  }
 
   $('#issueOwner').autocomplete({
     source: '<?= url_for('service/fetch_people.php') ?>',
@@ -402,6 +503,15 @@ $(function()
                   <?= render_options($devices, $issue['relatedDevice']) ?>
                 </select>
             </ol>
+          <li>
+            <?= label('issueRelatedProductName', 'Powiązany produkt') ?>
+            <p id="relatedProductPreview">
+              <?= fff('Usuń powiązanie', 'cross', '#removeRelatedProduct', 'removeRelatedProduct') ?>
+              (<span id="relatedProductNr"><?= $issue['productNr'] ?></span>)
+              <span id="relatedProductName"><?= $issue['productName'] ?></span>
+            </p>
+            <input id="issueRelatedProduct" name="issue[relatedProduct]" type="hidden" value="<?= (int)$issue['relatedProduct'] ?>">
+            <input id="issueRelatedProductName" type="text" value="">
           <li class="horizontal">
             <ol id="issueChoices">
               <li class="form-choice">

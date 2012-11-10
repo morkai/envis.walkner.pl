@@ -255,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `issues` (
   `relatedFactory` tinyint(3) unsigned DEFAULT NULL,
   `relatedMachine` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `relatedDevice` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
+  `relatedProducct` int(10) unsigned DEFAULT NULL,
   `priority` tinyint(1) NOT NULL DEFAULT '2',
   `kind` tinyint(1) NOT NULL DEFAULT '3',
   `type` tinyint(1) NOT NULL DEFAULT '4',
@@ -275,7 +276,8 @@ CREATE TABLE IF NOT EXISTS `issues` (
   KEY `creator` (`creator`),
   KEY `relatedFactory` (`relatedFactory`),
   KEY `relatedMachine` (`relatedMachine`),
-  KEY `relatedDevice` (`relatedDevice`)
+  KEY `relatedDevice` (`relatedDevice`),
+  KEY `relatedProduct` (`relatedProduct`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `issue_assignees`;
@@ -754,7 +756,8 @@ ALTER TABLE `issues`
   ADD CONSTRAINT `issues_ibfk_2` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `issues_ibfk_3` FOREIGN KEY (`relatedFactory`) REFERENCES `factories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `issues_ibfk_4` FOREIGN KEY (`relatedMachine`) REFERENCES `machines` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `issues_ibfk_5` FOREIGN KEY (`relatedDevice`) REFERENCES `engines` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `issues_ibfk_5` FOREIGN KEY (`relatedDevice`) REFERENCES `engines` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `issues_ibfk_6` FOREIGN KEY (`relatedProduct`) REFERENCES `catalog_products` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `issue_assignees`
   ADD CONSTRAINT `issue_assignees_ibfk_1` FOREIGN KEY (`assignee`) REFERENCES `users` (`id`) ON DELETE CASCADE,

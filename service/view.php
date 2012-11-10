@@ -11,13 +11,17 @@ SELECT
   c.name AS creatorName,
   f.name AS factoryName,
   m.name AS machineName,
-  d.name AS deviceName
+  d.name AS deviceName,
+  p.nr AS relatedProductNr,
+  p.name AS relatedProductName,
+  p.type AS relatedProductType
 FROM issues i
 LEFT JOIN users o ON o.id=i.owner
 INNER JOIN users c ON c.id=i.creator
 LEFT JOIN factories f ON f.id=i.relatedFactory
 LEFT JOIN machines m ON m.id=i.relatedMachine
 LEFT JOIN engines d ON d.id=i.relatedDevice
+LEFT JOIN catalog_products p ON p.id=i.relatedProduct
 WHERE i.id=?
 LIMIT 1
 SQL;
@@ -191,6 +195,11 @@ escape_vars($issue->subject);
               <? endif ?>
               <tr>
           <? endif ?>
+          <? if (!empty($issue->relatedProduct)): ?>
+          <tr>
+            <th>Powiązany produkt:
+            <td><a href="<?= url_for("/catalog/?product={$issue->relatedProduct}") ?>"><?= e($issue->relatedProductName) ?></a>
+          <? endif ?>
         </table>
       </div>
       <div class="yui-u">
@@ -228,6 +237,14 @@ escape_vars($issue->subject);
           <tr>
             <th>Cena
             <td><?= $issue->price ?> <?= $issue->currency ?> za <?= $issue->per ?> (<?= $issue->vat ?>% VAT)
+          <? endif ?>
+          <? if (!empty($issue->relatedProduct)): ?>
+          <tr>
+            <th>Nr powiązanego produktu:
+            <td><?= dash_if_empty($issue->relatedProductNr) ?>
+          <tr>
+            <th>Typ powiązanego produktu:
+            <td><?= dash_if_empty($issue->relatedProductType) ?>
           <? endif ?>
         </table>
       </div>

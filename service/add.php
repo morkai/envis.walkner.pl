@@ -12,6 +12,7 @@ $newIssue = array(
   'relatedFactory'   => 0,
   'relatedMachine'   => 0,
   'relatedDevice'    => 0,
+  'relatedProduct'   => null,
   'priority'         => 2,
   'kind'             => 3,
   'type'             => 3,
@@ -80,7 +81,7 @@ if (!empty($_POST['newIssue']))
   $issue['creator']   = $_SESSION['user']->getId();
   $issue['createdAt'] = $issue['updatedAt'] = time();
 
-  foreach (array('relatedFactory', 'relatedMachine', 'relatedDevice', 'kind', 'type', 'orderNumber', 'orderDate', 'orderInvoice', 'orderInvoiceDate', 'expectedFinishAt') as $field)
+  foreach (array('relatedFactory', 'relatedMachine', 'relatedDevice', 'relatedProduct', 'kind', 'type', 'orderNumber', 'orderDate', 'orderInvoice', 'orderInvoiceDate', 'expectedFinishAt') as $field)
     if (empty($issue[$field])) $issue[$field] = null;
 
   $conn = get_conn();

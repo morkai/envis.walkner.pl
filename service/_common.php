@@ -41,6 +41,7 @@ $columnNames = array(
   'orderDate'        => 'Data zamówienia',
   'orderInvoice'     => 'Numer faktury',
   'orderInvoiceDate' => 'Data faktury',
+  'relatedProduct'   => 'Powiązany produkt'
 );
 
 function send_assign_email($receivers, $subject, $issue)
