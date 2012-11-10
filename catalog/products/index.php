@@ -1,6 +1,7 @@
 <?php
 
-include '../../_common.php';
+include_once __DIR__ . '/../_common.php';
+include_once __DIR__ . '/../../service/_common.php';
 
 if (empty($_GET['id'])) bad_request();
 
@@ -12,6 +13,8 @@ $product = fetch_one('SELECT * FROM catalog_products WHERE id=? LIMIT 1',
 if (empty($product)) not_found();
 
 $product->images = fetch_all('SELECT * FROM catalog_product_images WHERE product=?', array(1 => $product->id));
+
+$product->issues = fetch_all('SELECT id, subject, status, orderNumber, orderInvoice FROM issues WHERE relatedProduct=? ORDER BY updatedAt DESC', array(1 => $product->id));
 
 $canManageProducts = is_allowed_to('catalog/manage');
 
@@ -40,6 +43,39 @@ $canManageProducts = is_allowed_to('catalog/manage');
       <dd><?= $product->public ? 'Tak' : 'Nie' ?>
     </dl>
     <?= markdown($product->description) ?>
+  </div>
+</div>
+
+<div id="productTabs">
+  <ul>
+    <li><a href="#issues">Powiązane zgłoszenia</a>
+    <li><a href="#gallery">Galeria</a>
+    <li><a href="#docs">Dokumentacje</a>
+    <li><a href="#files">Pliki</a>
+  </ul>
+  <div id="issues">
+    <table>
+      <thead>
+        <tr>
+          <th>Temat</th>
+          <th>Status</th>
+          <th>Nr zamówienia</th>
+          <th>Nr faktury</th>
+        </tr>
+      </thead>
+      <tbody>
+        <? foreach ($product->issues as $issue): ?>
+        <tr>
+          <td class="clickable"><a href="<?= url_for("service/view.php?id={$issue->id}") ?>"><?= e($issue->subject) ?></a></td>
+          <td><?= $statuses[$issue->status] ?></td>
+          <td><?= dash_if_empty($issue->orderNumber) ?></td>
+          <td><?= dash_if_empty($issue->orderInvoice) ?></td>
+        </tr>
+        <? endforeach ?>
+      </tbody>
+    </table>
+  </div>
+  <div id="gallery">
     <ul id=productImages>
       <? foreach ($product->images as $image): ?>
       <li>
@@ -58,5 +94,11 @@ $canManageProducts = is_allowed_to('catalog/manage');
     <? if ($canManageProducts): ?>
     <input id="productImageFile" name=file type=file>
     <? endif ?>
+  </div>
+  <div id="docs">
+    <p>TODO</p>
+  </div>
+  <div id="files">
+    <p>TODO</p>
   </div>
 </div>

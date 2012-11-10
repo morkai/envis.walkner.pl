@@ -98,7 +98,7 @@ $deleteImageUrlTpl = url_for('catalog/products/images/delete.php?product={$produ
   display: none;
 }
 #productImages {
-  margin: 1em 0 0 0;
+  margin: 0;
 }
 #productImages:empty {
   display: none;
@@ -127,6 +127,14 @@ $deleteImageUrlTpl = url_for('catalog/products/images/delete.php?product={$produ
   margin-top: .25em;
 }
 #productImageFileUploader { margin-top: 1em; }
+#gallery {
+  padding: .75em 1em;
+}
+#issues,
+#docs,
+#files {
+  padding: 1em;
+}
 </style>
 <? append_slot() ?>
 
@@ -220,6 +228,10 @@ function fetchProduct(id, force)
           });
         }
       });
+
+      $('#productTabs').tabs();
+
+      $('#issues table').makeClickable();
     });
 }
 
