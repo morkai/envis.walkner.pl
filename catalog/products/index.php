@@ -54,6 +54,9 @@ $canManageProducts = is_allowed_to('catalog/manage');
     <li><a href="#files">Pliki</a>
   </ul>
   <div id="issues">
+    <? if (empty($product->issues)): ?>
+    <p>Aktualnie nie ma żadnych zgłoszeń powiązanych z tym produktem.</p>
+    <? else: ?>
     <table>
       <thead>
         <tr>
@@ -74,6 +77,7 @@ $canManageProducts = is_allowed_to('catalog/manage');
         <? endforeach ?>
       </tbody>
     </table>
+    <? endif ?>
   </div>
   <div id="gallery">
     <ul id=productImages>
