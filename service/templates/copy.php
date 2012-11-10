@@ -74,7 +74,7 @@ if (!empty($_POST['copy']))
 }
 else
 {
-  $copy = array('template' => 0);
+  $copy = array('template' => 0, 'tasks' => 0);
 }
 
 VIEW:
