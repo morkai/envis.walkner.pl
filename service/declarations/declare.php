@@ -7,8 +7,11 @@ if (empty($_GET['issue'])) bad_request();
 no_access_if_not_allowed('service/declare');
 
 $query = <<<SQL
-SELECT i.*
+SELECT
+  i.*,
+  p.type AS productType
 FROM issues i
+LEFT JOIN catalog_products p ON p.id=i.relatedProduct
 WHERE i.id=?
 LIMIT 1
 SQL;
@@ -138,6 +141,9 @@ $(function()
           <li>
             <?= label('declarationSerial', 'Numer fabryczny') ?>
             <input id="declarationSerial" name="declaration[serial]" type="text" maxlength="30" value="<?= e($issue->serial) ?>">
+          <li>
+            <?= label('declarationProductType', 'Typ produktu') ?>
+            <input id="declarationProductType" name="declaration[productType]" type="text" maxlength="100" value="<?= e($issue->productType) ?>">
           <li>
             <?= label('declarationYear', 'Rok produkcji') ?>
             <input id="declarationYear" name="declaration[year]" type="text" maxlength="4" value="<?= e($issue->productionYear) ?>">

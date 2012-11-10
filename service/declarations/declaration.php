@@ -133,6 +133,9 @@ $(function()
     <strong><?= e($declaration['subject']) ?></strong>
     <br><br>
     Numer fabryczny: <?= e($declaration['serial']) ?><br>
+    <? if (!empty($declaration['productType'])): ?>
+    Typ produktu: <?= e($declaration['productType']) ?><br>
+    <? endif ?>
     Rok produkcji: <?= e($declaration['year']) ?>
   </p>
 </div>
