@@ -177,7 +177,14 @@ $(function()
       switch (e.button)
       {
         case 0:
-          window.location.href = href;
+          if (e.ctrlKey)
+          {
+            window.open(href);
+          }
+          else
+          {
+            window.location.href = href;
+          }
           break;
 
         case 1:
