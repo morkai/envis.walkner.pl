@@ -1,8 +1,30 @@
 <?php
 
-include __DIR__ . '/../_common.php';
+include __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('catalog*');
+
+if (!empty($_GET['product']))
+{
+  $product = fetch_one('SELECT id, category FROM catalog_products WHERE id=? LIMIT 1', array(1 => $_GET['product']));
+
+  not_found_if(empty($product));
+
+  $categories = catalog_fetch_categories($product->category);
+}
+
+$initiallyOpen = array();
+$initiallySelect = array();
+
+if (!empty($categories))
+{
+  foreach ($categories as $category)
+  {
+    $initiallyOpen[] = 'category-' . $category->id;
+  }
+
+  $initiallySelect[] = 'product-' . $product->id;
+}
 
 $canManageProducts = is_allowed_to('catalog/manage');
 
@@ -502,10 +524,14 @@ $('#tree a').live('dblclick', function(e)
 
 tree.bind('reopen.jstree', function(e, data)
 {
+  <? if (empty($product)): ?>
   setTimeout(function()
   {
     fetchProduct(tree.find('a.product.jstree-clicked').attr('data-id'));
   }, 500);
+  <? else: ?>
+  fetchProduct(<?= $product->id ?>);
+  <? endif ?>
 });
 
 tree.bind('contextmenu.jstree', function(e, data)
@@ -534,7 +560,8 @@ tree.jstree(
 
   core:
   {
-    animation: 250
+    animation: 250,
+    initially_open: <?= json_encode($initiallyOpen) ?>
   },
 
   themes:
@@ -545,7 +572,8 @@ tree.jstree(
 
   ui:
   {
-    select_limit: 1
+    select_limit: 1,
+    initially_select: <?= json_encode($initiallySelect) ?>
   },
 
   contextmenu:
@@ -607,6 +635,11 @@ tree.jstree(
         return {id: n && n.attr ? n.attr('id') : 0};
       }
     }
+  },
+
+  cookies: {
+    to_open: 'concat',
+    to_select: '<?= empty($initiallySelect) ? 'default' : 'override' ?>'
   }
 });
 
