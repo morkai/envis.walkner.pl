@@ -191,4 +191,26 @@ $(function()
       return false;
     });
   };
+
+  $('.page-total').click(function()
+  {
+    var allPages = parseInt(this.innerHTML.trim());
+    var page = parseInt(window.prompt('Skocz do strony:'));
+
+    if (page < 1)
+    {
+      page = 1;
+    }
+    else if (page > allPages)
+    {
+      page = allPages;
+    }
+
+    if (!isNaN(page))
+    {
+      window.location.href = this.href.replace('${page}', page.toString());
+    }
+
+    return false;
+  });
 });

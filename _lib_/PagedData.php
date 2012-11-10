@@ -79,7 +79,7 @@ class PagedData implements IteratorAggregate
 			return '';
 		}
 
-		$result = 'Strony (<a class="page-total">' . $this->getPageCount() . '</a>): ';
+		$result = 'Strony (<a class="page-total" title="Skocz do strony" href="' . $href . '&amp;' . $param . '=${page}">' . $this->getPageCount() . '</a>): ';
 
 		$result .= $this->isLinkToFirstPageAvailable()
 			? '<a class="page-first" href="' . $href . '&amp;' . $param . '=1">&laquo; Pierwsza</a> '
