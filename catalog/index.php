@@ -67,6 +67,11 @@ $deleteImageUrlTpl = url_for('catalog/products/images/delete.php?product={$produ
   max-width: 400px;
   overflow: auto;
 }
+@media only screen and (max-width: 1280px) {
+  #tree {
+    max-width: 200px;
+  }
+}
 #tree .product > .jstree-icon
 {
   background: url('<?= url_for_media('fff/page.png') ?>') left top no-repeat;
