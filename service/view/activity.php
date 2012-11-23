@@ -80,6 +80,11 @@ foreach ($entries as $entry)
   }
 }
 
+if (empty($history) && !empty($lastEntry))
+{
+  $history[] = $lastEntry;
+}
+
 $count = count($history);
 
 if ($count && $history[$count - 1] !== $lastEntry)
