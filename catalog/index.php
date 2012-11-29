@@ -168,6 +168,11 @@ function centerDialog()
   center($('#simplemodal-container'), dialog);
 }
 
+$(window).on('resize', function()
+{
+  centerDialog();
+});
+
 var tree           = $('#tree');
 var currentProduct = 0;
 

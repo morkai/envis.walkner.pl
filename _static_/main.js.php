@@ -24,17 +24,31 @@ function render(template, data)
 
 	return template;
 }
+
 function center(el, innerEl)
 {
 	if (!innerEl) innerEl = el;
 
-	el
-		.css('top', ($(document).height() - innerEl.outerHeight()) / 2)
-		.css('left', ($(document).width() - innerEl.outerWidth()) / 2);
+  var top = (window.innerHeight - innerEl.outerHeight()) / 2;
+
+  if (top < 30)
+  {
+    top = 30;
+  }
+
+  var left = (window.innerWidth - innerEl.outerWidth()) / 2;
+
+	el.css({
+    top: top + 'px',
+    left: left + 'px',
+    height: 'auto'
+  });
 }
+
 function modal(selector, options)
 {
 	return $(selector).modal($.extend({
+    minHeight: 0,
 		overlayCss: {
 			backgroundColor: '#000',
 			cursor: 'wait'
@@ -150,6 +164,7 @@ $(function()
   if ($.modal)
   {
     $.extend($.modal.defaults, {
+      minHeight: 0,
       overlayCss: {
         backgroundColor: '#000',
         cursor: 'wait'
