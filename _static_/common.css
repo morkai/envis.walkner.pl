@@ -23,61 +23,7 @@ body
   color: #000;
   background: #EBEBEB;
 }
-.sos #bdInner { width: 100%; float: left; }
-.sos #bd { margin-left: 14.8em; clear: none; }
-.sos #bd.nosubmenu { margin-top: 0.7em }
-.sos #walkner
-{
-  margin-left: 14.8em;
-  margin-right: 1em;
-}
-.sos #menu
-{
-  background: #FFF;
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#BBB));
-  background: -moz-linear-gradient(top, white, #BBB);
-  position: fixed;
-  top: 0;
-  left: 0;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  width: 9.75em;
-  text-align: left;
-  box-shadow: 0 1px 1px #909090;
-  -webkit-box-shadow: 0 1px 1px #909090;
-  -moz-box-shadow: 0 1px 1px #909090;
-  border-bottom-right-radius: .1em;
-  -moz-border-radius-bottomright: .1em;
-}
-.sos #menu li { float: none; margin: 0; padding: 0; }
-.sos #menu li a
-{
-  background: transparent;
-	border-left: 0.3em solid #246;
-  border-right: 0;
-	margin: 0;
-	border-radius: 0;
-	-moz-border-radius: 0;
-}
-.sos #menu li:last-child a
-{
-	border-radius: 0 0 .1em 0;
-	-moz-border-radius: 0 0 .1em 0;
-}
-.sos #submenu
-{
-  margin: 0 1em 0 14.8em;
-	border-radius: 0 0 .1em .1em;
-	-moz-border-radius: 0 0 .1em .1em;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6688AA', endColorstr='#224466');
-  background: -webkit-gradient(linear, left top, left bottom, from(#68A), to(#246));
-  background: -moz-linear-gradient(top,  #68A,  #246);
-}
-.sos #submenu.empty
-{
-  display: none;
-}
+
 #doc3
 {
 	text-align: left;
