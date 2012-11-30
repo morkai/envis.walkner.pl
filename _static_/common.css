@@ -608,3 +608,39 @@ ul.block-header h1
 {
   padding: 1em;
 }
+
+.attributes th {
+  width: 35%;
+  font-size: 1em;
+}
+.attributes td {
+  border: 0!important;
+  font-size: 1.2em;
+  color: #000;
+}
+.attributes tr {
+  border-top: 1px dotted #CCC;
+}
+.attributes tr:first-child {
+  border-top: 0;
+}
+.attributes tr:hover td {
+  color: inherit;
+}
+@media only screen and (min-width: 1280px) {
+  .attributes tr:first-child th,
+  .attributes tr:first-child td {
+    padding-top: 0;
+  }
+}
+@media only screen and (max-width: 1280px) {
+  .yui-u {
+    float: none!important;
+    width: 100%!important;
+    margin: 0!important;
+  }
+  .attributes tr:first-child,
+  .attributes tr:first-child {
+    border-top: 1px dotted #CCC;
+  }
+}
