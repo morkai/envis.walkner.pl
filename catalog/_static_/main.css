@@ -89,3 +89,7 @@
 #files {
   padding: 1em;
 }
+.product-description {
+  border-top: 1px dotted #CCC;
+  padding-top: 1em;
+}

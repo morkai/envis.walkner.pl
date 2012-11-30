@@ -8,17 +8,57 @@
     <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$product->id}") ?>
   </ul>
   <div class="block-body">
-    <dl>
-      <dt>Nr
-      <dd><?= e($product->nr) ?>
-      <dt>Nazwa
-      <dd><?= e($product->name) ?>
-      <dt>Typ
-      <dd><?= dash_if_empty($product->type) ?>
-      <dt>Publiczny
-      <dd><?= $product->public ? 'Tak' : 'Nie' ?>
-    </dl>
-    <?= markdown($product->description) ?>
+    <div class="yui-gb">
+      <div class="yui-u first">
+        <table class="attributes">
+          <tr>
+            <th>ID:
+            <td><?= $product->id ?>
+          <tr>
+            <th>Nr:
+            <td><?= e($product->nr) ?>
+          <tr>
+            <th>Nazwa:
+            <td><?= e($product->name) ?>
+          <tr>
+            <th>Typ:
+            <td><?= dash_if_empty($product->type) ?>
+        </table>
+      </div>
+      <div class="yui-u">
+        <table class="attributes">
+          <tr>
+            <th>Czas stworzenia:
+            <td><?= date('Y-m-d, H:i', $product->createdAt) ?>
+          <tr>
+            <th>Czas aktualizacji:
+            <td><?= date('Y-m-d, H:i', $product->updatedAt) ?>
+          <tr>
+            <th>Kategoria:
+            <td>
+              <? foreach ($categoryPath as $pathCategory): ?>
+              &gt; <a href="<?= url_for("catalog/?category={$pathCategory->id}") ?>"><?= e($pathCategory->name) ?></a><br>
+              <? endforeach ?>
+        </table>
+      </div>
+      <div class="yui-u">
+        <table class="attributes">
+          <tr>
+            <th>Publiczny:
+            <td><?= $product->public ? 'Tak' : 'Nie' ?>
+          <tr>
+            <th>QR Code:
+            <td><img src="http://chart.apis.google.com/chart?chs=100x100&cht=qr&choe=UTF-8&chld=L|0&chl=<?= urlencode("http://walkner.pl/p/{$product->nr}") ?>" width="100" height="100" alt="QR Code">
+        </table>
+      </div>
+    </div>
+    <div class="product-description">
+      <? if (empty($product->description)): ?>
+      <em>Brak opisu produktu.</em>
+      <? else: ?>
+      <?= markdown($product->description) ?>
+      <? endif ?>
+    </div>
   </div>
 </div>
 
@@ -82,6 +122,7 @@
     <p>TODO</p>
   </div>
 </div>
+
 <script id="productImageTpl" type="template">
 <li>
   <a class="thumb" href="<?= url_for('/_files_/products/${file}') ?>" rel="lightbox[<?= $product->id ?>]" title="\${description}" data-id="\${id}">
