@@ -43,6 +43,7 @@ if (is('put'))
   try
   {
     $product['category'] = $oldProduct->category;
+    $product['updatedAt'] = time();
     
     exec_update('catalog_products', $product, 'id=' . $oldProduct->id);
 

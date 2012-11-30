@@ -34,7 +34,7 @@ if (is('post'))
 
   try
   {
-    $bindings = $product + array('category' => $category->id);
+    $bindings = $product + array('category' => $category->id, 'createdAt' => time());
 
     exec_insert('catalog_products', $bindings);
 

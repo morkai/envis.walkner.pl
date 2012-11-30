@@ -73,6 +73,8 @@ DROP TABLE IF EXISTS `catalog_products`;
 CREATE TABLE IF NOT EXISTS `catalog_products` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `category` int(10) unsigned NOT NULL,
+  `createdAt` int(10) unsigned NOT NULL,
+  `updatedAt` int(10) unsigned NOT NULL,
   `public` tinyint(1) NOT NULL DEFAULT '0',
   `nr` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
