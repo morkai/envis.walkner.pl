@@ -1,9 +1,11 @@
 <div id="product" class="block">
   <ul class="block-header">
     <li><h1 class="block-name">Karta produktu</h1>
+    <? if ($canManageProducts): ?>
     <li><?= fff('Edytuj produkt', 'page_edit', "catalog/products/edit.php?id={$product->id}") ?>
     <li><?= fff('Usuń produkt', 'page_delete', "catalog/products/delete.php?id={$product->id}") ?>
-    <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$product->id}") ?></li>
+    <? endif ?>
+    <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$product->id}") ?>
   </ul>
   <div class="block-body">
     <dl>

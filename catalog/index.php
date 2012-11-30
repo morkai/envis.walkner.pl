@@ -112,18 +112,20 @@ var PRODUCT_IMAGE_UPLOADER_CONFIG = {
 
 <? begin_slot('submenu') ?>
 <ul id="submenu">
-  <? if ($isRoot): ?>
+  <? if ($isRoot && $canManageProducts): ?>
   <li><a href="<?= url_for("catalog/categories/add.php") ?>">Dodaj kategorię</a>
   <? endif ?>
-  <? if (!empty($category)): ?>
+  <? if (!empty($category) && $canManageProducts): ?>
   <li><a href="<?= url_for("catalog/categories/add.php?parent={$category->id}") ?>">Dodaj podkategorię</a>
   <li><a href="<?= url_for("catalog/categories/edit.php?id={$category->id}") ?>">Edytuj kategorię</a>
   <li><a href="<?= url_for("catalog/categories/delete.php?id={$category->id}") ?>">Usuń kategorię</a>
   <li><a href="<?= url_for("catalog/products/add.php?category={$category->id}") ?>">Dodaj produkt</a>
   <? endif ?>
   <? if ($showProduct): ?>
+  <? if ($canManageProducts): ?>
   <li><a href="<?= url_for("catalog/products/edit.php?id={$product->id}") ?>">Edytuj produkt</a>
   <li><a href="<?= url_for("catalog/products/delete.php?id={$product->id}") ?>">Usuń produkt</a>
+  <? endif ?>
   <li><a href="<?= url_for("catalog/products/card/?id={$product->id}") ?>">Pokaż kartę katalogową</a>
   <? endif ?>
 </ul>

@@ -8,6 +8,7 @@
         Kategorie i produkty
         <? endif ?>
       </h1>
+    <? if ($canManageProducts): ?>
     <? if (empty($category)): ?>
     <li><?=  fff('Dodaj główną kategorię', 'folder_add', 'catalog/categories/add.php') ?>
     <? else: ?>
@@ -16,6 +17,7 @@
     <li><?= fff('Edytuj kategorię', 'folder_edit', "catalog/categories/edit.php?id={$category->id}") ?>
     <li><?= fff('Usuń kategorię', 'folder_delete', "catalog/categories/delete.php?id={$category->id}") ?>
     <? endif ?>
+    <? endif ?>
   </ul>
   <div class="block-body">
     <? if (empty($subcategories) && empty($products)): ?>
@@ -23,10 +25,12 @@
     <p>Brak kategorii.</p>
     <? else: ?>
     <p>Brak podkategorii i produktów.</p>
+    <? if ($canManageProducts): ?>
     <ul class="actions">
       <li><?= fff_link('Dodaj podkategorię', 'folder_add', "catalog/categories/add.php?parent={$category->id}") ?></li>
       <li><?= fff_link('Dodaj produkt', 'folder_page', "catalog/products/add.php?category={$category->id}") ?></li>
     </ul>
+    <? endif ?>
     <? endif ?>
     <? else: ?>
     <table>
@@ -55,11 +59,15 @@
           <td>Kategoria</td>
           <td>-</td>
           <td class="actions">
+            <? if ($canManageProducts): ?>
             <ul>
               <li><?= fff('Dodaj produkt', 'folder_page', "catalog/products/add.php?category={$subcategory->id}") ?></li>
               <li><?= fff('Edytuj kategorię', 'folder_edit', "catalog/categories/edit.php?id={$subcategory->id}") ?></li>
               <li><?= fff('Usuń kategorię', 'folder_delete', "catalog/categories/delete.php?id={$subcategory->id}") ?></li>
             </ul>
+            <? else: ?>
+            -
+            <? endif ?>
           </td>
         </tr>
         <? endforeach ?>
@@ -74,9 +82,11 @@
           <td><?= dash_if_empty($categoryProduct->nr) ?></td>
           <td class="actions">
             <ul>
+              <? if ($canManageProducts): ?>
               <li><?= fff('Pokaż produkt', 'page', "catalog/?product={$categoryProduct->id}") ?></li>
               <li><?= fff('Edytuj produkt', 'page_edit', "catalog/products/edit.php?id={$categoryProduct->id}") ?></li>
               <li><?= fff('Usuń produkt', 'page_delete', "catalog/products/delete.php?id={$categoryProduct->id}") ?></li>
+              <? endif ?>
               <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$categoryProduct->id}") ?></li>
             </ul>
           </td>
