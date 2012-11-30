@@ -1,11 +1,11 @@
 <?php
 
-include '../../_common.php';
+include_once __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('catalog/manage');
 
 $referer = get_referer('catalog/');
-$errors  = array();
+$errors = array();
 
 if (is('post'))
 {
@@ -19,8 +19,10 @@ if (is('post'))
 
   try
   {
-    $bindings = array('parent' => empty($category['parent']) ? null : (int)$category['parent'],
-                      'name'   => $category['name']);
+    $bindings = array(
+      'parent' => empty($category['parent']) ? null : (int)$category['parent'],
+      'name' => $category['name']
+    );
 
     exec_insert('catalog_categories', $bindings);
 
@@ -33,6 +35,8 @@ if (is('post'))
 
     set_flash('Nowa kategoria została dodana.');
 
+    catalog_set_categories_cache();
+
     go_to($referer);
   }
   catch (PDOException $x)
@@ -44,7 +48,7 @@ else
 {
   $category = array(
     'parent' => empty($_REQUEST['parent']) ? 0 : (int)$_REQUEST['parent'],
-    'name'   => '',
+    'name' => '',
   );
 }
 
@@ -72,9 +76,9 @@ if ($category['parent'])
     <h1 class="block-name">Dodawanie kategorii produktów</h1>
   </div>
   <div class="block-body">
-    <form id="addCategoryForm" method="post" action="<?= url_for('catalog/categories/add.php') ?>">
+    <form id="addCategoryForm" method="post" action="<?= url_for("catalog/categories/add.php") ?>">
       <input name="referer" type=hidden value="<?= $referer ?>">
-      <?= display_errors($errors) ?>
+      <? display_errors($errors) ?>
       <ol class="form-fields">
         <li>
           <?= label('categoryParent', 'Kategoria nadrzędna') ?>

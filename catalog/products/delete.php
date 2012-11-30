@@ -1,14 +1,14 @@
 <?php
 
-include '../../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_REQUEST['id'])) bad_request();
+bad_request_if(empty($_REQUEST['id']));
 
 no_access_if_not_allowed('catalog/manage');
 
 $product = fetch_one('SELECT id, name FROM catalog_products WHERE id=?', array(1 => $_REQUEST['id']));
 
-if (empty($product)) not_found();
+not_found_if(empty($product));
 
 if (is('delete'))
 {

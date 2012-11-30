@@ -1,0 +1,91 @@
+#breadcrumbs {
+  font-size: 1.2em;
+  margin-left: 0;
+  margin-bottom: .8em;
+  padding: .5em .8em;
+  background: #FFF;
+  text-shadow: white 0 1px 1px;
+  border-radius: 3px;
+}
+#breadcrumbs li {
+  list-style: none;
+  display: inline-block;
+  margin: 0;
+}
+#breadcrumbs a {
+  text-decoration: none;
+}
+.block-name a {
+  text-decoration: none;
+}
+.block-name a:hover {
+  text-decoration: underline;
+}
+#catalog th,
+#catalog td {
+  padding-right: 1em;
+}
+#catalog th.actions,
+#catalog td.actions {
+  padding-right: 0;
+  text-align: center;
+}
+#categories .name {
+  font-weight: bold;
+}
+#catalog ul.actions {
+  margin: .5em 0 0 0;
+}
+#catalog ul.actions li {
+  list-style: none;
+}
+#catalog ul.actions a {
+  text-decoration: none;
+}
+#catalog.collapsed .block-header h1 {
+  cursor: default;
+}
+#catalog.collapsed .block-header {
+  cursor: ns-resize;
+}
+#catalog.collapsed .block-body {
+  display: none;
+}
+#productImages {
+  margin: 0;
+}
+#productImages:empty {
+  display: none;
+}
+#productImages li {
+  display: inline-block;
+  text-align: center;
+  margin: .5em 1em .5em 0;
+}
+#productImages .thumb {
+  display: block;
+  padding: .5em;
+  background: #666;
+}
+#productImages .thumb:hover {
+  background: #F50;
+}
+#productImages .thumb.default {
+  background: #adff2f;
+}
+#productImages img {
+  max-width: 178px;
+  max-height: 100px;
+}
+#productImages .actions {
+  margin-top: .25em;
+}
+#productImageFileUploader { margin-top: 1em; }
+#gallery {
+  padding: .75em 1em;
+}
+#issues,
+#docs,
+#files {
+  padding: 1em;
+}

@@ -1,8 +1,8 @@
 <?php
 
-include '../../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('catalog/manage');
 
@@ -15,10 +15,10 @@ LIMIT 1
 SQL;
 $oldCategory = fetch_one($query, array(1 => $_GET['id']));
 
-if (empty($oldCategory)) not_found();
+not_found_if(empty($oldCategory));
 
 $referer = get_referer('catalog/');
-$errors  = array();
+$errors = array();
 
 if (is('put'))
 {
@@ -44,6 +44,8 @@ if (is('put'))
       output_json(array('success' => true, 'data' => $bindings));
 
     set_flash('Kategoria została zmodyfikowana.');
+
+    catalog_set_categories_cache();
 
     go_to($referer);
   }

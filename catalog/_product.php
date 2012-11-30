@@ -1,35 +1,9 @@
-<?php
-
-include_once __DIR__ . '/../_common.php';
-include_once __DIR__ . '/../../service/_common.php';
-
-if (empty($_GET['id'])) bad_request();
-
-no_access_if_not_allowed('catalog*');
-
-$product = fetch_one('SELECT * FROM catalog_products WHERE id=? LIMIT 1',
-                     array(1 => $_GET['id']));
-
-if (empty($product)) not_found();
-
-$product->images = fetch_all('SELECT * FROM catalog_product_images WHERE product=?', array(1 => $product->id));
-
-$product->issues = fetch_all('SELECT id, subject, status, orderNumber, orderInvoice FROM issues WHERE relatedProduct=? ORDER BY updatedAt DESC', array(1 => $product->id));
-
-$canManageProducts = is_allowed_to('catalog/manage');
-
-?>
-
-<? decorate('Karta produktu') ?>
-
-<div class="block">
+<div id="product" class="block">
   <ul class="block-header">
     <li><h1 class="block-name">Karta produktu</h1>
-    <li><?=  fff('Pokaż kartę katalogową', 'page', "catalog/products/card/?id={$product->id}", 'showProductCardLink') ?>
-    <? if ($canManageProducts): ?>
-    <li><?=  fff('Edytuj produkt', 'page_edit', "catalog/products/edit.php?id={$product->id}", 'editProductLink') ?>
-    <li><?=  fff('Usuń produkt', 'page_delete', "catalog/products/delete.php?id={$product->id}", 'deleteProductLink') ?>
-    <? endif ?>
+    <li><?= fff('Edytuj produkt', 'page_edit', "catalog/products/edit.php?id={$product->id}") ?>
+    <li><?= fff('Usuń produkt', 'page_delete', "catalog/products/delete.php?id={$product->id}") ?>
+    <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$product->id}") ?></li>
   </ul>
   <div class="block-body">
     <dl>
@@ -59,21 +33,21 @@ $canManageProducts = is_allowed_to('catalog/manage');
     <? else: ?>
     <table>
       <thead>
-        <tr>
-          <th>Temat</th>
-          <th>Status</th>
-          <th>Nr zamówienia</th>
-          <th>Nr faktury</th>
-        </tr>
+      <tr>
+        <th>Temat</th>
+        <th>Status</th>
+        <th>Nr zamówienia</th>
+        <th>Nr faktury</th>
+      </tr>
       </thead>
       <tbody>
         <? foreach ($product->issues as $issue): ?>
-        <tr>
-          <td class="clickable"><a href="<?= url_for("service/view.php?id={$issue->id}") ?>"><?= e($issue->subject) ?></a></td>
-          <td><?= $statuses[$issue->status] ?></td>
-          <td><?= dash_if_empty($issue->orderNumber) ?></td>
-          <td><?= dash_if_empty($issue->orderInvoice) ?></td>
-        </tr>
+      <tr>
+        <td class="clickable"><a href="<?= url_for("service/view.php?id={$issue->id}") ?>"><?= e($issue->subject) ?></a></td>
+        <td><?= $statuses[$issue->status] ?></td>
+        <td><?= dash_if_empty($issue->orderNumber) ?></td>
+        <td><?= dash_if_empty($issue->orderInvoice) ?></td>
+      </tr>
         <? endforeach ?>
       </tbody>
     </table>
@@ -106,3 +80,13 @@ $canManageProducts = is_allowed_to('catalog/manage');
     <p>TODO</p>
   </div>
 </div>
+<script id="productImageTpl" type="template">
+<li>
+  <a class="thumb" href="<?= url_for('/_files_/products/${file}') ?>" rel="lightbox[<?= $product->id ?>]" title="\${description}" data-id="\${id}">
+    <img src="<?= url_for('/_files_/products/${file}') ?>" alt="">
+  </a>
+  <div class="actions">
+    <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id=\${id}", null, 'default') ?>
+    <?= fff('Usuń obraz', 'bullet_cross', "catalog/products/images/delete.php?product={$product->id}&id=\${id}", null, 'delete') ?>
+  </div>
+</script>

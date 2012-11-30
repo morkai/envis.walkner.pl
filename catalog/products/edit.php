@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/../../_common.php';
+include_once __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('catalog/manage');
 

@@ -1,12 +1,14 @@
 <?php
 
-function move_catalog_subcategories($category)
-{
-  exec_stmt('UPDATE catalog_categories SET parent=? WHERE parent=?',
-            array(1 => $category->parent, $category->id));
-}
+include_once __DIR__ . '/../_common.php';
 
-include '../../_common.php';
+function catalog_move_subcategories($category)
+{
+  exec_stmt(
+    'UPDATE catalog_categories SET parent=? WHERE parent=?',
+    array(1 => $category->parent, $category->id)
+  );
+}
 
 if (empty($_REQUEST['id'])) bad_request();
 
@@ -30,14 +32,14 @@ if (is('delete'))
     {
       if ($category->parent)
       {
-        move_catalog_subcategories($category);
+        catalog_move_subcategories($category);
 
         exec_stmt('UPDATE catalog_products SET category=? WHERE category=?',
                   array(1 => $category->parent, $category->id));
       }
       else
       {
-        move_catalog_subcategories($category);
+        catalog_move_subcategories($category);
       }
     }
 
@@ -59,10 +61,12 @@ if (is('delete'))
 
   set_flash("Kategoria <{$category->name}> została usunięta.");
 
-  go_to('catalog');
+  catalog_set_categories_cache();
+
+  go_to('catalog/');
 }
 
-$referer = get_referer('catalog');
+$referer = get_referer('catalog/');
 
 $modes = array(
   0 => 'Przenieś podkategorie i produkty do nadrzędnej kategorii',
@@ -78,7 +82,7 @@ if (!$category->parent)
 
 <div class="block">
   <div class="block-header">
-    <h1 class="block-name">Usuwanie kategorii</h1>
+    <h1 class="block-name">Usuwanie kategorii produktów</h1>
   </div>
   <div class="block-body">
     <form id="deleteCategoryForm" method=post action="<?= url_for("catalog/categories/delete.php?id={$category->id}") ?>">

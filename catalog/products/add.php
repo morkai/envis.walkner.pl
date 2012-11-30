@@ -1,14 +1,14 @@
 <?php
 
-include __DIR__ . '/../../_common.php';
+include __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('catalog/manage');
 
-if (empty($_GET['category'])) bad_request();
+bad_request_if(empty($_GET['category']));
 
 $category = fetch_one('SELECT id, name FROM catalog_categories WHERE id=?', array(1 => $_GET['category']));
 
-if (empty($category)) bad_request();
+bad_request_if(empty($category));
 
 $errors = array();
 $referer = get_referer('catalog/'); 
