@@ -4,42 +4,6 @@ SET AUTOCOMMIT=0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-DROP TABLE IF EXISTS `cases`;
-CREATE TABLE IF NOT EXISTS `cases` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `createdAt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `createdBy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `factory` tinyint(3) unsigned DEFAULT NULL,
-  `machine` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
-  `device` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
-  `supporter` tinyint(3) unsigned DEFAULT NULL,
-  `editingTime` int(10) unsigned NOT NULL DEFAULT '0',
-  `cost` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `subject` varchar(128) COLLATE utf8_polish_ci NOT NULL DEFAULT '',
-  `problem` text COLLATE utf8_polish_ci NOT NULL,
-  `diagnosis` text CHARACTER SET utf8 NOT NULL,
-  `solution` text CHARACTER SET utf8 NOT NULL,
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `kind` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `type` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `priority` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `supporter` (`supporter`),
-  KEY `createdBy` (`createdBy`),
-  KEY `factory` (`factory`),
-  KEY `machine` (`machine`),
-  KEY `device` (`device`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `case_categories`;
-CREATE TABLE IF NOT EXISTS `case_categories` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `parent` tinyint(3) unsigned DEFAULT NULL,
-  `name` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `parent` (`parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
-
 DROP TABLE IF EXISTS `catalog_card_pages`;
 CREATE TABLE IF NOT EXISTS `catalog_card_pages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
