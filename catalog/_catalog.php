@@ -47,6 +47,7 @@
         </tr>
       </tfoot>
       <? endif ?>
+      <? if (empty($pagedProducts) || $pagedProducts->getPage() === 1): ?>
       <tbody id="categories">
         <? foreach ($subcategories as $subcategory): ?>
         <tr>
@@ -63,6 +64,7 @@
         </tr>
         <? endforeach ?>
       </tbody>
+      <? endif ?>
       <? if (!empty($pagedProducts)): ?>
       <tbody id="products">
         <? foreach ($pagedProducts as $categoryProduct): ?>

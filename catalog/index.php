@@ -84,7 +84,7 @@ $productId = empty($product) ? '' : $product->id;
 <link rel="stylesheet" href="<?= url_for_media('jquery-plugins/lightbox/2.51/css/lightbox.css') ?>">
 <link rel="stylesheet" href="<?= url_for("catalog/_static_/main.css") ?>">
 <style type="text/css">
-  <? if (!empty($subcategories)): ?>
+  <? if (!empty($subcategories) && !empty($pagedProducts) && $pagedProducts->getPage() === 1): ?>
   #products tr:first-child td {
     border-top: 0;
   }
