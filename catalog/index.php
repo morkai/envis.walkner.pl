@@ -8,7 +8,7 @@ $category = empty($_GET['category']) || !is_numeric($_GET['category']) ? null : 
 $product = empty($_GET['product']) || !is_numeric($_GET['product']) ? null : (int)$_GET['product'];
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
-$perPage = 10;
+$perPage = 15;
 
 $categoryPath = array();
 $subcategories = array();
