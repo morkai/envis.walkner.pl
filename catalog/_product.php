@@ -18,21 +18,37 @@
             <th>Nr:
             <td><?= e($product->nr) ?>
           <tr>
-            <th>Nazwa:
-            <td><?= e($product->name) ?>
-          <tr>
             <th>Typ:
             <td><?= dash_if_empty($product->type) ?>
+          <tr>
+            <th>Rodzaj:
+            <td>
+              <? if (empty($product->kind)): ?>
+              -
+              <? else: ?>
+              <?= $product->kindNr ?> - <?= e($product->kindName) ?>
+              <? endif ?>
+          <tr>
+            <th>Wykonawca:
+            <td>
+              <? if (empty($product->manufacturer)): ?>
+              -
+              <? else: ?>
+              <?= $product->manufacturerNr ?> - <?= e($product->manufacturerName) ?>
+              <? endif ?>
+          <tr>
+            <th>Rewizja:
+            <td><?= $product->revision ?>
+          <tr>
+            <th>Data produkcji:
+            <td><?= dash_if_empty($product->productionDate) ?>
         </table>
       </div>
       <div class="yui-u">
         <table class="attributes">
           <tr>
-            <th>Czas stworzenia:
-            <td><?= date('Y-m-d, H:i', $product->createdAt) ?>
-          <tr>
-            <th>Czas aktualizacji:
-            <td><?= date('Y-m-d, H:i', $product->updatedAt) ?>
+            <th>Nazwa:
+            <td><?= e($product->name) ?>
           <tr>
             <th>Kategoria:
             <td>
@@ -44,11 +60,17 @@
       <div class="yui-u">
         <table class="attributes">
           <tr>
+            <th>Czas stworzenia:
+            <td><?= date('Y-m-d, H:i', $product->createdAt) ?>
+          <tr>
+            <th>Czas aktualizacji:
+            <td><?= date('Y-m-d, H:i', $product->updatedAt) ?>
+          <tr>
             <th>Publiczny:
             <td><?= $product->public ? 'Tak' : 'Nie' ?>
           <tr>
             <th>QR Code:
-            <td><img src="http://chart.apis.google.com/chart?chs=100x100&cht=qr&choe=UTF-8&chld=L|0&chl=<?= urlencode("http://walkner.pl/p/{$product->nr}") ?>" width="100" height="100" alt="QR Code">
+            <td><img src="http://chart.apis.google.com/chart?chs=110x110&cht=qr&choe=UTF-8&chld=L|0&chl=<?= urlencode("http://walkner.pl/p/{$product->nr}") ?>" width="110" height="110" alt="QR Code">
         </table>
       </div>
     </div>
@@ -58,6 +80,11 @@
       <? else: ?>
       <?= markdown($product->description) ?>
       <? endif ?>
+    </div>
+    <div class="product-markings">
+      <? foreach ($product->markings as $marking): ?>
+      <img src="<?= $marking->src ?>" alt="<?= e($marking->name) ?>" title="<?= e($marking->name) ?>" height="50">
+      <? endforeach ?>
     </div>
   </div>
 </div>

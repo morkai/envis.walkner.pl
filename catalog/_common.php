@@ -128,3 +128,120 @@ function catalog_get_category_path($categoryId)
 
   return $result;
 }
+
+function catalog_get_product_markings()
+{
+  static $definitions = null;
+
+  if ($definitions === null)
+  {
+    $definitions = include_once __DIR__ . '/products/markings/definitions.php';
+  }
+
+  $markings = array();
+
+  foreach ($definitions as $marking => $definition)
+  {
+    $markings[$marking] = (object)array(
+      'id' => $marking,
+      'name' => $definition['name'],
+      'file' => $definition['file'],
+      'src' => url_for('catalog/products/markings/' . $definition['file'])
+    );
+  }
+
+  return $markings;
+}
+
+function catalog_prepare_product_markings($productMarkings)
+{
+  $markings = catalog_get_product_markings();
+  $result = array();
+
+  foreach (explode(',', $productMarkings) as $marking)
+  {
+    $marking = trim($marking);
+
+    if (empty($markings[$marking]))
+    {
+      continue;
+    }
+
+    $result[] = $markings[$marking];
+  }
+
+  return $result;
+}
+
+function catalog_get_product_kinds()
+{
+  $rows = fetch_all('SELECT id, nr, name FROM catalog_product_kinds ORDER BY nr ASC');
+  $kinds = array();
+
+  foreach ($rows as $row)
+  {
+    $kinds[$row->id] = e($row->nr) . ' - ' . e($row->name);
+  }
+
+  return $kinds;
+}
+
+function catalog_get_manufacturers()
+{
+  $rows = fetch_all('SELECT id, nr, name FROM catalog_manufacturers ORDER BY nr ASC');
+  $kinds = array();
+
+  foreach ($rows as $row)
+  {
+    $kinds[$row->id] = e($row->nr) . ' - ' . e($row->name);
+  }
+
+  return $kinds;
+}
+
+function catalog_generate_product_nr($product)
+{
+  $nr = '';
+
+  if (empty($product['kind']))
+  {
+    $nr .= '00';
+  }
+  else
+  {
+    $kind = fetch_one('SELECT nr FROM catalog_product_kinds WHERE id=?', array(1 => $product['kind']));
+    $nr .= str_pad(!$kind ? '00' : $kind->nr, 2, '0');
+  }
+
+  if (empty($product['manufacturer']))
+  {
+    $nr .= '00';
+  }
+  else
+  {
+    $manufacturer = fetch_one('SELECT nr FROM catalog_manufacturers WHERE id=?', array(1 => $product['manufacturer']));
+    $nr .= str_pad(!$manufacturer ? '00' : $manufacturer->nr, 2, '0');
+  }
+
+  $nr .= $product['revision'];
+
+  if (preg_match('/^[0-9]{2}([0-9]{2})-([0-9]{2})$/', $product['productionDate'], $matches))
+  {
+    $nr .= $matches[2] . $matches[1];
+  }
+  else
+  {
+    $nr .= '0000';
+  }
+
+  if (empty($product['id']))
+  {
+    $nr .= '000';
+  }
+  else
+  {
+    $nr .= str_pad($product['id'], 3, '0');
+  }
+
+  return $nr;
+}

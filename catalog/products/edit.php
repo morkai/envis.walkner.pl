@@ -7,7 +7,9 @@ no_access_if_not_allowed('catalog/manage');
 bad_request_if(empty($_GET['id']));
 
 $query = <<<SQL
-SELECT p.*, c.name AS categoryName
+SELECT
+  p.*,
+  c.name AS categoryName
 FROM catalog_products p
 INNER JOIN catalog_categories c ON c.id=p.category
 WHERE p.id=?
@@ -23,58 +25,39 @@ $referer = get_referer('catalog/');
 
 if (is('put'))
 {
-  $product = empty($_POST['product']) ? array() : $_POST['product'];
-
-  if (is_empty($product['nr']))
-  {
-    $errors[] = 'Nr produktu jest wymagany.';
-  }
+  $product = $_POST['product'];
 
   if (is_empty($product['name']))
-  {
-    $product['name'] = $product['nr'];
-  }
+    $errors[] = 'Nazwa produktu jest wymagana.';
 
   if (!empty($errors))
-  {
     goto VIEW;
+
+  if (!empty($product['markings']) && is_array($product['markings']))
+  {
+    $product['markings'] = implode(',', $product['markings']);
   }
 
   try
   {
-    $product['category'] = $oldProduct->category;
     $product['updatedAt'] = time();
-    
-    exec_update('catalog_products', $product, 'id=' . $oldProduct->id);
 
-    log_info("Dodano produkt <{$product['name']}> do katalogu.");
-
-    if (is_ajax())
+    if (empty($product['nr']))
     {
-      output_json(array(
-        'success' => true,
-        'data' => array(
-          'id' => $oldProduct->id,
-          'category' => $oldProduct->category,
-          'name' => $product['name']
-        )
-      ));
+      $product['nr'] = catalog_generate_product_nr($product + array('id' => $oldProduct->id));
     }
 
-    set_flash("Produkt został zmodyfikowany pomyślnie.");
+    exec_update('catalog_products', $product, "id={$oldProduct->id}");
+
+    log_info("Zmodyfikowano produkt <{$product['name']}>.");
+
+    set_flash("Produkt <{$product['name']}> został zmodyfikowany pomyślnie.");
 
     go_to($referer);
   }
   catch (PDOException $x)
   {
-    if ($x->getCode() == 23000)
-    {
-      $errors[] = 'Nr produktu musi być unikalny.';
-    }
-    else
-    {
-      $errors[] = $x->getMessage();
-    }
+    $errors[] = $x->getMessage();
   }
 }
 else
@@ -84,14 +67,27 @@ else
 
 VIEW:
 
-if (!empty($errors))
+$categoryPath = catalog_get_category_path($oldProduct->category);
+$markings = catalog_get_product_markings();
+$kinds = catalog_get_product_kinds();
+$manufacturers = catalog_get_manufacturers();
+
+if (!is_array($product['markings']))
 {
-  output_json(array('status' => false, 'errors' => $errors));
+  $product['markings'] = explode(',', (string)$product['markings']);
 }
 
 ?>
 
-<? decorate('Modyfikowanie produktu z katalogu') ?>
+<? begin_slot('head') ?>
+<link rel="stylesheet" href="<?= url_for("/catalog/products/_static_/form.css") ?>">
+<? append_slot() ?>
+
+<? begin_slot('js') ?>
+<script src="<?= url_for("/catalog/products/_static_/form.js") ?>"></script>
+<? append_slot() ?>
+
+<? decorate('Modyfikowanie produktu - Katalog produktów') ?>
 
 <div class="block">
   <div class="block-header">
@@ -102,31 +98,7 @@ if (!empty($errors))
       <input name="_method" type="hidden" value="PUT">
       <input name="referer" type="hidden" value="<?= $referer ?>">
       <? display_errors($errors) ?>
-      <ol class="form-fields">
-        <li>
-          <?= label('editProductCategory', 'Kategoria') ?>
-          <p id="editProductCategory"><?= e($oldProduct->categoryName) ?></p>
-        <li>
-          <?= label('editProductNr', 'Nr*') ?>
-          <input id="editProductNr" name="product[nr]" type="text" value="<?= e($product['nr']) ?>" maxlength="30">
-        <li>
-          <?= label('editProductName', 'Nazwa') ?>
-          <input id="editProductName" name="product[name]" type="text" value="<?= e($product['name']) ?>" maxlength="100">
-        <li>
-          <?= label('editProductType', 'Typ') ?>
-          <input id="editProductType" name="product[type]" type="text" value="<?= e($product['type']) ?>" maxlength="100">
-        <li>
-          <?= label('editProductDescription', 'Opis') ?>
-          <textarea id="editProductDescription" name="product[description]" class="markdown"><?= e($product['description']) ?></textarea>
-        <li>
-          <input id="editProductPublic" name="product[public]" type="checkbox" value="1" <?= checked_if($product['public']) ?>>
-          <?= label('editProductPublic', 'Publiczny') ?>
-        <li>
-          <ol class="form-actions">
-            <li><input type="submit" value="Modyfikuj produkt">
-            <li><a class="cancel" href="<?= $referer ?>">Anuluj</a>
-          </ol>
-      </ol>
+      <? include_once __DIR__ . '/_form.php' ?>
     </form>
   </div>
 </div>

@@ -2,11 +2,10 @@
 
 include_once __DIR__ . '/_common.php';
 include_once __DIR__ . '/../service/_common.php';
+include_once __DIR__ . '/../_lib_/PagedData.php';
 
 $category = empty($_GET['category']) || !is_numeric($_GET['category']) ? null : (int)$_GET['category'];
 $product = empty($_GET['product']) || !is_numeric($_GET['product']) ? null : (int)$_GET['product'];
-
-include_once '../_lib_/PagedData.php';
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
 $perPage = 10;
@@ -35,10 +34,10 @@ SQL;
   $totalProductCount = fetch_one($q, array(':category' => $category->id))->totalCount;
 
   $q = <<<SQL
-SELECT id, category, name, type, nr
-FROM catalog_products
-WHERE category=:category
-ORDER BY name ASC
+SELECT p.id, p.category, p.name, p.type, p.nr
+FROM catalog_products p
+WHERE p.category=:category
+ORDER BY p.name ASC
 LIMIT {$pagedProducts->getOffset()}, {$pagedProducts->getPerPage()}
 SQL;
 
@@ -53,7 +52,19 @@ else if ($product === null)
 
 if ($product !== null)
 {
-  $product = fetch_one('SELECT * FROM catalog_products WHERE id=:product LIMIT 1', array(':product' => $product));
+  $q = <<<SQL
+SELECT
+  p.*,
+  m.name AS manufacturerName, m.nr AS manufacturerNr,
+  k.name AS kindName, k.nr AS kindNr
+FROM catalog_products p
+LEFT JOIN catalog_manufacturers m ON m.id=p.manufacturer
+LEFT JOIN catalog_product_kinds k ON k.id=p.kind
+WHERE p.id=:product
+LIMIT 1
+SQL;
+
+  $product = fetch_one($q, array(':product' => $product));
 
   not_found_if(empty($product));
 
@@ -65,6 +76,8 @@ if ($product !== null)
   {
     $categoryPath = catalog_get_category_path($product->category);
   }
+
+  $product->markings = catalog_prepare_product_markings($product->markings);
 }
 
 $canManageProducts = is_allowed_to('catalog/manage');
@@ -113,6 +126,8 @@ var PRODUCT_IMAGE_UPLOADER_CONFIG = {
 <? begin_slot('submenu') ?>
 <ul id="submenu">
   <? if ($isRoot && $canManageProducts): ?>
+  <li><a href="<?= url_for("catalog/kinds/") ?>">Zarządzaj rodzajami</a>
+  <li><a href="<?= url_for("catalog/manufacturers/") ?>">Zarządzaj wykonwacami</a>
   <li><a href="<?= url_for("catalog/categories/add.php") ?>">Dodaj kategorię</a>
   <? endif ?>
   <? if (!empty($category) && $canManageProducts): ?>

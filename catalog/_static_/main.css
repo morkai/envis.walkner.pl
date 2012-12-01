@@ -93,3 +93,9 @@
   border-top: 1px dotted #CCC;
   padding-top: 1em;
 }
+.product-markings:empty {
+  display: none;
+}
+.product-markings {
+  text-align: right;
+}

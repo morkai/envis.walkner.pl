@@ -15,21 +15,17 @@ $referer = get_referer('catalog/');
 
 if (is('post'))
 {
-  $product = empty($_POST['product']) ? array() : $_POST['product'];
-
-  if (is_empty($product['nr']))
-  {
-    $errors[] = 'Nr produktu jest wymagany.';
-  }
+  $product = $_POST['product'] + array('public' => 0);
 
   if (is_empty($product['name']))
-  {
-    $product['name'] = $product['nr'];
-  }
+    $errors[] = 'Nazwa produktu jest wymagana.';
 
   if (!empty($errors))
-  {
     goto VIEW;
+
+  if (!empty($product['markings']) && is_array($product['markings']))
+  {
+    $product['markings'] = implode(',', $product['markings']);
   }
 
   try
@@ -40,12 +36,16 @@ if (is('post'))
 
     $bindings['id'] = get_conn()->lastInsertId();
 
-    log_info("Dodano produkt <{$product['name']}> do katalogu.");
-
-    if (is_ajax())
+    if (empty($product['nr']))
     {
-      output_json(array('success' => true, 'data' => $bindings));
+      exec_update(
+        'catalog_products',
+        array('nr' => catalog_generate_product_nr($bindings)),
+        "id={$bindings['id']}"
+      );
     }
+
+    log_info("Dodano produkt <{$product['name']}> do katalogu.");
 
     set_flash("Nowy produkt został dodany pomyślnie.");
 
@@ -53,14 +53,7 @@ if (is('post'))
   }
   catch (PDOException $x)
   {
-    if ($x->getCode() == 23000)
-    {
-      $errors[] = 'Nazwa produktu musi być unikalny.';
-    }
-    else
-    {
-      $errors[] = $x->getMessage();
-    }
+    $errors[] = $x->getMessage();
   }
 }
 else
@@ -70,54 +63,71 @@ else
     'name' => '',
     'type' => '',
     'description' => '',
-    'public' => 0
+    'public' => 0,
+    'revision' => 0,
+    'manufacturer' => null,
+    'kind' => null,
+    'markings' => '',
+    'productionDate' => date('Y-m')
   );
 }
 
 VIEW:
 
-if (!empty($errors))
+$categoryPath = catalog_get_category_path($category->id);
+$markings = catalog_get_product_markings();
+$kinds = catalog_get_product_kinds();
+$manufacturers = catalog_get_manufacturers();
+
+if (empty($product['manufacturer']))
 {
-  output_json(array('status' => false, 'errors' => $errors));
+  foreach ($manufacturers as $k => $v)
+  {
+    if (strpos(strtolower($v), 'walkner') !== false)
+    {
+      $product['manufacturer'] = $k;
+
+      break;
+    }
+  }
+}
+
+if (empty($product['kind']))
+{
+  foreach ($kinds as $k => $v)
+  {
+    $product['kind'] = $k;
+
+    break;
+  }
+}
+
+if (!is_array($product['markings']))
+{
+  $product['markings'] = explode(',', (string)$product['markings']);
 }
 
 ?>
 
-<? decorate('Dodawanie produktu do katalogu') ?>
+<? begin_slot('head') ?>
+<link rel="stylesheet" href="<?= url_for("/catalog/products/_static_/form.css") ?>">
+<? append_slot() ?>
+
+<? begin_slot('js') ?>
+<script src="<?= url_for("/catalog/products/_static_/form.js") ?>"></script>
+<? append_slot() ?>
+
+<? decorate('Dodawanie produktu - Katalog produktów') ?>
 
 <div class="block">
   <div class="block-header">
-    <h1 class="block-name">Dodawanie produktu</h1>
+    <h1 class="block-name">Nowy produkt</h1>
   </div>
   <div class="block-body">
-    <form id="addProductForm" method="post" action="<?= url_for("catalog/products/add.php?category={$category->id}") ?>">
+    <form id="productForm" method="post" action="<?= url_for("catalog/products/add.php?category={$category->id}") ?>">
       <input name="referer" type="hidden" value="<?= $referer ?>">
       <? display_errors($errors) ?>
-      <ol class="form-fields">
-        <li>
-          <?= label('addProductCategory', 'Kategoria') ?>
-          <p id="addProductCategory"><?= e($category->name) ?></p>
-        <li>
-          <?= label('addProductNr', 'Nr*') ?>
-          <input id="addProductNr" name="product[nr]" type="text" value="<?= e($product['nr']) ?>" maxlength="30">
-        <li>
-          <?= label('addProductName', 'Nazwa') ?>
-          <input id="addProductName" name="product[name]" type="text" value="<?= e($product['name']) ?>" maxlength="100">
-        <li>
-          <?= label('addProductType', 'Typ') ?>
-          <input id="addProductType" name="product[type]" type="text" value="<?= e($product['type']) ?>" maxlength="100">
-        <li>
-          <?= label('addProductDescription', 'Opis') ?>
-          <textarea id="addProductDescription" name="product[description]" class="markdown"><?= e($product['description']) ?></textarea>
-        <li>
-          <input id="addProductPublic" name="product[public]" type="checkbox" value="1" <?= checked_if($product['public']) ?>>
-          <?= label('addProductPublic', 'Publiczny') ?>
-        <li>
-          <ol class="form-actions">
-            <li><input type="submit" value="Dodaj produkt">
-            <li><a class="cancel" href="<?= $referer ?>">Anuluj</a>
-          </ol>
-      </ol>
+      <? include_once __DIR__ . '/_form.php' ?>
     </form>
   </div>
 </div>

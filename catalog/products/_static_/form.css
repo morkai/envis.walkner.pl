@@ -1,0 +1,23 @@
+.product-marking {
+  display: inline-block;
+  margin-top: .5em;
+  margin-right: 2em;
+}
+.product-marking * {
+  vertical-align: middle;
+}
+#product-nr,
+#product-type {
+  width: 20em;
+}
+#product-revision {
+  width: 3em;
+}
+#product-productionDate {
+  width: 6em;
+  text-align: center;
+}
+#clear-product-nr {
+  vertical-align: middle;
+  cursor: pointer;
+}
