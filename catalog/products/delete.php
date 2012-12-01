@@ -10,25 +10,30 @@ $product = fetch_one('SELECT id, name FROM catalog_products WHERE id=?', array(1
 
 not_found_if(empty($product));
 
+$referer = get_referer('catalog/');
+
 if (is('delete'))
 {
   exec_stmt('DELETE FROM catalog_products WHERE id=?', array(1 => $_REQUEST['id']));
 
   log_info("Usunięto produkt <{$product->name}> z katalogu.");
 
-  if (is_ajax())
-    output_json(array('success' => true, 'id' => $product->id));
-
   set_flash("Produkt <{$product->name}> został usunięty.");
 
-  go_to('catalog');
-}
+  $refererQuery = parse_url(htmlspecialchars_decode($referer, ENT_COMPAT), PHP_URL_QUERY);
+  parse_str((string)$refererQuery, $refererQuery);
 
-$referer = get_referer('catalog/');
+  if (!empty($refererQuery['product']) && $refererQuery['product'] == $product->id)
+  {
+    unset($refererQuery['product']);
+  }
+
+  go_to("catalog/?" . http_build_query($refererQuery));
+}
 
 ?>
 
-<? decorate('Usuwanie produktu z katalogu') ?>
+<? decorate('Usuwanie produktu - Katalog produktów') ?>
 
 <div class="block">
   <div class="block-header">
@@ -37,6 +42,7 @@ $referer = get_referer('catalog/');
   <div class="block-body">
     <form id=deleteProductForm method=post action="<?= url_for("catalog/products/delete.php?id={$product->id}") ?>">
       <input type="hidden" name="_method" value="DELETE">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <p>Jesteś pewien że chcesz usunąć produkt &lt;<?= e($product->name) ?>>?</p>
       <ol class="form-actions">
         <li><input type=submit value="Usuń produkt">
