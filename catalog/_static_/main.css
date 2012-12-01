@@ -140,6 +140,7 @@ label.catalog-tree-category-toggle {
   width: 16px;
   height: 16px;
   display: inline-block;
+  cursor: pointer;
 }
 input.catalog-tree-category-toggle {
   position: absolute;
@@ -148,6 +149,10 @@ input.catalog-tree-category-toggle {
 }
 input.catalog-tree-category-toggle:checked + label.catalog-tree-category-toggle {
   background-position: -36px 0;
+}
+.catalog-tree-without-children > label.catalog-tree-category-toggle {
+  background-position: -36px 0;
+  cursor: default;
 }
 input.catalog-tree-category-toggle:checked ~ .catalog-tree-categories {
   display: block;

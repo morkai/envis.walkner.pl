@@ -274,9 +274,8 @@ function _catalog_render_categories($cache, $categories, $expandedCategoryIds, $
     $hasChildren = !empty($cache['children'][$categoryId]);
     $expanded = in_array($categoryId, $expandedCategoryIds);
 
-    $className = 'catalog-tree-category'
-      . ' ' . ($hasChildren ? 'catalog-tree-with-children' : 'catalog-tree-without-children')
-      . ' ' . ($expanded ? 'catalog-tree-expanded' : 'catalog-tree-collapsed');
+    $className = 'catalog-tree-category '
+      . ($hasChildren ? 'catalog-tree-with-children' : 'catalog-tree-without-children');
 
     $id = 'catalog-tree-category-' . $categoryId;
 
