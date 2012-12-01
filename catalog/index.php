@@ -145,17 +145,21 @@ var PRODUCT_IMAGE_UPLOADER_CONFIG = {
 
 <? decorate('Katalog produktów') ?>
 
-<? if (!$isRoot): ?>
-<ul id="breadcrumbs">
-  <li><a href="<?= url_for("catalog/") ?>">Katalog produktów</a>
-  <? foreach ($categoryPath as $pathCategory): ?>
-  <li>&nbsp;&gt; <a href="<?= url_for("catalog/?category={$pathCategory->id}") ?>"><?= e($pathCategory->name) ?></a>
-  <? endforeach ?>
-  <? if ($showProduct): ?>
-  <li>&nbsp;&gt; <a href="<?= url_for("catalog/?product={$product->id}") ?>"><?= e($product->name) ?></a>
-  <? endif ?>
-</ul>
-<? endif ?>
+<div id="catalog-breadcrumbs">
+  <p>
+    <a href="<?= url_for("catalog/") ?>">Katalog produktów</a>
+    <? foreach ($categoryPath as $pathCategory): ?>
+    &nbsp;&gt; <a href="<?= url_for("catalog/?category={$pathCategory->id}") ?>"><?= e($pathCategory->name) ?></a>
+    <? endforeach ?>
+    <? if ($showProduct): ?>
+    &nbsp;&gt; <a href="<?= url_for("catalog/?product={$product->id}") ?>"><?= e($product->name) ?></a>
+    <? endif ?>
+  </p>
+  <form id="catalog-search" action="<?= url_for("catalog/search.php") ?>">
+    <input id="catalog-search-query" type="text" name="q">
+    <input type="image" src="<?= url_for_media('fff/zoom.png') ?>">
+  </form>
+</div>
 
 <? if ($showTree): ?>
 <div id="catalog-container">

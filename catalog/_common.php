@@ -129,6 +129,39 @@ function catalog_get_category_path($categoryId)
   return $result;
 }
 
+function catalog_render_category_path($categoryIdOrPath, $link = true)
+{
+  if (!is_array($categoryIdOrPath))
+  {
+    $categoryPath = catalog_get_category_path($categoryIdOrPath);
+  }
+  else
+  {
+    $categoryPath = $categoryIdOrPath;
+  }
+
+  $html = '';
+
+  foreach ($categoryPath as $category)
+  {
+    $html .= ' &gt; ';
+
+    if ($link)
+    {
+      $html .= '<a href="' . url_for("catalog/?category={$category->id}") . '">';
+    }
+
+    $html .= e($category->name);
+
+    if ($link)
+    {
+      $html .= '</a>';
+    }
+  }
+
+  return substr($html, 5);
+}
+
 function catalog_get_product_markings()
 {
   static $definitions = null;
