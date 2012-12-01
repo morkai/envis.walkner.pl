@@ -245,3 +245,58 @@ function catalog_generate_product_nr($product)
 
   return $nr;
 }
+
+function catalog_render_categories_tree($selectedCategoryId = null)
+{
+  $cache = catalog_get_categories_cache();
+
+  $expandedCategoryIds = array_map(
+    function($category) { return $category->id; },
+    catalog_get_category_path($selectedCategoryId)
+  );
+
+  return _catalog_render_categories($cache, $cache['children'][null], $expandedCategoryIds);
+}
+
+function _catalog_render_categories($cache, $categories, $expandedCategoryIds, $level = 0)
+{
+  $html = '<ol class="catalog-tree-categories catalog-tree-level-' . $level . '">';
+
+  foreach ($categories as $categoryId)
+  {
+    $category = $cache['categories'][$categoryId];
+
+    if (empty($category))
+    {
+      continue;
+    }
+
+    $hasChildren = !empty($cache['children'][$categoryId]);
+    $expanded = in_array($categoryId, $expandedCategoryIds);
+
+    $className = 'catalog-tree-category'
+      . ' ' . ($hasChildren ? 'catalog-tree-with-children' : 'catalog-tree-without-children')
+      . ' ' . ($expanded ? 'catalog-tree-expanded' : 'catalog-tree-collapsed');
+
+    $id = 'catalog-tree-category-' . $categoryId;
+
+    $html .= '<li class="' . $className . '">';
+    $html .= '<input id="' . $id . '" class="catalog-tree-category-toggle" type="checkbox" ' . checked_if($expanded) . '>';
+    $html .= '<label for="' . $id . '" class="catalog-tree-category-toggle"></label>';
+    $html .= '<a class="catalog-tree-category-name" href="' . url_for("catalog/?category={$categoryId}") . '">' . e($category->name) . '</a>';
+
+    if ($hasChildren)
+    {
+      $html .= _catalog_render_categories(
+        $cache,
+        $cache['children'][$categoryId],
+        $expandedCategoryIds,
+        $level + 1
+      );
+    }
+  }
+
+  $html .= '</ol>';
+
+  return $html;
+}

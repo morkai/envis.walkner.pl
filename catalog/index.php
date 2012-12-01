@@ -83,8 +83,9 @@ SQL;
 $canManageProducts = is_allowed_to('catalog/manage');
 
 $isRoot = $category === null && $product === null;
-$showCatalog = !empty($category) || !empty($subcategories) || empty($product);
+$showCatalog = empty($product) && (!empty($category) || !empty($subcategories));
 $showProduct = !empty($product);
+$showTree = $isRoot || !empty($category);
 
 $categoryId = empty($category) ? '' : $category->id;
 $productId = empty($product) ? '' : $product->id;
@@ -97,11 +98,7 @@ $productId = empty($product) ? '' : $product->id;
 <link rel="stylesheet" href="<?= url_for_media('jquery-plugins/lightbox/2.51/css/lightbox.css') ?>">
 <link rel="stylesheet" href="<?= url_for("catalog/_static_/main.css") ?>">
 <style type="text/css">
-  <? if (!empty($subcategories) && !empty($pagedProducts) && $pagedProducts->getPage() === 1): ?>
-  #products tr:first-child td {
-    border-top: 0;
-  }
-  <? endif ?>
+
 </style>
 <? append_slot() ?>
 
@@ -160,10 +157,25 @@ var PRODUCT_IMAGE_UPLOADER_CONFIG = {
 </ul>
 <? endif ?>
 
+<? if ($showTree): ?>
+<div id="catalog-container">
+  <div id="catalog-tree-container">
+    <? include __DIR__ . '/_tree.php' ?>
+  </div>
+  <div id="catalog-contents-container">
+    <? if ($showCatalog): ?>
+    <? include __DIR__ . '/_catalog.php' ?>
+    <? endif ?>
+    <? if ($showProduct): ?>
+    <? include __DIR__ . '/_product.php' ?>
+    <? endif ?>
+  </div>
+</div>
+<? else: ?>
 <? if ($showCatalog): ?>
 <? include __DIR__ . '/_catalog.php' ?>
 <? endif ?>
-
 <? if ($showProduct): ?>
 <? include __DIR__ . '/_product.php' ?>
+<? endif ?>
 <? endif ?>

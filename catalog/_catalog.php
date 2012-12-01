@@ -1,13 +1,7 @@
 <div id="catalog" class="block <?= $showProduct ? 'collapsed' : '' ?>">
   <ul class="block-header">
     <li>
-      <h1 class="block-name">
-        <? if ($isRoot): ?>
-        Katalog produktów
-        <? else: ?>
-        Kategorie i produkty
-        <? endif ?>
-      </h1>
+      <h1 class="block-name">Produkty</h1>
     <? if ($canManageProducts): ?>
     <? if (empty($category)): ?>
     <li><?=  fff('Dodaj główną kategorię', 'folder_add', 'catalog/categories/add.php') ?>
@@ -20,11 +14,11 @@
     <? endif ?>
   </ul>
   <div class="block-body">
-    <? if (empty($subcategories) && empty($products)): ?>
+    <? if (empty($products)): ?>
     <? if ($isRoot): ?>
-    <p>Brak kategorii.</p>
+    <p>Wybierz kategorię.</p>
     <? else: ?>
-    <p>Brak podkategorii i produktów.</p>
+    <p>Brak produktów w wybranej kategorii.</p>
     <? if ($canManageProducts): ?>
     <ul class="actions">
       <li><?= fff_link('Dodaj podkategorię', 'folder_add', "catalog/categories/add.php?parent={$category->id}") ?></li>
@@ -50,28 +44,6 @@
           </td>
         </tr>
       </tfoot>
-      <? endif ?>
-      <? if (empty($pagedProducts) || $pagedProducts->getPage() === 1): ?>
-      <tbody id="categories">
-        <? foreach ($subcategories as $subcategory): ?>
-        <tr>
-          <td class="name clickable"><a href="<?= url_for("catalog/?category={$subcategory->id}") ?>"><?= e($subcategory->name) ?></a></td>
-          <td>Kategoria</td>
-          <td>-</td>
-          <td class="actions">
-            <? if ($canManageProducts): ?>
-            <ul>
-              <li><?= fff('Dodaj produkt', 'folder_page', "catalog/products/add.php?category={$subcategory->id}") ?></li>
-              <li><?= fff('Edytuj kategorię', 'folder_edit', "catalog/categories/edit.php?id={$subcategory->id}") ?></li>
-              <li><?= fff('Usuń kategorię', 'folder_delete', "catalog/categories/delete.php?id={$subcategory->id}") ?></li>
-            </ul>
-            <? else: ?>
-            -
-            <? endif ?>
-          </td>
-        </tr>
-        <? endforeach ?>
-      </tbody>
       <? endif ?>
       <? if (!empty($pagedProducts)): ?>
       <tbody id="products">
