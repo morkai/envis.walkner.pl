@@ -61,7 +61,6 @@ CREATE TABLE `catalog_products` (
   `manufacturer` int(10) unsigned DEFAULT NULL,
   `revision` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `nr` (`nr`),
   KEY `image` (`image`),
   KEY `category` (`category`),
   KEY `kind` (`kind`),
