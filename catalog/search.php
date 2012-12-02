@@ -19,7 +19,7 @@ SELECT
   p.kind, k.nr AS kindNr, k.name AS kindName,
   p.manufacturer, m.nr AS manufacturerNr, m.name AS manufacturerName,
   p.category,
-  i.file AS image,
+  i.file AS image, i.description AS imageDescription,
   IF(p.name LIKE :query, 1, 0)
   + IF(p.type LIKE :query, 1, 0)
   + IF(p.nr LIKE :query, 1, 0)
@@ -44,9 +44,10 @@ $products = fetch_all($q, $bindings);
 
 $results = array_map(function($product)
 {
-  $product->image = empty($product->image)
-    ? url_for('_static_/img/no-image.png')
-    : url_for('_files_/products/' . $product->image);
+  if (!empty($product->image))
+  {
+    $product->imageFile = url_for('_files_/products/' . $product->image);
+  }
 
   return $product;
 }, $products);
@@ -56,6 +57,7 @@ VIEW:
 ?>
 
 <? begin_slot('head') ?>
+<link rel="stylesheet" href="<?= url_for_media('jquery-plugins/lightbox/2.51/css/lightbox.css') ?>">
 <link rel="stylesheet" href="<?= url_for("catalog/_static_/main.css") ?>">
 <style>
 #catalog-search-no-results {
@@ -87,6 +89,7 @@ VIEW:
 .catalog-search-result-image {
   width: 75px;
   padding: 0 1em;
+  text-align: center;
 }
 .catalog-search-result-category {
   padding: 0;
@@ -107,6 +110,10 @@ VIEW:
 </style>
 <? append_slot() ?>
 
+<? begin_slot('js') ?>
+<script src="<?= url_for_media('jquery-plugins/lightbox/2.51/js/lightbox.js') ?>"></script>
+<? append_slot() ?>
+
 <? decorate('Wyszukiwanie - Katalog produktów') ?>
 
 <? include __DIR__ . '/_breadcrumbs.php' ?>
@@ -124,7 +131,13 @@ VIEW:
       <tbody>
         <tr>
           <td class="catalog-search-result-image" rowspan="3">
-            <img src="<?= $result->image ?>">
+            <? if (empty($result->image)): ?>
+            <img src="<?= url_for('_static_/img/no-image.png') ?>" alt="No image :(">
+            <? else: ?>
+            <a class="thumb" href="<?= $result->imageFile ?>" rel="lightbox[<?= $result->id ?>]" title="<?= e($result->imageDescription) ?>">
+              <img src="<?= $result->imageFile ?>" alt="<?= e($result->imageDescription) ?>">
+            </a>
+            <? endif ?>
           <td rowspan="1" colspan="7">
             <h1><a class="catalog-search-result-name" href="<?= url_for("catalog/?category={$result->category}&product={$result->id}") ?>"><?= e($result->name) ?></a></h1>
         </tr>
