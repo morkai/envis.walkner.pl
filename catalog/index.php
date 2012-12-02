@@ -124,7 +124,7 @@ var PRODUCT_IMAGE_UPLOADER_CONFIG = {
 <ul id="submenu">
   <? if ($isRoot && $canManageProducts): ?>
   <li><a href="<?= url_for("catalog/kinds/") ?>">Zarządzaj rodzajami</a>
-  <li><a href="<?= url_for("catalog/manufacturers/") ?>">Zarządzaj wykonwacami</a>
+  <li><a href="<?= url_for("catalog/manufacturers/") ?>">Zarządzaj wykonawcami</a>
   <li><a href="<?= url_for("catalog/categories/add.php") ?>">Dodaj kategorię</a>
   <? endif ?>
   <? if (!empty($category) && $canManageProducts): ?>
