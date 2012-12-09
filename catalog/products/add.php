@@ -4,18 +4,26 @@ include __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('catalog/manage');
 
-bad_request_if(empty($_GET['category']));
-
-$category = fetch_one('SELECT id, name FROM catalog_categories WHERE id=?', array(1 => $_GET['category']));
-
-bad_request_if(empty($category));
-
 $errors = array();
 $referer = get_referer('catalog/'); 
 
 if (is('post'))
 {
-  $product = $_POST['product'] + array('public' => 0);
+  $product = $_POST['product'] + array('public' => 0, 'markings' => array());
+
+  if (is_empty($product['category']))
+  {
+    $errors[] = 'Kategoria produktu jest wymagana.';
+  }
+  else
+  {
+    $category = fetch_one('SELECT id, name FROM catalog_categories WHERE id=?', array(1 => $product['category']));
+
+    if (empty($category))
+    {
+      $errors[] = 'Wybrana kategoria nie istnieje.';
+    }
+  }
 
   if (is_empty($product['name']))
     $errors[] = 'Nazwa produktu jest wymagana.';
@@ -30,7 +38,10 @@ if (is('post'))
 
   try
   {
-    $bindings = $product + array('category' => $category->id, 'createdAt' => time());
+    $bindings = $product + array(
+      'category' => $category->id,
+      'createdAt' => time()
+    );
 
     exec_insert('catalog_products', $bindings);
 
@@ -51,7 +62,7 @@ if (is('post'))
 
     catalog_set_categories_cache();
 
-    go_to($referer);
+    go_to("/catalog/?category={$category->id}&product={$bindings['id']}");
   }
   catch (PDOException $x)
   {
@@ -60,6 +71,10 @@ if (is('post'))
 }
 else
 {
+  $category = fetch_one('SELECT id, name FROM catalog_categories WHERE id=?', array(
+    1 => empty($_GET['category']) ? 0 : $_GET['category']
+  ));
+
   $product = array(
     'nr' => '',
     'name' => '',
@@ -70,11 +85,17 @@ else
     'manufacturer' => null,
     'kind' => null,
     'markings' => '',
-    'productionDate' => date('Y-m')
+    'productionDate' => date('Y-m'),
+    'category' => empty($category) ? 0 : $category->id
   );
 }
 
 VIEW:
+
+if (empty($category))
+{
+  $category = (object)array('id' => 0, 'name' => '');
+}
 
 $categoryPath = catalog_get_category_path($category->id);
 $markings = catalog_get_product_markings();
@@ -116,6 +137,9 @@ if (!is_array($product['markings']))
 <? append_slot() ?>
 
 <? begin_slot('js') ?>
+<script>
+var CATALOG_SEARCH_CATEGORIES_URL = '<?= url_for("/catalog/categories/fetch.php") ?>';
+</script>
 <script src="<?= url_for("/catalog/products/_static_/form.js") ?>"></script>
 <? append_slot() ?>
 
@@ -126,7 +150,7 @@ if (!is_array($product['markings']))
     <h1 class="block-name">Nowy produkt</h1>
   </div>
   <div class="block-body">
-    <form id="productForm" method="post" action="<?= url_for("catalog/products/add.php?category={$category->id}") ?>">
+    <form id="productForm" method="post" action="<?= url_for("catalog/products/add.php") ?>">
       <input name="referer" type="hidden" value="<?= $referer ?>">
       <? display_errors($errors) ?>
       <? include_once __DIR__ . '/_form.php' ?>

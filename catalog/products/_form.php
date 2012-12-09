@@ -1,13 +1,10 @@
+<input id="product-category" name="product[category]" type="hidden" value="<?= $product['category'] ?>">
 <fieldset>
   <legend>Nowy produkt</legend>
   <ol class="form-fields">
     <li>
-      <?= label('product-category', 'Kategoria') ?>
-      <p id="product-category">
-        <? foreach ($categoryPath as $category): ?>
-        &gt; <?= e($category->name) ?>
-        <? endforeach ?>
-      </p>
+      <?= label('product-category-ac', 'Kategoria*') ?>
+      <input id="product-category-ac" type="text" value="<?= catalog_render_category_path($product['category'], false) ?>">
     <li>
       <?= label('product-name', 'Nazwa*') ?>
       <input id="product-name" name="product[name]" type="text" value="<?= e($product['name']) ?>" maxlength="100">

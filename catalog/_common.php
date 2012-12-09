@@ -198,7 +198,7 @@ function catalog_render_category_path($categoryIdOrPath, $link = true)
     }
   }
 
-  return substr($html, 5);
+  return trim(substr($html, 5));
 }
 
 function catalog_get_product_markings()

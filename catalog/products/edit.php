@@ -25,7 +25,21 @@ $referer = get_referer('catalog/');
 
 if (is('put'))
 {
-  $product = $_POST['product'];
+  $product = $_POST['product'] + array('markings' => array());
+
+  if (is_empty($product['category']))
+  {
+    $errors[] = 'Kategoria produktu jest wymagana.';
+  }
+  else
+  {
+    $category = fetch_one('SELECT id, name FROM catalog_categories WHERE id=?', array(1 => $product['category']));
+
+    if (empty($category))
+    {
+      $errors[] = 'Wybrana kategoria nie istnieje.';
+    }
+  }
 
   if (is_empty($product['name']))
     $errors[] = 'Nazwa produktu jest wymagana.';
@@ -55,7 +69,7 @@ if (is('put'))
 
     catalog_set_categories_cache();
 
-    go_to($referer);
+    go_to("/catalog/?category={$product['category']}&product={$oldProduct->id}");
   }
   catch (PDOException $x)
   {
@@ -64,12 +78,21 @@ if (is('put'))
 }
 else
 {
+  $category = (object)array(
+    'id' => $oldProduct->id,
+    'name' => $oldProduct->categoryName
+  );
   $product = (array)$oldProduct;
 }
 
 VIEW:
 
-$categoryPath = catalog_get_category_path($oldProduct->category);
+if (empty($category))
+{
+  $category = (object)array('id' => 0, 'name' => '');
+}
+
+$categoryPath = catalog_get_category_path($category->id);
 $markings = catalog_get_product_markings();
 $kinds = catalog_get_product_kinds();
 $manufacturers = catalog_get_manufacturers();
@@ -86,6 +109,9 @@ if (!is_array($product['markings']))
 <? append_slot() ?>
 
 <? begin_slot('js') ?>
+<script>
+var CATALOG_SEARCH_CATEGORIES_URL = '<?= url_for("/catalog/categories/fetch.php") ?>';
+</script>
 <script src="<?= url_for("/catalog/products/_static_/form.js") ?>"></script>
 <? append_slot() ?>
 
