@@ -37,7 +37,7 @@ LEFT JOIN catalog_manufacturers m ON m.id=p.manufacturer
 LEFT JOIN catalog_product_images i ON i.id=p.image
 HAVING rank > 0
 ORDER BY rank DESC
-LIMIT 15
+LIMIT 30
 SQL;
 
 $products = fetch_all($q, $bindings);
