@@ -49,6 +49,8 @@ if (is('post'))
 
     set_flash("Nowy produkt został dodany pomyślnie.");
 
+    catalog_set_categories_cache();
+
     go_to($referer);
   }
   catch (PDOException $x)

@@ -20,6 +20,8 @@ if (is('delete'))
 
   set_flash("Produkt <{$product->name}> został usunięty.");
 
+  catalog_set_categories_cache();
+
   $refererQuery = parse_url(htmlspecialchars_decode($referer, ENT_COMPAT), PHP_URL_QUERY);
   parse_str((string)$refererQuery, $refererQuery);
 

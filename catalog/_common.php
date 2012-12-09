@@ -11,6 +11,37 @@ function catalog_set_categories_cache()
 {
   global $CATALOG_CATEGORIES_CACHE_FILE;
 
+  $q = <<<SQL
+SELECT
+  c.*,
+  (SELECT COUNT(*) FROM catalog_products p WHERE p.category=c.id) AS productCount
+FROM catalog_categories c
+ORDER BY c.parent ASC
+SQL;
+
+  $categories = fetch_all($q);
+  $cache = array(
+    'children' => array(),
+    'categories' => array(),
+    'productCount' => array()
+  );
+
+  foreach ($categories as $category)
+  {
+    $cache['children'][$category->id] = array();
+    $cache['categories'][$category->id] = $category;
+    $cache['productCount'][$category->id] = 0;
+
+    if (!isset($cache['children'][$category->parent]))
+    {
+      $cache['children'][$category->parent] = array();
+    }
+
+    $cache['children'][$category->parent][] = $category->id;
+  }
+
+  catalog_set_product_count($cache['children'][null], $cache);
+
   if (!file_exists($CATALOG_CATEGORIES_CACHE_FILE))
   {
     touch($CATALOG_CATEGORIES_CACHE_FILE);
@@ -21,28 +52,31 @@ function catalog_set_categories_cache()
     chmod($CATALOG_CATEGORIES_CACHE_FILE, 0666);
   }
 
-  $categories = fetch_all('SELECT * FROM catalog_categories ORDER BY parent ASC');
-  $cache = array(
-    'children' => array(),
-    'categories' => array()
-  );
-
-  foreach ($categories as $category)
-  {
-    $cache['children'][$category->id] = array();
-    $cache['categories'][$category->id] = $category;
-
-    if (!isset($cache['children'][$category->parent]))
-    {
-      $cache['children'][$category->parent] = array();
-    }
-
-    $cache['children'][$category->parent][] = $category->id;
-  }
-
   file_put_contents($CATALOG_CATEGORIES_CACHE_FILE, serialize($cache));
 
   return $cache;
+}
+
+function catalog_set_product_count($categoryIds, &$cache)
+{
+  $totalCount = 0;
+
+  foreach ($categoryIds as $categoryId)
+  {
+    $count = $cache['categories'][$categoryId]->productCount;
+    $children = $cache['children'][$categoryId];
+
+    if (!empty($children))
+    {
+      $count += catalog_set_product_count($children, $cache);
+    }
+
+    $totalCount += $count;
+
+    $cache['productCount'][$categoryId] = $count;
+  }
+
+  return $totalCount;
 }
 
 /**
@@ -95,8 +129,13 @@ function catalog_get_categories($parentId = null)
 
   $categories = $cache['children'][$parentId];
 
-  foreach ($categories AS $categoryId)
+  foreach ($categories AS $k => $categoryId)
   {
+    if (!is_numeric($k))
+    {
+      continue;
+    }
+
     $category = $cache['categories'][$categoryId];
     $category->children = $cache['children'][$categoryId];
 
@@ -295,8 +334,13 @@ function _catalog_render_categories($cache, $categories, $expandedCategoryIds, $
 {
   $html = '<ol class="catalog-tree-categories catalog-tree-level-' . $level . '">';
 
-  foreach ($categories as $categoryId)
+  foreach ($categories as $k => $categoryId)
   {
+    if (!is_numeric($k))
+    {
+      continue;
+    }
+
     $category = $cache['categories'][$categoryId];
 
     if (empty($category))
@@ -304,6 +348,7 @@ function _catalog_render_categories($cache, $categories, $expandedCategoryIds, $
       continue;
     }
 
+    $totalProductCount = $cache['productCount'][$categoryId];
     $hasChildren = !empty($cache['children'][$categoryId]);
     $expanded = in_array($categoryId, $expandedCategoryIds);
 
@@ -315,7 +360,15 @@ function _catalog_render_categories($cache, $categories, $expandedCategoryIds, $
     $html .= '<li class="' . $className . '">';
     $html .= '<input id="' . $id . '" class="catalog-tree-category-toggle" type="checkbox" ' . checked_if($expanded) . '>';
     $html .= '<label for="' . $id . '" class="catalog-tree-category-toggle"></label>';
-    $html .= '<a class="catalog-tree-category-name" href="' . url_for("catalog/?category={$categoryId}") . '">' . e($category->name) . '</a>';
+    $html .= '<a class="catalog-tree-category-name" href="' . url_for("catalog/?category={$categoryId}") . '">';
+    $html .= e($category->name) . ' (' . $category->productCount;
+
+    if ($hasChildren)
+    {
+      $html .= '/' . $totalProductCount;
+    }
+
+    $html .= ')</a>';
 
     if ($hasChildren)
     {

@@ -53,6 +53,8 @@ if (is('put'))
 
     set_flash("Produkt <{$product['name']}> został zmodyfikowany pomyślnie.");
 
+    catalog_set_categories_cache();
+
     go_to($referer);
   }
   catch (PDOException $x)
