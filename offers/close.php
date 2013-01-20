@@ -86,13 +86,14 @@ if (is('post'))
       require_once __DIR__ . '/../_lib_/swiftmailer/swift_required.php';
 
       $mailer = Swift_Mailer::newInstance(Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'tls')
-        ->setUsername('envis@walukiewicz.eu')
-        ->setPassword('enVisXSQ1@3xsq'));
+        ->setUsername(ENVIS_SMTP_USER)
+        ->setPassword(ENVIS_SMTP_PASS));
       $mailer->send(Swift_Message::newInstance()
         ->setSubject($mail['subject'])
         ->setFrom($sendOffersFrom)
         ->setTo($mail['to'])
         ->setBody($mail['text'])
+        ->setReplyTo(ENVIS_SMTP_REPLY_EMAIL, ENVIS_SMTP_REPLY_NAME)
         ->attach(Swift_Attachment::fromPath($offerPdfFile)
                                  ->setFilename(str_replace(array('/', '\\'), '-', $offer->number) . '.pdf')));
     }
