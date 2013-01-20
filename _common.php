@@ -1059,3 +1059,8 @@ function new_object($properties)
 
   return $object;
 }
+
+function get_file_type_from_name($name)
+{
+  return strtoupper(substr(strrchr($name, '.'), 1));
+}

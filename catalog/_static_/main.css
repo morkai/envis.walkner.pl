@@ -92,7 +92,10 @@
 #productImages .actions {
   margin-top: .25em;
 }
-#productImageFileUploader { margin-top: 1em; }
+#productImageFileUploader,
+#productFileUploader {
+  margin-top: 1em;
+}
 #gallery {
   padding: .75em 1em;
 }

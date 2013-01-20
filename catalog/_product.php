@@ -146,17 +146,60 @@
     <p>TODO</p>
   </div>
   <div id="files">
-    <p>TODO</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Nazwa
+          <th>Typ
+          <th>Czas wysłania
+          <th>Wysyłający
+          <th>Akcje
+      <tbody id="productFiles">
+        <? if (empty($product->files)): ?>
+        <tr class="nofiles">
+          <td colspan=5>Brak plików.
+        <? endif ?>
+        <? foreach ($product->files as $file): ?>
+        <tr>
+          <td class="name clickable"><a href="<?= url_for("catalog/products/files/download.php?product={$product->id}&id={$file->id}") ?>"><?= e($file->name) ?></a>
+          <td><?= $file->type ?>
+          <td><?= date('Y-m-d, H:i', $file->uploadedAt) ?>
+          <td><a href="<?= url_for("user/view.php?id={$file->uploader}") ?>"><?= e($file->uploaderName) ?></a>
+          <td class="actions">
+            <? if ($canManageProducts): ?>
+            <ul>
+              <li><?= fff('Edytuj nazwę', 'bullet_edit', "catalog/products/files/edit.php?product={$product->id}&id={$file->id}", null, 'edit') ?>
+              <li><?= fff('Usuń plik', 'bullet_cross', "catalog/products/files/delete.php?product={$product->id}&id={$file->id}", null, 'delete') ?>
+            </ul>
+            <? endif ?>
+          <? endforeach ?>
+    </table>
+    <input id="productFile" name=file type=file>
   </div>
 </div>
 
 <script id="productImageTpl" type="template">
 <li>
-  <a class="thumb" href="<?= url_for('/_files_/products/${file}') ?>" rel="lightbox[<?= $product->id ?>]" title="\${description}" data-id="\${id}">
+  <a class="thumb" href="<?= url_for('/_files_/products/${file}') ?>" rel="lightbox[<?= $product->id ?>]" title="${description}" data-id="${id}">
     <img src="<?= url_for('/_files_/products/${file}') ?>" alt="">
   </a>
   <div class="actions">
     <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id=\${id}", null, 'default') ?>
     <?= fff('Usuń obraz', 'bullet_cross', "catalog/products/images/delete.php?product={$product->id}&id=\${id}", null, 'delete') ?>
   </div>
+</script>
+
+<script id="productFileTpl" type="template">
+<tr>
+  <td class="name clickable"><a href="<?= url_for("catalog/products/files/download.php?id=\${id}") ?>">${name}</a>
+  <td>${type}
+  <td>${uploadedAt}
+  <td><a href="<?= url_for("user/view.php?id=\${uploader}") ?>">${uploaderName}</a>
+  <td class="actions">
+    <? if ($canManageProducts): ?>
+    <ul>
+      <li class="edit"><?= fff('Edytuj nazwę', 'bullet_edit', "catalog/products/files/edit.php?product={$product->id}&id=\${id}") ?>
+      <li class="delete"><?= fff('Usuń plik', 'bullet_cross', "catalog/products/files/delete.php?product={$product->id}&id=\${id}") ?>
+    </ul>
+    <? endif ?>
 </script>

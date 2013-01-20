@@ -78,6 +78,14 @@ SQL;
   }
 
   $product->markings = catalog_prepare_product_markings($product->markings);
+
+  $product->files = fetch_all('SELECT f.*, u.name AS uploaderName FROM catalog_product_files f INNER JOIN users u ON u.id=f.uploader WHERE f.product=? ORDER BY f.name ASC', array(1 => $product->id));
+  $product->files = array_map(function($file)
+  {
+    $file->type = get_file_type_from_name($file->file);
+
+    return $file;
+  }, $product->files);
 }
 
 $canManageProducts = is_allowed_to('catalog/manage');
@@ -105,11 +113,12 @@ $productId = empty($product) ? '' : $product->id;
 <? begin_slot('js') ?>
 <? if ($canManageProducts && $showProduct): ?>
 <script>
-var PRODUCT_IMAGE_UPLOADER_CONFIG = {
+var PRODUCT_FILE_UPLOADER_CONFIG = {
   uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
   script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
   cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
   uploadImageUrl: '<?= url_for("catalog/products/images/upload.php") ?>',
+  uploadFileUrl: '<?= url_for("catalog/products/files/upload.php") ?>',
   currentProduct: <?= $product->id ?>
 };
 </script>

@@ -3,9 +3,11 @@ $(function()
   $('#categories').makeClickable();
   $('#products').makeClickable();
   $('#issues tbody').makeClickable();
+  $('#files tbody').makeClickable();
   $('#productTabs').tabs();
 
   var $productImages = $('#productImages');
+  var $productFiles = $('#productFiles');
 
   $('#catalog.collapsed .block-header').click(function(e)
   {
@@ -52,9 +54,80 @@ $(function()
     return false;
   });
 
-  if (typeof PRODUCT_IMAGE_UPLOADER_CONFIG === 'undefined')
+  $productFiles.on('click', '.actions .delete', function()
   {
-    window.PRODUCT_IMAGE_UPLOADER_CONFIG = {};
+    var parent = $(this).closest('tr');
+
+    $.ajax({
+      type: 'DELETE',
+      url: this.href,
+      success: function()
+      {
+        parent.fadeOut(function()
+        {
+          parent.remove();
+        });
+      }
+    });
+
+    return false;
+  });
+
+  $productFiles.on('click', '.actions .edit', function(e)
+  {
+    if (e.button === 2)
+    {
+      return true;
+    }
+
+    var me = this;
+    var $name = $(this).closest('tr').find('.name').first();
+    var oldName = $.trim($name.text());
+    var oldHtml = $name.html();
+    var $input = $('<input type=text value="' + oldName + '">').keydown(function(e)
+    {
+      switch (e.keyCode)
+      {
+        case 27:
+          $name.html(oldHtml);
+          break;
+
+        case 13:
+          save();
+          break;
+      }
+    }).blur(save);
+
+    $name.empty().append($input);
+    $input.focus();
+
+    function save()
+    {
+      var newName = $.trim($input.val());
+
+      $input.remove();
+      $name.html(oldHtml);
+
+      if (newName !== oldName)
+      {
+        $.ajax({
+          type: 'POST',
+          url: me.href,
+          data: {name: newName},
+          success: function()
+          {
+            $name.find('a').text(newName);
+          }
+        });
+      }
+    }
+
+    return false;
+  });
+
+  if (typeof PRODUCT_FILE_UPLOADER_CONFIG === 'undefined')
+  {
+    window.PRODUCT_FILE_UPLOADER_CONFIG = {};
   }
 
   if (typeof $.fn.uploadify === 'function')
@@ -62,9 +135,9 @@ $(function()
     var productImageTpl = $('#productImageTpl').html();
 
     $('#productImageFile').uploadify({
-      uploader: PRODUCT_IMAGE_UPLOADER_CONFIG.uploader || 'uploadify/2.1.4/uploadify.swf',
-      script: PRODUCT_IMAGE_UPLOADER_CONFIG.script || 'uploadify/2.1.4/uploadify.php',
-      cancelImg: PRODUCT_IMAGE_UPLOADER_CONFIG.cancelImg || 'uploadify/2.1.4/cancel.png',
+      uploader: PRODUCT_FILE_UPLOADER_CONFIG.uploader || 'uploadify/2.1.4/uploadify.swf',
+      script: PRODUCT_FILE_UPLOADER_CONFIG.script || 'uploadify/2.1.4/uploadify.php',
+      cancelImg: PRODUCT_FILE_UPLOADER_CONFIG.cancelImg || 'uploadify/2.1.4/cancel.png',
       folder: '/products',
       auto: true,
       multi: true,
@@ -75,9 +148,9 @@ $(function()
       {
         $.ajax({
           type: 'POST',
-          url: PRODUCT_IMAGE_UPLOADER_CONFIG.uploadImageUrl || 'catalog/products/images/upload.php',
+          url: PRODUCT_FILE_UPLOADER_CONFIG.uploadImageUrl || 'catalog/products/images/upload.php',
           data: {
-            product: PRODUCT_IMAGE_UPLOADER_CONFIG.currentProduct,
+            product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
             file: response,
             name: file.name
           },
@@ -86,6 +159,38 @@ $(function()
             var $productImage = $(render(productImageTpl, data)).hide();
 
             $productImage.appendTo($productImages).fadeIn();
+          }
+        });
+      }
+    });
+
+    var productFileTpl = $('#productFileTpl').html();
+
+    $('#productFile').uploadify({
+      uploader: PRODUCT_FILE_UPLOADER_CONFIG.uploader || 'uploadify/2.1.4/uploadify.swf',
+      script: PRODUCT_FILE_UPLOADER_CONFIG.script || 'uploadify/2.1.4/uploadify.php',
+      cancelImg: PRODUCT_FILE_UPLOADER_CONFIG.cancelImg || 'uploadify/2.1.4/cancel.png',
+      folder: '/products',
+      auto: true,
+      multi: true,
+      buttonText: 'Dodaj pliki',
+      onComplete: function(e, id, file, response, data)
+      {
+        $.ajax({
+          type: 'POST',
+          url: PRODUCT_FILE_UPLOADER_CONFIG.uploadFileUrl || 'catalog/products/files/upload.php',
+          data: {
+            product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
+            file: response,
+            name: file.name
+          },
+          success: function(data)
+          {
+            $productFiles.find('.nofiles').remove();
+
+            var $productFile = $(render(productFileTpl, data)).hide();
+
+            $productFile.appendTo($productFiles).fadeIn();
           }
         });
       }
