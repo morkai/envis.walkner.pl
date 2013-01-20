@@ -4,7 +4,7 @@ include __DIR__ . '/../_common.php';
 
 bad_request_if(empty($_REQUEST['issue']) || !is_numeric($_REQUEST['issue']));
 
-$file = __DIR__ . '/../../' . ltrim($_REQUEST['file'], '/\\');
+$file = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . ltrim($_REQUEST['file'], '/\\');
 
 bad_request_if(!file_exists($file));
 
