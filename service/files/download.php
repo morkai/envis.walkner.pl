@@ -1,5 +1,10 @@
 <?php
 
+if (!empty($_GET['docs']))
+{
+  $bypassAuth = true;
+}
+
 include __DIR__ . '/../_common.php';
 
 bad_request_if(empty($_GET['id']) || !is_numeric($_GET['id']));
@@ -16,9 +21,12 @@ $file = fetch_one($query, array(1 => $_GET['id']));
 
 not_found_if(empty($file));
 
-$currentUser = $_SESSION['user'];
+if (empty($_GET['docs']))
+{
+  $currentUser = $_SESSION['user'];
 
-no_access_if_not($currentUser->isSuper() || is_issue_participant($currentUser, $file) || (!$file->owner && is_allowed_to('service/edit')) || is_issue_docs_viewer($currentUser, $file));
+  no_access_if_not($currentUser->isSuper() || is_issue_participant($currentUser, $file) || (!$file->owner && is_allowed_to('service/edit')) || is_issue_docs_viewer($currentUser, $file));
+}
 
 $file->path = __DIR__ . '/../../_files_/issues/' . $file->file;
 
