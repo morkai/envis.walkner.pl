@@ -1,5 +1,10 @@
 <?php
 
+if (!empty($_GET['docs']))
+{
+  $bypassAuth = true;
+}
+
 include './_common.php';
 
 if (empty($_GET['id'])) bad_request();
@@ -8,7 +13,10 @@ $file = fetch_one('SELECT f.file, f.name, d.machine FROM documentation_files f I
 
 if (empty($file) ) not_found();
 
-no_access_if_not(has_access_to_machine($file->machine));
+if (empty($_GET['docs']))
+{
+  no_access_if_not(has_access_to_machine($file->machine));
+}
 
 $ext = substr(strrchr($file->file, '.'), 1);
 
