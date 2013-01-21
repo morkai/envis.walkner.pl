@@ -14,6 +14,8 @@ no_access_if_not(has_access_to_machine($oldDoc->machine));
 
 $files = fetch_all('SELECT id, name, file FROM documentation_files WHERE documentation=:doc ORDER BY name ASC', array(':doc' => $_GET['id']));
 
+$product = empty($_GET['product']) || !is_numeric($_GET['product']) ? 0 : $_GET['product'];
+
 $errors  = array();
 $referer = get_referer("documentation/view.php?id={$oldDoc->id}");
 
@@ -105,7 +107,14 @@ if (isset($_POST['doc']))
 
 			set_flash(sprintf('Dokumentacja <%s> została zmodyfikowana pomyślnie.', $_POST['doc']['title']));
 
-			go_to('documentation/view.php?id=' . $oldDoc->id);
+      if (empty($product))
+      {
+			  go_to("documentation/view.php?id={$oldDoc->id}");
+      }
+      else
+      {
+        go_to(get_referer("catalog/?product={$product}") . '#docs');
+      }
 		}
 		catch (PDOException $x)
 		{
@@ -210,7 +219,7 @@ $i = -1;
 		<h1 class="block-name">Edycja dokumentacji</h1>
 	</div>
 	<div class="block-body">
-		<form name="newdoc" method="post" action="<?= url_for("documentation/edit.php?id={$oldDoc->id}") ?>">
+		<form name="newdoc" method="post" action="<?= url_for("documentation/edit.php?id={$oldDoc->id}&product={$product}") ?>">
 			<input type="hidden" name="referer" value="<?= $referer ?>">
 			<input type="hidden" name="doc[id]" value="<?= $doc['id'] ?>">
 			<fieldset>
@@ -269,7 +278,7 @@ $i = -1;
 					<li>
 						<ol class="form-actions">
 							<li><input type="submit" value="Edytuj dokumentację">
-							<li><a href="<?= $referer ?>">Anuluj</a>
+							<li><a href="<?= $referer ?>#docs">Anuluj</a>
 						</ol>
 				</ol>
 			</fieldset>

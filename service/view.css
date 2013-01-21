@@ -33,33 +33,6 @@
 {
   padding: 1em;
 }
-.documentation
-{
-  padding: 1em;
-  border-bottom: 1px dotted #CCC;
-}
-.documentation:hover
-{
-  background: #FEFEE5;
-}
-.documentation .fff
-{
-  display: none;
-}
-.documentation:hover .fff
-{
-  display: inline;
-}
-.documentation dl
-{
-  margin-bottom: 0;
-}
-.documentation dd
-{
-  display: list-item;
-  list-style: square;
-  margin: .5em 0 0 2em;
-}
 #files
 {
   padding: 1em;
@@ -71,10 +44,6 @@
 #issueFileUploader
 {
   margin-top: 1em;
-}
-#documentationsOptions
-{
-  padding: 1em;
 }
 ul.actions
 {

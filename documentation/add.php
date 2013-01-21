@@ -9,6 +9,15 @@ if (!empty($_GET['machine']))
 	no_access_if_not(has_access_to_machine($_GET['machine']));
 }
 
+$product = empty($_GET['product']) ? 0 : $_GET['product'];
+
+if ($product)
+{
+  $product = fetch_one('SELECT id, name FROM catalog_products WHERE id=? LIMIT 1', array(1 => $_GET['product']));
+
+  bad_request_if(empty($product));
+}
+
 $errors  = array();
 $referer = get_referer('documentation/');
 
@@ -70,13 +79,28 @@ if (isset($_POST['doc']))
 				}
 			}
 
+      if (!empty($product))
+      {
+        exec_insert('catalog_product_documentations', array(
+          'product' => $product->id,
+          'documentation' => $id
+        ));
+      }
+
 			$conn->commit();
 
 			log_info('Dodano dokumentację <%s>.', $doc['title']);
 
 			set_flash(sprintf('Dokumentacja <%s> została dodana pomyślnie.', $doc['title']));
 
-			go_to('documentation/view.php?id=' . $id);
+      if (empty($product))
+      {
+			  go_to("documentation/view.php?id={$id}");
+      }
+      else
+      {
+        go_to($referer . '#docs');
+      }
 		}
 		catch (PDOException $x)
 		{
@@ -148,6 +172,10 @@ if (!empty($doc['machine']))
 
 $i = -1;
 
+$action = $product
+  ? url_for("documentation/add.php?product={$product->id}")
+  : url_for("documentation/add.php");
+
 ?>
 <? begin_slot('head') ?>
 <link rel="stylesheet" href="<?= url_for_media('uploadify/2.1.4/uploadify.css', true) ?>">
@@ -165,6 +193,12 @@ $i = -1;
   width: 20em;
   margin-left: 0.5em;
 }
+#doc-product {
+  clear: both;
+}
+#doc-product label {
+  padding-top: .5em;
+}
 </style>
 <? append_slot() ?>
 
@@ -175,7 +209,7 @@ $i = -1;
 		<h1 class="block-name">Nowa dokumentacja</h1>
 	</div>
 	<div class="block-body">
-		<form name="newdoc" method="post" action="<?= url_for('documentation/add.php') ?>">
+		<form name="newdoc" method="post" action="<?= $action ?>">
 			<input type="hidden" name="referer" value="<?= $referer ?>">
 			<input type="hidden" name="doc[id]" value="<?= $doc['id'] ?>">
 			<fieldset>
@@ -208,6 +242,13 @@ $i = -1;
 											</select>
 									</ol>
 							</ol>
+              <? if ($product): ?>
+              <ol id="doc-product" class="form-fields">
+                <li>
+                  <label>Produkt</label>
+                  <p><a href="<?= url_for("catalog/?product={$product->id}#docs") ?>"><?= e($product->name) ?></a></p>
+              </ol>
+              <? endif ?>
 						</fieldset>
 					<li>
 						<label for="doc-title">Tytuł<span class="form-field-required" title="Wymagane">*</span></label>
@@ -227,7 +268,7 @@ $i = -1;
 					<li>
 						<ol class="form-actions">
 							<li><input type="submit" value="Dodaj dokumentację">
-							<li><a href="<?= $referer ?>">Anuluj</a>
+							<li><a href="<?= $referer ?>#docs">Anuluj</a>
 						</ol>
 				</ol>
 			</fieldset>

@@ -86,9 +86,41 @@ SQL;
 
     return $file;
   }, $product->files);
+
+  $q = <<<SQL
+SELECT d.id, d.title, d.description
+FROM documentations d
+WHERE d.id IN(SELECT p.documentation FROM catalog_product_documentations p WHERE p.product=:product)
+ORDER BY d.title ASC
+SQL;
+
+  $docs = fetch_all($q, array(':product' => $product->id));
+
+  $docsIds = array_map(function($doc) { return $doc->id; }, $docs);
+
+  $files = empty($docsIds)
+    ? array()
+    : fetch_all('SELECT id, documentation, name FROM documentation_files WHERE documentation IN(' . implode(',', $docsIds) . ') ORDER BY name ASC');
+
+  $product->docs = array();
+
+  foreach ($docs as $doc)
+  {
+    $doc->files = array();
+
+    $product->docs[$doc->id] = $doc;
+  }
+
+  foreach ($files as $file)
+  {
+    $product->docs[$file->documentation]->files[] = $file;
+  }
 }
 
 $canManageProducts = is_allowed_to('catalog/manage');
+$canAddDocumentation = is_allowed_to('documentation/add');
+$canEditDocumentation = is_allowed_to('documentation/edit');
+$canDeleteDocumentation = is_allowed_to('documentation/delete');
 
 $isRoot = $category === null && $product === null;
 $showCatalog = empty($product) && (!empty($category) || !empty($subcategories));

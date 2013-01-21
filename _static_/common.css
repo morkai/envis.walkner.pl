@@ -644,3 +644,27 @@ ul.block-header h1
     border-top: 1px dotted #CCC;
   }
 }
+.documentation {
+  padding: 1em;
+  border-bottom: 1px dotted #CCC;
+}
+.documentation:hover {
+  background: #FEFEE5;
+}
+.documentation .fff {
+  display: none;
+}
+.documentation:hover .fff {
+  display: inline;
+}
+.documentation dl {
+  margin-bottom: 0;
+}
+.documentation dd {
+  display: list-item;
+  list-style: square;
+  margin: .5em 0 0 2em;
+}
+#documentationsOptions {
+  padding: 1em;
+}

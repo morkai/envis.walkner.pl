@@ -4,11 +4,22 @@ include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('documentation*');
 
-$where = '';
+$where = 'WHERE 1=1';
 
 if (!$_SESSION['user']->isSuper())
 {
-	$where = 'WHERE doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+	$where = ' AND doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+}
+
+$product = !empty($_GET['product']) && is_numeric($_GET['product']) ? $_GET['product'] : 0;
+
+if ($product)
+{
+  $product = fetch_one('SELECT id, name FROM catalog_products WHERE id=? LIMIT 1', array(1 => $product));
+
+  bad_request_if(empty($product));
+
+  $product->docs = fetch_array('SELECT documentation AS `key`, 1 AS `value` FROM catalog_product_documentations WHERE product=?', array(1 => $product->id));
 }
 
 $query = <<<SQL
@@ -37,9 +48,10 @@ $docs = fetch_all($query);
 
 $hasAnyDocs = !empty($docs);
 
-$canAdd    = is_allowed_to('documentation/add');
-$canEdit   = is_allowed_to('documentation/edit');
+$canAdd = is_allowed_to('documentation/add');
+$canEdit = is_allowed_to('documentation/edit');
 $canDelete = is_allowed_to('documentation/delete');
+$canManageProducts = is_allowed_to('catalog/manage');
 
 $prev = null;
 
@@ -160,6 +172,44 @@ $(function()
 
     return false;
   });
+
+  $docs.on('click', '.linkProduct a', function()
+  {
+    var $linkProduct = $(this).parent();
+
+    $.ajax({
+      type: 'post',
+      url: this.href,
+      success: function()
+      {
+        $linkProduct.fadeOut(function()
+        {
+          $linkProduct.siblings('.unlinkProduct').fadeIn();
+        });
+      }
+    });
+
+    return false;
+  });
+
+  $docs.on('click', '.unlinkProduct a', function()
+  {
+    var $unlinkProduct = $(this).parent();
+
+    $.ajax({
+      type: 'post',
+      url: this.href,
+      success: function()
+      {
+        $unlinkProduct.fadeOut(function()
+        {
+          $unlinkProduct.siblings('.linkProduct').fadeIn();
+        });
+      }
+    });
+
+    return false;
+  });
 });
 </script>
 <? append_slot() ?>
@@ -168,7 +218,13 @@ $(function()
 
 <div class="block">
 	<div class="block-header">
-		<h1 class="block-name">Dokumentacje</h1>
+		<h1 class="block-name">
+      <? if ($product): ?>
+      Przypisywanie dokumentacji do produktu: <?= e($product->name) ?>
+      <? else: ?>
+      Dokumentacje
+      <? endif ?>
+		</h1>
 	</div>
 	<div class="block-body">
 		<? if ($hasAnyDocs): ?>
@@ -196,6 +252,10 @@ $(function()
           <td class="issues"><?= $orderLinks($doc->orders) ?>
           <td class="actions">
             <ul>
+              <? if ($canManageProducts && $product): ?>
+              <li class="linkProduct" style="<?= isset($product->docs[$doc->id]) ? 'display: none' : '' ?>"><?= fff('Przypisz do produktu', 'link_add', "documentation/link.php?product={$product->id}&id={$doc->id}") ?>
+              <li class="unlinkProduct" style="<?= isset($product->docs[$doc->id]) ? '' : 'display: none' ?>"><?= fff('Usuń przypisanie do produktu', 'link_delete', "documentation/unlink.php?product={$product->id}&id={$doc->id}") ?>
+              <? endif ?>
               <li><?= fff('Pokaż', 'book', "documentation/view.php?id={$doc->id}") ?>
               <? if ($canEdit): ?><li><?= fff('Edytuj', 'book_edit', "documentation/edit.php?id={$doc->id}") ?><? endif ?>
               <? if ($canDelete): ?><li><?= fff('Usuń', 'book_delete', "documentation/delete.php?id={$doc->id}") ?><? endif ?>

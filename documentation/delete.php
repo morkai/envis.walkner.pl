@@ -15,6 +15,8 @@ if (!empty($doc->machine))
   no_access_if_not(has_access_to_machine($doc->machine));
 }
 
+$product = empty($_GET['product']) || !is_numeric($_GET['product']) ? 0 : $_GET['product'];
+
 $referer = get_referer("documentation/view.php?id={$doc->id}");
 
 if (count($_POST))
@@ -45,7 +47,14 @@ if (count($_POST))
 
 		set_flash(sprintf('Dokumentacja <%s> została usunięta pomyślnie.', $doc->title));
 
-		go_to('documentation/');
+    if ($product)
+    {
+      go_to(get_referer("catalog/?product={$_GET['product']}") . '#docs');
+    }
+    else
+    {
+      go_to('documentation/');
+    }
 	}
 	catch (PDOException $x)
 	{
@@ -64,14 +73,14 @@ if (count($_POST))
 		<h1 class="block-name">Usuwanie dokumentacji</h1>
 	</div>
 	<div class="block-body">
-		<form method="post" action="<?= url_for("documentation/delete.php?id={$doc->id}") ?>">
+		<form method="post" action="<?= url_for("documentation/delete.php?id={$doc->id}&product={$product}") ?>">
 			<input type="hidden" name="referer" value="<?= $referer ?>">
 			<fieldset>
 				<legend>Usuwanie dokumentacji</legend>
 				<p>Na pewno chcesz usunąć dokumentację &lt;<?= e($doc->title) ?>&gt;?</p>
 				<ol class="form-actions">
 					<li><input type="submit" value="Usuń dokumentację">
-					<li><a href="<?= $referer ?>">Anuluj</a>
+					<li><a href="<?= $referer ?>#docs">Anuluj</a>
 				</ol>
 			</fieldset>
 		</form>

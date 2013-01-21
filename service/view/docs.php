@@ -23,12 +23,22 @@ not_found_if(empty($issue));
 
 $issue->documentations = array();
 
-if ($issue->relatedMachine)
+if (!empty($issue->relatedMachine))
 {
-  $documentations = fetch_all(
-    'SELECT id, title, description FROM documentations WHERE machine=? AND device=?',
-    array(1 => $issue->relatedMachine, $issue->relatedDevice)
-  );
+  if (empty($issue->relatedDevice))
+  {
+    $documentations = fetch_all(
+      'SELECT id, title, description FROM documentations WHERE machine=? AND device IS NULL',
+      array(1 => $issue->relatedMachine)
+    );
+  }
+  else
+  {
+    $documentations = fetch_all(
+      'SELECT id, title, description FROM documentations WHERE machine=? AND device=?',
+      array(1 => $issue->relatedMachine, $issue->relatedDevice)
+    );
+  }
 
   $documentationIds = array_map(function($documentation) { return $documentation->id; }, $documentations);
 

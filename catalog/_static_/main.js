@@ -4,7 +4,13 @@ $(function()
   $('#products').makeClickable();
   $('#issues tbody').makeClickable();
   $('#files tbody').makeClickable();
-  $('#productTabs').tabs();
+
+  $('#productTabs').tabs({
+    select: function(e, ui)
+    {
+      window.location.hash = ui.panel.id;
+    }
+  });
 
   var $productImages = $('#productImages');
   var $productFiles = $('#productFiles');

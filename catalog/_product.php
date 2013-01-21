@@ -143,7 +143,33 @@
     <? endif ?>
   </div>
   <div id="docs">
-    <p>TODO</p>
+    <? foreach ($product->docs as $doc): ?>
+    <div class="documentation">
+      <h1>
+        <a href="<?= url_for("documentation/view.php?id={$doc->id}") ?>"><?= e($doc->title) ?></a>
+        <? if ($canEditDocumentation): ?><?= fff('Edytuj dokumentację', 'pencil', "documentation/edit.php?product={$product->id}&id={$doc->id}") ?><? endif ?>
+        <? if ($canDeleteDocumentation): ?><?= fff('Usuń dokumentację', 'cross', "documentation/delete.php?product={$product->id}&id={$doc->id}") ?><? endif ?>
+      </h1>
+      <?= markdown($doc->description) ?>
+      <? if (!empty($doc->files)): ?>
+      <dl>
+      <dt>Dostępne pliki:
+      <? foreach ($doc->files as $file): ?>
+      <dd><a href="<?= url_for("documentation/download.php?id={$file->id}") ?>"><?= e($file->name) ?></a>
+      <? endforeach ?>
+      </dl>
+      <? endif ?>
+    </div>
+    <? endforeach ?>
+    <div id="documentationsOptions">
+      <? if (empty($product->docs)): ?>
+      <p>Brak dokumentacji.</p>
+      <? endif ?>
+      <ul class="actions">
+        <? if ($canAddDocumentation): ?><li><?= fff_link('Dodaj nową dokumentację', 'add',  "documentation/add.php?product={$product->id}") ?><? endif ?>
+        <? if ($canManageProducts): ?><li><?= fff_link('Zarządzaj istniejącą dokumentacją', 'link',  "documentation/?product={$product->id}") ?><? endif ?>
+      </ul>
+    </div>
   </div>
   <div id="files">
     <table>

@@ -67,6 +67,14 @@ CREATE TABLE `catalog_products` (
   KEY `manufacturer` (`manufacturer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
+DROP TABLE IF EXISTS `catalog_product_documentations`;
+CREATE TABLE IF NOT EXISTS `catalog_product_documentations` (
+  `product` int(10) unsigned NOT NULL,
+  `documentation` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`product`,`documentation`),
+  KEY `documentation` (`documentation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
 DROP TABLE IF EXISTS `catalog_product_images`;
 CREATE TABLE `catalog_product_images` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -87,6 +95,7 @@ CREATE TABLE `catalog_product_kinds` (
   UNIQUE KEY `nr` (`nr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
+DROP TABLE IF EXISTS `catalog_product_files`;
 CREATE TABLE IF NOT EXISTS `catalog_product_files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `product` int(10) unsigned NOT NULL,
@@ -707,6 +716,10 @@ ALTER TABLE `catalog_products`
   ADD CONSTRAINT `catalog_products_ibfk_3` FOREIGN KEY (`category`) REFERENCES `catalog_categories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `catalog_products_ibfk_4` FOREIGN KEY (`image`) REFERENCES `catalog_product_images` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `catalog_products_ibfk_5` FOREIGN KEY (`kind`) REFERENCES `catalog_product_kinds` (`id`) ON DELETE SET NULL;
+
+ALTER TABLE `catalog_product_documentations`
+  ADD CONSTRAINT `catalog_product_documentations_ibfk_2` FOREIGN KEY (`documentation`) REFERENCES `documentations` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `catalog_product_documentations_ibfk_1` FOREIGN KEY (`product`) REFERENCES `catalog_products` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `catalog_product_images`
   ADD CONSTRAINT `catalog_product_images_ibfk_1` FOREIGN KEY (`product`) REFERENCES `catalog_products` (`id`) ON DELETE CASCADE;
