@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('documentation*');
 
@@ -11,9 +11,9 @@ SELECT doc.id, doc.title, doc.description, dev.name AS device, m.name AS machine
 FROM documentations doc
 LEFT JOIN engines dev
 	ON dev.id=doc.device
-INNER JOIN machines m
+LEFT JOIN machines m
 	ON m.id=doc.machine
-INNER JOIN factories f
+LEFT JOIN factories f
 	ON f.id=m.factory
 WHERE doc.id=:id
 ORDER BY doc.title ASC
@@ -21,7 +21,7 @@ SQL;
 
 $doc = fetch_one($query, array(':id' => $_GET['id']));
 
-if (empty($doc)) not_found();
+not_found_if(empty($doc));
 
 no_access_if_not(has_access_to_machine($doc->machineId));
 

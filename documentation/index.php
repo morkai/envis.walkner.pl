@@ -1,6 +1,6 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('documentation*');
 
@@ -8,7 +8,7 @@ $where = '';
 
 if (!$_SESSION['user']->isSuper())
 {
-	$where = 'WHERE doc.machine IN(' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+	$where = 'WHERE doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
 }
 
 $query = <<<SQL
@@ -25,9 +25,9 @@ SELECT
 FROM documentations doc
 LEFT JOIN engines dev
 	ON dev.id=doc.device
-INNER JOIN machines m
+LEFT JOIN machines m
 	ON m.id=doc.machine
-INNER JOIN factories f
+LEFT JOIN factories f
 	ON f.id=m.factory
 {$where}
 ORDER BY factory, machine, device ASC
@@ -114,7 +114,9 @@ $orderLinks = function($orders) use($orderLinkTpl)
 <script>
 $(function()
 {
-  $('.docs').makeClickable();
+  var $docs = $('.docs');
+
+  $docs.makeClickable();
 
   $('#filter').bind('submit', function()
   {
@@ -124,11 +126,11 @@ $(function()
     if (title === '' && issues === '')
     {
       $('tr.doc').show();
-      $('tbody.docs').show();
+      $docs.show();
     }
     else
     {
-      $('tbody.docs').each(function()
+      $docs.each(function()
       {
         var tbody = $(this);
         var docs = tbody.find('tr.doc');
@@ -187,17 +189,16 @@ $(function()
       <? if (!$prev || ($prev->factoryId !== $doc->factoryId || $prev->machineId !== $doc->machineId || $prev->deviceId || $doc->deviceId)): ?>
       <tbody class="docs">
         <tr>
-          <th colspan="3"><?= doc_features($doc) ?></th>
-        </tr>
+          <th colspan="3"><?= doc_features($doc) ?>
       <? endif ?>
         <tr class="doc">
           <td class="title clickable"><a href="<?= url_for("documentation/view.php?id={$doc->id}") ?>"><?= $doc->title ?></a>
           <td class="issues"><?= $orderLinks($doc->orders) ?>
           <td class="actions">
             <ul>
-              <li><?= fff('Pokaż', 'book', 'documentation/view.php?id=' . $doc->id) ?>
-              <? if ($canEdit): ?><li><?= fff('Edytuj', 'book_edit', 'documentation/edit.php?id=' . $doc->id) ?><? endif ?>
-              <? if ($canDelete): ?><li><?= fff('Usuń', 'book_delete', 'documentation/delete.php?id=' . $doc->id) ?><? endif ?>
+              <li><?= fff('Pokaż', 'book', "documentation/view.php?id={$doc->id}") ?>
+              <? if ($canEdit): ?><li><?= fff('Edytuj', 'book_edit', "documentation/edit.php?id={$doc->id}") ?><? endif ?>
+              <? if ($canDelete): ?><li><?= fff('Usuń', 'book_delete', "documentation/delete.php?id={$doc->id}") ?><? endif ?>
             </ul>
       <? $prev = $doc ?>
       <? endforeach ?>

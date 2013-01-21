@@ -1,14 +1,14 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not(is_allowed_to('documentation*'), has_access_to_machine($_GET['id']));
 
 $machine = fetch_one('SELECT f.name AS factoryName, m.id, m.name, m.factory FROM machines m INNER JOIN factories f ON f.id=m.factory WHERE m.id=:machine', array(':machine' => $_GET['id']));
 
-if (empty($machine)) not_found();
+not_found_if(empty($machine));
 
 $query = <<<SQL
 SELECT id, title

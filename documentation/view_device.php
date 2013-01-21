@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['machine']) || empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['machine']) || empty($_GET['id']));
 
 no_access_if_not_allowed('documentation*');
 
@@ -18,7 +18,7 @@ SQL;
 
 $device = fetch_one($query, array(':device' => $_GET['id'], ':machine' => $_GET['machine']));
 
-if (empty($device)) not_found();
+not_found_if(empty($device));
 
 no_access_if_not(has_access_to_machine($device->machine));
 

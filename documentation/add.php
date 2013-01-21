@@ -1,6 +1,6 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('documentation/add');
 
@@ -21,11 +21,6 @@ if (isset($_POST['doc']))
 		$errors[] = 'Tytuł musi się składać z od 1 do 128 znaków.';
 	}
 
-	if (empty($doc['factory']) || empty($doc['machine']))
-	{
-		$errors[] = 'Pole dotyczy jest wymagane.';
-	}
-
 	if (!empty($doc['machine']) && !has_access_to_machine($doc['machine']))
 	{
 		$errors[] = 'Nie masz uprawnień do wybranej maszyny.';
@@ -34,8 +29,8 @@ if (isset($_POST['doc']))
 	if (empty($errors))
 	{
 		$bindings = array(
-			':machine'     => $doc['machine'],
-			':device'      => empty($doc['device']) ? NULL : $doc['device'],
+			':machine'     => empty($doc['machine']) ? null : $doc['machine'],
+			':device'      => empty($doc['device']) ? null : $doc['device'],
 			':title'       => $doc['title'],
 			':description' => $doc['description'],
 		);
@@ -48,18 +43,18 @@ if (isset($_POST['doc']))
 
 			exec_stmt('INSERT INTO documentations SET title=:title, description=:description, machine=:machine, device=:device', $bindings);
 
-			$id = get_conn()->lastInsertId();
+			$id = $conn->lastInsertId();
 
 			if (!empty($doc['filepaths']))
 			{
-				$dstDir = dirname(dirname(__FILE__)) . ENVIS_UPLOADS_DIR . '/documentation';
+				$dstDir = ENVIS_UPLOADS_PATH . '/documentation';
 				$srcDir = $dstDir . '-tmp';
 
 				$stmt = prepare_stmt('INSERT INTO documentation_files SET documentation=:doc, file=:file, name=:name');
 
 				foreach ($doc['filepaths'] as $i => $filepath)
 				{
-					$filepath = $srcDir . '/' . $doc['id'] . $filepath;
+					$filepath = $_SERVER['DOCUMENT_ROOT'] . $filepath;
 
 					if (!file_exists($filepath) || empty($doc['filenames'][$i])) continue;
 
@@ -155,25 +150,21 @@ $i = -1;
 
 ?>
 <? begin_slot('head') ?>
-<link rel="stylesheet" href="<?= url_for_media('jquery-plugins/uploadify/2.0.3/uploadify.css') ?>">
+<link rel="stylesheet" href="<?= url_for_media('uploadify/2.1.4/uploadify.css', true) ?>">
 <style>
-	#doc-fileList
-	{
-		margin-left: 0;
-	}
-	#doc-fileList li
-	{
-		list-style: none;
-	}
-	#doc-fileList li:last-child
-	{
-		margin-bottom: 0.5em;
-	}
-	#doc-fileList input[type="text"]
-	{
-		width: 20em;
-		margin-left: 0.5em;
-	}
+#doc-fileList {
+  margin-left: 0;
+}
+#doc-fileList li {
+  list-style: none;
+}
+#doc-fileList li:last-child {
+  margin-bottom: 0.5em;
+}
+#doc-fileList input[type="text"] {
+  width: 20em;
+  margin-left: 0.5em;
+}
 </style>
 <? append_slot() ?>
 
@@ -198,13 +189,13 @@ $i = -1;
 								<li class="horizontal">
 									<ol>
 										<li>
-											<label for="doc-factory">Fabryka<span class="form-field-required" title="Wymagane">*</span></label>
+											<label for="doc-factory">Fabryka</label>
 											<select id="doc-factory" name="doc[factory]">
 												<option value="0"></option>
 												<?= render_options($factories, $doc['factory']) ?>
 											</select>
 										<li>
-											<label for="doc-machine">Maszyna<span class="form-field-required" title="Wymagane">*</span></label>
+											<label for="doc-machine">Maszyna</label>
 											<select id="doc-machine" name="doc[machine]">
 												<option value="0"></option>
 												<?= render_options($machines, $doc['machine']) ?>
@@ -245,8 +236,8 @@ $i = -1;
 </div>
 
 <? begin_slot('js') ?>
-<script src="<?= url_for_media('jquery-plugins/uploadify/2.0.3/swfobject.js') ?>"></script>
-<script src="<?= url_for_media('jquery-plugins/uploadify/2.0.3/jquery.uploadify.min.js') ?>"></script>
+<script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
+<script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
 <script>
 	$(document).ready(function()
 	{
@@ -344,25 +335,26 @@ $i = -1;
 		var fileList  = $('#doc-fileList');
 		var fileCount = <?= $i + 1 ?>;
 
-		$('#doc-files').uploadify({
-			'scriptAccess': 'always',
-			'uploader'   : '<?= url_for_media('uploadify/uploadify.swf', true) ?>',
-			'script'     : 'http://<?= ENVIS_DOMAIN . url_for('_files_/uploadify_multi.php') ?>',
-			'checkScript': 'http://<?= ENVIS_DOMAIN . url_for('_files_/check.php') ?>',
-			'cancelImg'  : '<?= url_for_media('jquery-plugins/uploadify/2.0.3/cancel.png') ?>',
-			'auto'       : true,
-			'folder'     : '<?= ENVIS_UPLOADS_DIR ?>/documentation-tmp',
-			'fileDesc'   : 'Plik dokumentacji',
-			'fileExt'    : '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.png;*.jpg;*.jpeg;*.gif',
-			'sizeLimit'  : 6291456,
-			'buttonText' : 'Wybierz',
-			'scriptData' : {id: '<?= $doc['id'] ?>'},
-			'multi'      : true,
-			onComplete   : function(event, queueID, file, response, data)
-			{
-				fileList.append(render('<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">', {i: fileCount++, file: file.name, name: file.name}));
-			}
-		});
+    $('#doc-files').uploadify({
+      uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
+      script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
+      cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
+      folder: '/documentation-tmp',
+      auto: true,
+      multi: true,
+      buttonText: 'Wybierz pliki',
+      fileDesc: 'Plik dokumentacji',
+      fileExt: '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.png;*.jpg;*.jpeg;*.gif',
+      scriptData: {id: '<?= $doc['id'] ?>'},
+      onComplete   : function(e, id, file, response, data)
+      {
+        console.log(arguments);
+        fileList.append(render(
+          '<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">',
+          {i: fileCount++, file: response, name: file.name}
+        ));
+      }
+    });
 	});
 </script>
 <? append_slot() ?>

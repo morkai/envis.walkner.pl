@@ -1,21 +1,21 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('documentation/edit');
 
-$dok = fetch_one('SELECT d.*, m.factory FROM documentations d INNER JOIN machines m ON m.id=d.machine WHERE d.id=:id', array(':id' => $_GET['id']));
+$oldDoc = fetch_one('SELECT d.*, m.factory FROM documentations d LEFT JOIN machines m ON m.id=d.machine WHERE d.id=:id', array(':id' => $_GET['id']));
 
-if (empty($dok)) not_found();
+not_found_if(empty($oldDoc));
 
-no_access_if_not(has_access_to_machine($dok->machine));
+no_access_if_not(has_access_to_machine($oldDoc->machine));
 
 $files = fetch_all('SELECT id, name, file FROM documentation_files WHERE documentation=:doc ORDER BY name ASC', array(':doc' => $_GET['id']));
 
 $errors  = array();
-$referer = get_referer('documentation/view.php?id=' . $dok->id);
+$referer = get_referer("documentation/view.php?id={$oldDoc->id}");
 
 if (isset($_POST['doc']))
 {
@@ -26,11 +26,6 @@ if (isset($_POST['doc']))
 		$errors[] = 'Tytuł musi się składać z od 1 do 128 znaków.';
 	}
 
-	if (empty($doc['factory']) || empty($doc['machine']))
-	{
-		$errors[] = 'Pole dotyczy jest wymagane.';
-	}
-
 	if (!empty($doc['machine']) && !has_access_to_machine($doc['machine']))
 	{
 		$errors[] = 'Nie masz uprawnień do wybranej maszyny.';
@@ -39,9 +34,9 @@ if (isset($_POST['doc']))
 	if (empty($errors))
 	{
 		$bindings = array(
-			':id'          => $dok->id,
-			':machine'     => $doc['machine'],
-			':device'      => empty($doc['device']) ? NULL : $doc['device'],
+			':id'          => $oldDoc->id,
+			':machine'     => empty($doc['machine']) ? null : $doc['machine'],
+			':device'      => empty($doc['device']) ? null : $doc['device'],
 			':title'       => $doc['title'],
 			':description' => $doc['description'],
 		);
@@ -54,7 +49,7 @@ if (isset($_POST['doc']))
 
 			exec_stmt('UPDATE documentations SET title=:title, description=:description, machine=:machine, device=:device WHERE id=:id', $bindings);
 
-			$dstDir = dirname(dirname(__FILE__)) . ENVIS_UPLOADS_DIR . '/documentation';
+			$dstDir = ENVIS_UPLOADS_PATH . '/documentation';
 
 			$doc['files'] = array();
 
@@ -88,7 +83,7 @@ if (isset($_POST['doc']))
 
 				foreach ($doc['filepaths'] as $i => $filepath)
 				{
-					$filepath = $srcDir . '/' . $doc['id'] . $filepath;
+					$filepath = $_SERVER['DOCUMENT_ROOT'] . $filepath;
 
 					if (!file_exists($filepath) || empty($doc['filenames'][$i])) continue;
 
@@ -97,7 +92,7 @@ if (isset($_POST['doc']))
 					rename($filepath, $dstDir . '/' . $file);
 
 					exec_stmt($stmt, array(
-						'doc'  => $dok->id,
+						'doc'  => $oldDoc->id,
 						'file' => $file,
 						'name' => $doc['filenames'][$i],
 					));
@@ -110,7 +105,7 @@ if (isset($_POST['doc']))
 
 			set_flash(sprintf('Dokumentacja <%s> została zmodyfikowana pomyślnie.', $_POST['doc']['title']));
 
-			go_to('documentation/view.php?id=' . $dok->id);
+			go_to('documentation/view.php?id=' . $oldDoc->id);
 		}
 		catch (PDOException $x)
 		{
@@ -125,11 +120,11 @@ if (isset($_POST['doc']))
 else
 {
 	$doc = array(
-		'factory'      => $dok->factory,
-		'machine'      => $dok->machine,
-		'device'       => $dok->device,
-		'title'        => $dok->title,
-		'description'  => $dok->description,
+		'factory'      => $oldDoc->factory,
+		'machine'      => $oldDoc->machine,
+		'device'       => $oldDoc->device,
+		'title'        => $oldDoc->title,
+		'description'  => $oldDoc->description,
 		'id'           => md5(microtime()),
 	);
 }
@@ -186,7 +181,7 @@ $i = -1;
 
 ?>
 <? begin_slot('head') ?>
-<link rel="stylesheet" href="<?= url_for_media('uploadify/uploadify.css') ?>">
+<link rel="stylesheet" href="<?= url_for_media('uploadify/2.1.4/uploadify.css', true) ?>">
 <style>
 	#doc-fileList
 	{
@@ -215,7 +210,7 @@ $i = -1;
 		<h1 class="block-name">Edycja dokumentacji</h1>
 	</div>
 	<div class="block-body">
-		<form name="newdoc" method="post" action="<?= url_for('documentation/edit.php?id=' . $dok->id) ?>">
+		<form name="newdoc" method="post" action="<?= url_for("documentation/edit.php?id={$oldDoc->id}") ?>">
 			<input type="hidden" name="referer" value="<?= $referer ?>">
 			<input type="hidden" name="doc[id]" value="<?= $doc['id'] ?>">
 			<fieldset>
@@ -229,13 +224,13 @@ $i = -1;
 								<li class="horizontal">
 									<ol>
 										<li>
-											<label for="doc-factory">Fabryka<span class="form-field-required" title="Wymagane">*</span></label>
+											<label for="doc-factory">Fabryka</label>
 											<select id="doc-factory" name="doc[factory]">
 												<option value="0"></option>
 												<?= render_options($factories, $doc['factory']) ?>
 											</select>
 										<li>
-											<label for="doc-machine">Maszyna<span class="form-field-required" title="Wymagane">*</span></label>
+											<label for="doc-machine">Maszyna</label>
 											<select id="doc-machine" name="doc[machine]">
 												<option value="0"></option>
 												<?= render_options($machines, $doc['machine']) ?>
@@ -282,10 +277,10 @@ $i = -1;
 	</div>
 </div>
 <? begin_slot('js') ?>
-<script src="<?= url_for_media('jquery-plugins/uploadify/2.0.3/swfobject.js') ?>"></script>
-<script src="<?= url_for_media('jquery-plugins/uploadify/2.0.3/jquery.uploadify.min.js') ?>"></script>
+<script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
+<script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
 <script>
-	$(document).ready(function()
+	$(function()
 	{
 		var factory = $('#doc-factory');
 		var machine = $('#doc-machine');
@@ -382,22 +377,23 @@ $i = -1;
 		var fileCount = <?= $i + 1 ?>;
 
 		$('#doc-files').uploadify({
-			'scriptAccess': 'always',
-			'uploader'   : '<?= url_for_media('uploadify/uploadify.swf', true) ?>',
-			'script'     : 'http://<?= ENVIS_DOMAIN . url_for('_files_/uploadify_multi.php') ?>',
-			'checkScript': 'http://<?= ENVIS_DOMAIN . url_for('_files_/check.php') ?>',
-			'cancelImg'  : '<?= url_for_media('jquery-plugins/uploadify/2.0.3/cancel.png') ?>',
-			'auto'       : true,
-			'folder'     : '<?= ENVIS_UPLOADS_DIR ?>/documentation-tmp',
-			'fileDesc'   : 'Plik dokumentacji',
-			'fileExt'    : '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.png;*.jpg;*.jpeg;*.gif',
-			'sizeLimit'  : 6291456,
-			'buttonText' : 'Wybierz',
-			'scriptData' : {id: '<?= $doc['id'] ?>'},
-			'multi'      : true,
-			onComplete   : function(event, queueID, file, response, data)
+      uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
+      script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
+      cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
+      folder: '/documentation-tmp',
+      auto: true,
+      multi: true,
+      buttonText: 'Wybierz pliki',
+      fileDesc: 'Plik dokumentacji',
+      fileExt: '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.png;*.jpg;*.jpeg;*.gif',
+      scriptData: {id: '<?= $doc['id'] ?>'},
+			onComplete   : function(e, id, file, response, data)
 			{
-				fileList.append(render('<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">', {i: fileCount++, file: file.name, name: file.name}));
+        console.log(arguments);
+				fileList.append(render(
+          '<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">',
+          {i: fileCount++, file: response, name: file.name}
+        ));
 			}
 		});
 	});

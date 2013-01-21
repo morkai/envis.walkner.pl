@@ -5,22 +5,21 @@ if (!empty($_GET['docs']))
   $bypassAuth = true;
 }
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $file = fetch_one('SELECT f.file, f.name, d.machine FROM documentation_files f INNER JOIN documentations d ON d.id=f.documentation WHERE f.id=:id', array(':id' => $_GET['id']));
 
-if (empty($file) ) not_found();
+not_found_if(empty($file));
 
-if (empty($_GET['docs']))
+if (empty($_GET['docs']) && !empty($file->machine))
 {
   no_access_if_not(has_access_to_machine($file->machine));
 }
 
 $ext = substr(strrchr($file->file, '.'), 1);
 
-//$filename = preg_replace('/[^A-Za-z0-9-_]/', '', str_replace(' ', '_', $file->name)) . '.' . $ext;
 if (strpos($file->name, '.') === false)
 {
 	$filename = $file->name . '.' . $ext;
@@ -30,7 +29,7 @@ else
 	$filename = $file->name;
 }
 
-$filepath = dirname(dirname(__FILE__)) . ENVIS_UPLOADS_DIR . '/documentation/' . $file->file;
+$filepath = ENVIS_UPLOADS_PATH . '/documentation/' . $file->file;
 
 if (!file_exists($filepath))
 {
@@ -39,7 +38,7 @@ if (!file_exists($filepath))
 	not_found();
 }
 
-$mimetypes = include '../_lib_/mimetypes.php';
+$mimetypes = include __DIR__ . '/../_lib_/mimetypes.php';
 
 $contentType = array_search($ext, $mimetypes, true);
 

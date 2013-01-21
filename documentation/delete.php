@@ -1,18 +1,21 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('documentation/delete');
 
-$doc = fetch_one('SELECT title, machine FROM documentations WHERE id=?', array(1 => $_GET['id']));
+$doc = fetch_one('SELECT id, title, machine FROM documentations WHERE id=?', array(1 => $_GET['id']));
 
-if (empty($doc)) not_found();
+not_found_if(empty($doc));
 
-no_access_if_not(has_access_to_machine($doc->machine));
+if (!empty($doc->machine))
+{
+  no_access_if_not(has_access_to_machine($doc->machine));
+}
 
-$referer = get_referer('documentation/view.php?id=' . $_GET['id']);
+$referer = get_referer("documentation/view.php?id={$doc->id}");
 
 if (count($_POST))
 {
@@ -28,7 +31,7 @@ if (count($_POST))
 		
 		foreach ($files as $file)
 		{
-			$file = dirname(dirname(__FILE__)) . ENVIS_UPLOADS_DIR . '/documentation/' . $file->file;
+			$file = dirname(__DIR__) . ENVIS_UPLOADS_DIR . '/documentation/' . $file->file;
 
 			if (file_exists($file))
 			{
@@ -52,9 +55,6 @@ if (count($_POST))
 	}
 }
 
-$id    = escape($_GET['id']);
-$title = escape($doc->title);
-
 ?>
 
 <? decorate("Usuwanie dokumentacji") ?>
@@ -64,11 +64,11 @@ $title = escape($doc->title);
 		<h1 class="block-name">Usuwanie dokumentacji</h1>
 	</div>
 	<div class="block-body">
-		<form method="post" action="<?= url_for('documentation/delete.php?id=' . $id) ?>">
+		<form method="post" action="<?= url_for("documentation/delete.php?id={$doc->id}") ?>">
 			<input type="hidden" name="referer" value="<?= $referer ?>">
 			<fieldset>
 				<legend>Usuwanie dokumentacji</legend>
-				<p>Na pewno chcesz usunąć dokumentację &lt;<?= $title ?>&gt;?</p>
+				<p>Na pewno chcesz usunąć dokumentację &lt;<?= e($doc->title) ?>&gt;?</p>
 				<ol class="form-actions">
 					<li><input type="submit" value="Usuń dokumentację">
 					<li><a href="<?= $referer ?>">Anuluj</a>
