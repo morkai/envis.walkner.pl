@@ -56,7 +56,7 @@ $(function()
 			<tfoot>
 				<tr>
 					<td colspan="5" class="table-options">
-						<?= $roles->render(url_for('user/role/')) ?>
+						<?= $roles->render(url_for('user/role/?')) ?>
 					</td>
 				</tr>
 			</tfoot>
