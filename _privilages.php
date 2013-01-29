@@ -67,4 +67,7 @@
 'offers/close'                => 'Wysyłanie ofert',
 'offers/templates'            => 'Zarządzanie szablonami ofert',
 
+'catalog'                     => 'Przeglądanie katalogu produktów',
+'catalog/manage'              => 'Zarządzanie katalogiem produktów'
+
 );
