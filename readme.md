@@ -1,5 +1,4 @@
-envis.walkner.pl
-================
+# envis.walkner.pl
 
 What was supposed to be a simple PHP & MySQL database,
 grew bigger and bigger over the years without any major rewrites.
@@ -52,4 +51,5 @@ Code is in English, text is in Polish.
 
 ## License
 
-[New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+This project is released under the
+[MIT License](https://raw.github.com/morkai/envis.walkner.pl/master/license.md).
