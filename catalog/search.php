@@ -46,7 +46,8 @@ $results = array_map(function($product)
 {
   if (!empty($product->image))
   {
-    $product->imageFile = url_for('_files_/products/' . $product->image);
+    $product->imageFile = url_for("_files_/products/{$product->image}");
+    $product->thumbFile = url_for("catalog/products/images/thumb.php?file={$product->image}");
   }
 
   return $product;
@@ -135,7 +136,7 @@ VIEW:
             <img src="<?= url_for('_static_/img/no-image.png') ?>" alt="No image :(">
             <? else: ?>
             <a class="thumb" href="<?= $result->imageFile ?>" rel="lightbox[<?= $result->id ?>]" title="<?= e($result->imageDescription) ?>">
-              <img src="<?= $result->imageFile ?>" alt="<?= e($result->imageDescription) ?>">
+              <img src="<?= $result->thumbFile ?>" alt="<?= e($result->imageDescription) ?>">
             </a>
             <? endif ?>
           <td rowspan="1" colspan="7">
