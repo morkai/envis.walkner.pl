@@ -18,7 +18,6 @@ fclose($fd);
 $fromImport = true;
 
 include_once __DIR__ . '/../_lib_/mime-mail-parser/MimeMailParser.php';
-include_once __DIR__ . '/../_lib_/wideimage/lib/WideImage.php';
 require_once __DIR__ . '/../_lib_/swiftmailer/swift_required.php';
 include_once __DIR__ . '/../_common.php';
 

@@ -127,7 +127,7 @@
       <? foreach ($product->images as $image): ?>
       <li>
         <a class="thumb <?= $image->id === $product->image ? 'default' : '' ?>" href="<?= url_for("/_files_/products/{$image->file}") ?>" rel="lightbox[<?= $product->id ?>]" title="<?= e($image->description) ?>" data-id="<?= $image->id ?>">
-          <img src="<?= url_for("/_files_/products/{$image->file}") ?>" alt="">
+          <img src="<?= url_for("/catalog/products/images/thumb.php?file={$image->file}") ?>" alt="">
         </a>
         <? if ($canManageProducts): ?>
         <div class="actions">
@@ -207,7 +207,7 @@
 <script id="productImageTpl" type="template">
 <li>
   <a class="thumb" href="<?= url_for('/_files_/products/${file}') ?>" rel="lightbox[<?= $product->id ?>]" title="${description}" data-id="${id}">
-    <img src="<?= url_for('/_files_/products/${file}') ?>" alt="">
+    <img src="<?= url_for('/catalog/products/images/thumb.php?file=${file}') ?>" alt="">
   </a>
   <div class="actions">
     <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id=\${id}", null, 'default') ?>
