@@ -14,6 +14,20 @@ $referer = get_referer('catalog/');
 
 if (is('delete'))
 {
+  $files = fetch_all('SELECT file FROM catalog_product_files WHERE product=?', $product->id);
+
+  foreach ($files as $file)
+  {
+    unlink(ENVIS_UPLOADS_PATH . '/products/' . $file);
+  }
+
+  $images = fetch_all('SELECT file FROM catalog_product_images WHERE product=?', $product->id);
+
+  foreach ($images as $file)
+  {
+    unlink(ENVIS_UPLOADS_PATH . '/products/' . $file);
+  }
+
   exec_stmt('DELETE FROM catalog_products WHERE id=?', array(1 => $_REQUEST['id']));
 
   log_info("Usunięto produkt <{$product->name}> z katalogu.");
