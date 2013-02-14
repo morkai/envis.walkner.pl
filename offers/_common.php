@@ -16,8 +16,6 @@ Tel.: 0 603 930 725
 E-mail: walkner@walkner.pl
 TXT;
 
-$sendOffersFrom = array('envis@walkner.pl' => 'Walkner elektronika przemysłowa Zbigniew Walukiewicz');
-
 function fetch_next_offer_number()
 {
   $number = 'SEK' . date('dmY') . '/';

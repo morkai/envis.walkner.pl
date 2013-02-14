@@ -6,7 +6,8 @@ define('ENVIS_PDO_PASS', '');
 
 define('ENVIS_SMTP_USER', 'someone@the.net');
 define('ENVIS_SMTP_PASS', 'nohax');
-
+define('ENVIS_SMTP_FROM_EMAIL', 'someone@the.net');
+define('ENVIS_SMTP_FROM_NAME', 'Some One');
 define('ENVIS_SMTP_REPLY_EMAIL', 'someone@the.net');
 define('ENVIS_SMTP_REPLY_NAME', 'Some One');
 

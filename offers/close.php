@@ -90,7 +90,7 @@ if (is('post'))
         ->setPassword(ENVIS_SMTP_PASS));
       $mailer->send(Swift_Message::newInstance()
         ->setSubject($mail['subject'])
-        ->setFrom($sendOffersFrom)
+        ->setFrom(ENVIS_SMTP_FROM_EMAIL, ENVIS_SMTP_FROM_NAME)
         ->setTo($mail['to'])
         ->setBody($mail['text'])
         ->setReplyTo(ENVIS_SMTP_REPLY_EMAIL, ENVIS_SMTP_REPLY_NAME)
