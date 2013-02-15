@@ -29,6 +29,7 @@ SELECT
   + IF(m.name LIKE :query, 1, 0)
   + IF(k.nr LIKE :query, 1, 0)
   + IF(k.name LIKE :query, 1, 0)
+  + IF(p.description LIKE :query, 1, 0)
     AS rank
 FROM catalog_products p
 INNER JOIN catalog_categories c ON c.id=p.category
