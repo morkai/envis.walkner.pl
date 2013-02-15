@@ -52,6 +52,11 @@ if (is('put'))
     $product['markings'] = implode(',', $product['markings']);
   }
 
+  if (empty($product['public']))
+  {
+    $product['public'] = 0;
+  }
+
   try
   {
     $product['updatedAt'] = time();
