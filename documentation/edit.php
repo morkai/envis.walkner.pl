@@ -13,6 +13,12 @@ not_found_if(empty($oldDoc));
 no_access_if_not(has_access_to_machine($oldDoc->machine));
 
 $files = fetch_all('SELECT id, name, file FROM documentation_files WHERE documentation=:doc ORDER BY name ASC', array(':doc' => $_GET['id']));
+$fileMap = array();
+
+foreach ($files as $file)
+{
+  $fileMap[$file->id] = $file->name;
+}
 
 $product = empty($_GET['product']) || !is_numeric($_GET['product']) ? 0 : $_GET['product'];
 
@@ -53,14 +59,11 @@ if (isset($_POST['doc']))
 
       $dstDir = ENVIS_UPLOADS_PATH . '/documentation';
 
-      $doc['files'] = array();
+      $doc['files'] = $fileMap;
 
-      foreach ($files as $file)
-      {
-        $doc['files'][$file->id] = $file->file;
-      }
+      $currentFiles = empty($doc['currentFiles']) ? array() : $doc['currentFiles'];
 
-      $diff = array_diff(array_keys($doc['files']), empty($doc['currentFiles']) ? array() : $doc['currentFiles']);
+      $diff = array_diff(array_keys($doc['files']), $currentFiles);
 
       if (!empty($diff))
       {
@@ -75,6 +78,21 @@ if (isset($_POST['doc']))
             unlink($file);
           }
         }
+      }
+
+      $stmt = prepare_stmt('UPDATE documentation_files SET name=:name WHERE id=:id');
+
+      foreach ($currentFiles as $fileId)
+      {
+        $oldName = trim($doc['files'][$fileId]);
+        $newName = trim($doc['currentFileNames'][$fileId]);
+
+        if ($newName === $oldName)
+        {
+          continue;
+        }
+
+        $stmt->execute(array(':name' => $newName, ':id' => $fileId));
       }
 
       if (!empty($doc['filepaths']))
@@ -138,12 +156,7 @@ else
   );
 }
 
-$doc['files'] = array();
-
-foreach ($files as $file)
-{
-  $doc['files'][$file->id] = $file->name;
-}
+$doc['files'] = $fileMap;
 
 if (!isset($doc['currentFiles']))
 {
@@ -192,23 +205,19 @@ $i = -1;
 <? begin_slot('head') ?>
 <link rel="stylesheet" href="<?= url_for_media('uploadify/2.1.4/uploadify.css', true) ?>">
 <style>
-  #doc-fileList
-  {
-    margin-left: 0;
-  }
-  #doc-fileList li
-  {
-    list-style: none;
-  }
-  #doc-fileList li:last-child
-  {
-    margin-bottom: 0.5em;
-  }
-  #doc-fileList input[type="text"]
-  {
-    width: 20em;
-    margin-left: 0.5em;
-  }
+.doc-fileList {
+  margin-left: 0;
+}
+.doc-fileList li {
+  list-style: none;
+}
+.doc-fileList li:last-child {
+  margin-bottom: 0.5em;
+}
+.doc-fileList input[type="text"] {
+  width: 20em;
+  margin-left: 0.5em;
+}
 </style>
 <? append_slot() ?>
 
@@ -261,15 +270,19 @@ $i = -1;
             <label for="doc-description">Opis</label>
             <textarea id="doc-description" class="markdown resizable" name="doc[description]"><?= $doc['description'] ?></textarea>
           <? if (!empty($doc['files'])): ?>
-          <li>
-            <label for="doc-currentFiles">Aktualne pliki</label>
-            <select id="doc-currentFiles" name="doc[currentFiles][]" multiple="multiple">
-              <?= render_options($doc['files'], array_values($doc['currentFiles'])) ?>
-            </select>
+          <li class="form-choice">
+            <label>Aktualne pliki</label>
+            <ul class="doc-fileList">
+              <? foreach ($doc['files'] as $fileId => $fileName): ?>
+              <li>
+                <input type="checkbox" <?= checked_if(in_array($fileId, $doc['currentFiles'])) ?> name="doc[currentFiles][]" value="<?= $fileId ?>">
+                <input type="text" name="doc[currentFileNames][<?= $fileId ?>]" value="<?= e($fileName) ?>">
+              <? endforeach ?>
+            </ul>
           <? endif ?>
           <li>
             <label for="doc-files">Nowe pliki</label>
-            <ul id="doc-fileList">
+            <ul id="doc-fileList" class="doc-fileList">
             <? foreach ($doc['filepaths'] as $i => $filepath): ?>
               <li><input name="doc[filepaths][<?= $i ?>]" type="checkbox" checked="checked" value="<?= $filepath ?>"><input name="doc[filenames][<?= $i ?>]" type="text" value="<?= $doc['filenames'][$i] ?>">
             <? endforeach ?>
