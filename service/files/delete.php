@@ -50,14 +50,9 @@ try
 catch (PDOException $x)
 {
   $conn->rollBack();
-  
-  if (is_ajax())
-  {
-    bad_request();
-  }
-  else
-  {
-    set_flash($x->getMessage(), 'error');
-    go_to($referer);
-  }
+
+  bad_request_if(is_ajax());
+
+  set_flash($x->getMessage(), 'error');
+  go_to($referer);
 }

@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_POST['id'])) bad_request();
+bad_request_if(empty($_POST['id']));
 
 no_access_if_not_allowed('help*');
 
@@ -14,21 +14,21 @@ $conn = get_conn();
 
 try
 {
-	$conn->beginTransaction();
+  $conn->beginTransaction();
 
-	exec_stmt(sprintf(
-		'UPDATE help SET position=position-1 WHERE parent %s AND position > %d', ($page->parent ? ' = ' . $page->parent : 'IS NULL'), $page->position
-	));
+  exec_stmt(sprintf(
+    'UPDATE help SET position=position-1 WHERE parent %s AND position > %d', ($page->parent ? ' = ' . $page->parent : 'IS NULL'), $page->position
+  ));
 
-	exec_stmt('DELETE FROM help WHERE id=:id', array(':id' => $page->id));
+  exec_stmt('DELETE FROM help WHERE id=:id', array(':id' => $page->id));
 
-	$conn->commit();
+  $conn->commit();
 
-	output_json(true);
+  output_json(true);
 }
 catch (PDOException $x)
 {
-	$conn->rollBack();
+  $conn->rollBack();
 
-	output_json(array('status' => false, 'error' => $x->getMessage()));
+  output_json(array('status' => false, 'error' => $x->getMessage()));
 }

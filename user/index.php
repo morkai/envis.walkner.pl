@@ -1,36 +1,36 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('user*');
 
-include '../_lib_/PagedData.php';
+include_once __DIR__ . '/../_lib_/PagedData.php';
 
-$page    = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
+$page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
 $perPage = 15;
 
 $users = new PagedData($page, $perPage);
 
 $totalItems = fetch_one('SELECT COUNT(*) AS `count` FROM users')->count;
 
-$query  = 'SELECT u.super, u.id, u.name, u.email, r.name AS role FROM users u LEFT JOIN roles r ON r.id=u.role ORDER BY u.name';
+$query = 'SELECT u.super, u.id, u.name, u.email, r.name AS role FROM users u LEFT JOIN roles r ON r.id=u.role ORDER BY u.name';
 
 $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $users->getOffset(), $users->getPerPage()));
 
 $users->fill($totalItems, $items);
 
-$hasAnyUsers  = $totalItems > 0;
-$canAdd       = is_allowed_to('user/add');
-$canEdit      = is_allowed_to('user/edit');
-$canDelete    = is_allowed_to('user/delete');
+$hasAnyUsers = $totalItems > 0;
+$canAdd = is_allowed_to('user/add');
+$canEdit = is_allowed_to('user/edit');
+$canDelete = is_allowed_to('user/delete');
 $canEditRoles = is_allowed_to('user/edit/roles');
 
 ?>
 <? begin_slot('submenu') ?>
 <ul id="submenu">
-	<? if ($canAdd): ?><li><a href="<?= url_for("user/add.php") ?>">Dodaj nowego użytkownika</a><? endif ?>
-	<li><a href="<?= url_for("user/logs.php") ?>">Pokaż logi</a>
-	<? if ($canEditRoles): ?><li><a href="<?= url_for("user/role/") ?>">Zarządzaj rolami</a><? endif ?>
+  <? if ($canAdd): ?><li><a href="<?= url_for("user/add.php") ?>">Dodaj nowego użytkownika</a><? endif ?>
+  <li><a href="<?= url_for("user/logs.php") ?>">Pokaż logi</a>
+  <? if ($canEditRoles): ?><li><a href="<?= url_for("user/role/") ?>">Zarządzaj rolami</a><? endif ?>
 </ul>
 <? append_slot() ?>
 

@@ -2,11 +2,11 @@
 
 include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id']) || !is_numeric($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']) || !is_numeric($_GET['id']));
 
 $allowedFormats = array(
   'html' => 'text/html',
-  'pdf'  => 'application/pdf',
+  'pdf' => 'application/pdf',
 );
 $format = isset($_GET['format']) && isset($allowedFormats[$_GET['format']]) ? $_GET['format'] : 'html';
 
@@ -22,6 +22,6 @@ if (file_exists($offerFile))
 
 $offer = fetch_and_prepare_offer_for_printing($_GET['id']);
 
-if (empty($offer)) not_found();
+not_found_if(empty($offer));
 
-include './print/full.php';
+include_once __DIR__ . '/print/full.php';

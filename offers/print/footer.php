@@ -53,13 +53,13 @@
         part = part.split('=', 2);
         values[part[0]] = unescape(part[1]);
       });
-      
+
       ['topage', 'page'].forEach(function(property) {
         if (!(property in values)) {
           return;
         }
-        
-        var value    = values[property],
+
+        var value = values[property],
             elements = document.getElementsByClassName(property);
 
         for (var i in elements) {

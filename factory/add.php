@@ -1,58 +1,58 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_POST['factory'])) bad_request();
+bad_request_if(empty($_POST['factory']));
 
 no_access_if_not_allowed('factory/add');
 
 $factory = $_POST['factory'];
-$errors  = array();
+$errors = array();
 
 if (!between(1, $factory['name'], 128))
 {
-	$errors[] = 'Nazwa musi się składać z od 1 do 128 znaków.';
+  $errors[] = 'Nazwa musi się składać z od 1 do 128 znaków.';
 }
 
 if (empty($errors))
 {
-	settype($factory['latitude'], 'float');
-	settype($factory['longitude'], 'float');
-	
-	$bindings = array(1 => $factory['name'], $factory['latitude'], $factory['longitude']);
+  settype($factory['latitude'], 'float');
+  settype($factory['longitude'], 'float');
 
-	$conn = get_conn();
+  $bindings = array(1 => $factory['name'], $factory['latitude'], $factory['longitude']);
 
-	try
-	{
-		$conn->beginTransaction();
+  $conn = get_conn();
 
-		exec_stmt('INSERT INTO `factories` SET `name`=?, `latitude`=?, `longitude`=?', $bindings);
+  try
+  {
+    $conn->beginTransaction();
 
-		$factory['id'] = (int)get_conn()->lastInsertId();
+    exec_stmt('INSERT INTO `factories` SET `name`=?, `latitude`=?, `longitude`=?', $bindings);
 
-		if (!$_SESSION['user']->isSuper())
-		{
-			$allowedFactories = $_SESSION['user']->getAllowedFactories();
-			$allowedFactories[$factory['id']] = true;
+    $factory['id'] = (int)get_conn()->lastInsertId();
 
-			exec_stmt('UPDATE `users` SET allowedFactories=:factories WHERE id=:id', array(':id' => $_SESSION['user']->getId(), ':factories' => serialize($allowedFactories)));
+    if (!$_SESSION['user']->isSuper())
+    {
+      $allowedFactories = $_SESSION['user']->getAllowedFactories();
+      $allowedFactories[$factory['id']] = true;
 
-			$_SESSION['user']->setAllowedFactories($allowedFactories);
-		}
+      exec_stmt('UPDATE `users` SET allowedFactories=:factories WHERE id=:id', array(':id' => $_SESSION['user']->getId(), ':factories' => serialize($allowedFactories)));
 
-		log_info('Dodano fabrykę <%s>.', $factory['name']);
+      $_SESSION['user']->setAllowedFactories($allowedFactories);
+    }
 
-		$conn->commit();
+    log_info('Dodano fabrykę <%s>.', $factory['name']);
 
-		output_json(array('status' => true, 'factory' => $factory));
-	}
-	catch (PDOException $x)
-	{
-		$conn->rollBack();
-		
-		$errors[] = $x->getMessage();
-	}
+    $conn->commit();
+
+    output_json(array('status' => true, 'factory' => $factory));
+  }
+  catch (PDOException $x)
+  {
+    $conn->rollBack();
+
+    $errors[] = $x->getMessage();
+  }
 }
 
 output_json(array('status' => false, 'errors' => $errors));

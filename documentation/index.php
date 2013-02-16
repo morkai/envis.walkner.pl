@@ -8,7 +8,7 @@ $where = 'WHERE 1=1';
 
 if (!$_SESSION['user']->isSuper())
 {
-	$where = ' AND doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+  $where = ' AND doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
 }
 
 $product = !empty($_GET['product']) && is_numeric($_GET['product']) ? $_GET['product'] : 0;
@@ -35,11 +35,11 @@ SELECT
   (SELECT DISTINCT GROUP_CONCAT(i.orderNumber) FROM issues i WHERE i.relatedFactory=f.id AND i.relatedMachine=m.id AND i.relatedDevice=dev.id) AS orders
 FROM documentations doc
 LEFT JOIN engines dev
-	ON dev.id=doc.device
+  ON dev.id=doc.device
 LEFT JOIN machines m
-	ON m.id=doc.machine
+  ON m.id=doc.machine
 LEFT JOIN factories f
-	ON f.id=m.factory
+  ON f.id=m.factory
 {$where}
 ORDER BY factory, machine, device ASC
 SQL;
@@ -93,7 +93,7 @@ $orderLinks = function($orders) use($orderLinkTpl)
 <? if ($canAdd): ?>
 <? begin_slot('submenu') ?>
 <ul id="submenu">
-	<li><a href="<?= url_for('documentation/add.php') ?>">Dodaj nową dokumentację</a>
+  <li><a href="<?= url_for('documentation/add.php') ?>">Dodaj nową dokumentację</a>
 </ul>
 <? append_slot() ?>
 <? endif ?>
@@ -217,24 +217,24 @@ $(function()
 <? decorate("Lista dokumentacji") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">
+  <div class="block-header">
+    <h1 class="block-name">
       <? if ($product): ?>
       Przypisywanie dokumentacji do produktu: <?= e($product->name) ?>
       <? else: ?>
       Dokumentacje
       <? endif ?>
-		</h1>
-	</div>
-	<div class="block-body">
-		<? if ($hasAnyDocs): ?>
+    </h1>
+  </div>
+  <div class="block-body">
+    <? if ($hasAnyDocs): ?>
     <form id="filter" method="post" action="">
-		<table>
-			<thead>
-				<tr>
-					<th>Tytuł
-					<th>Powiązane zlecenia
-					<th>Akcje
+    <table>
+      <thead>
+        <tr>
+          <th>Tytuł
+          <th>Powiązane zlecenia
+          <th>Akcje
         </tr>
         <tr id="filters">
           <td><input id="filter-title" type="text">
@@ -262,11 +262,11 @@ $(function()
             </ul>
       <? $prev = $doc ?>
       <? endforeach ?>
-		</table>
+    </table>
     </form>
-		<? else: ?>
-		<p>Aktualnie nie ma żadnych dokumentacji.</p>
-		<? if ($canAdd): ?><p><a href="<?= url_for('documentation/add.php') ?>">Dodaj nową dokumentację</a>.</p><? endif ?>
-		<? endif ?>
-	</div>
+    <? else: ?>
+    <p>Aktualnie nie ma żadnych dokumentacji.</p>
+    <? if ($canAdd): ?><p><a href="<?= url_for('documentation/add.php') ?>">Dodaj nową dokumentację</a>.</p><? endif ?>
+    <? endif ?>
+  </div>
 </div>

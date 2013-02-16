@@ -4,7 +4,7 @@ bad_request_if(empty($_REQUEST['task']));
 
 $task = fetch_one('SELECT id, summary, position FROM issue_tasks WHERE id=?', array(1 => $_REQUEST['task']));
 
-if (empty($task)) not_found();
+not_found_if(empty($task));
 
 if (count($_POST))
 {
@@ -34,27 +34,27 @@ if (count($_POST))
 }
 
 $referer = get_referer('service/view.php?id=' . $task->id);
-$errors  = array();
+$errors = array();
 
 ?>
 
 <? decorate("Usuwanie zadania ze zgłoszenia") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Usuwanie zadania</h1>
-	</div>
-	<div class="block-body">
-		<form method="post" action="<?= url_for("service/update.php?what=deleteTask&issue={$issue->id}&task={$task->id}") ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<legend>Usuwanie zadania</legend>
-				<p>Na pewno chcesz usunąć zadanie &lt;<?= e($task->summary) ?>&gt;?</p>
-				<ol class="form-actions">
-					<li><input type="submit" value="Usuń zadanie">
-					<li><a href="<?= $referer ?>">Anuluj</a>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+  <div class="block-header">
+    <h1 class="block-name">Usuwanie zadania</h1>
+  </div>
+  <div class="block-body">
+    <form method="post" action="<?= url_for("service/update.php?what=deleteTask&issue={$issue->id}&task={$task->id}") ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <legend>Usuwanie zadania</legend>
+        <p>Na pewno chcesz usunąć zadanie &lt;<?= e($task->summary) ?>&gt;?</p>
+        <ol class="form-actions">
+          <li><input type="submit" value="Usuń zadanie">
+          <li><a href="<?= $referer ?>">Anuluj</a>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>

@@ -1,73 +1,73 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
 if (!empty($_POST['v']))
 {
   $v = fetch_issues_grid_options($_POST['v']);
-  
+
   if (empty($v['n']))
   {
     unset($v['n']);
 
     go_to('service/?' . http_build_query(array('v' => $v)));
   }
-  
+
   $serializedView = serialize($v);
-  
+
   $visibility = is_allowed_to('service/views') && isset($_POST['visibility']) && $_POST['visibility'] == 1 ? 1 : 0;
-  
+
   if (isset($_POST['id']) && is_valid_view_id($_POST['id']))
   {
     $originalView = fetch_one("SELECT view, creator FROM grid_views WHERE grid='service/issues' AND view=? LIMIT 1", array(1 => $_POST['id']));
-    
+
     if (empty($originalView)) not_found();
-    
+
     no_access_if_not($originalView->creator == $_SESSION['user']->getId());
-    
+
     if (isset($_POST['delete']))
     {
       exec_stmt("DELETE FROM grid_views WHERE grid='service/issues' AND view=? LIMIT 1", array(1 => $originalView->view));
-      
+
       log_info(sprintf('Usunięto widok zgłoszeń serwisu <%s>.', $v['n']));
-      
+
       set_flash(sprintf('Widok <%s> został usunięty pomyślnie!', $v['n']));
-      
+
       go_to('service/filter.php');
     }
-    
+
     if (isset($_POST['save']))
     {
       exec_update('grid_views',
                   array(
-                    'public'  => $visibility,
-                    'name'    => $v['n'],
+                    'public' => $visibility,
+                    'name' => $v['n'],
                     'options' => $serializedView
                   ),
                   "grid='service/issues' AND view='{$originalView->view}'");
-      
+
       log_info(sprintf('Zmodyfikowano widok zgłoszeń serwisu <%s>.', $v['n']));
-      
+
       set_flash(sprintf('Widok <%s> został zmodyfikowany pomyślnie!', $v['n']));
-      
+
       go_to('service/?v=' . $originalView->view);
     }
-    
+
     bad_request();
   }
   else
   {
     $viewId = md5(uniqid(microtime()) . $serializedView);
-  
+
     exec_insert('grid_views', array(
-      'grid'    => 'service/issues',
-      'view'    => $viewId,
+      'grid' => 'service/issues',
+      'view' => $viewId,
       'creator' => $_SESSION['user']->getId(),
-      'public'  => $visibility,
-      'name'    => $v['n'],
+      'public' => $visibility,
+      'name' => $v['n'],
       'options' => $serializedView
     ));
-  
+
     go_to('service/?v=' . $viewId);
   }
 }
@@ -82,7 +82,7 @@ $filterColumns = array('0' => ' ', 'description' => 'Opis') + $columnNames;
 unset($filterColumns['id'], $filterColumns['updatedAt']);
 
 $orderDirs = array(
-  1  => 'Rosnąco',
+  1 => 'Rosnąco',
   -1 => 'Malejąco',
 );
 
@@ -216,12 +216,12 @@ $(function()
 
     column.nextAll().remove();
 
-    var date      = false;
+    var date = false;
     var multiline = true;
-    var multiple  = true;
-    var html      = '';
-    var setInfo   = function($info) { $info.val(cf.info); };
-    var setValue  = function($value) { $value.val(cf.value); };
+    var multiple = true;
+    var html = '';
+    var setInfo = function($info) { $info.val(cf.info); };
+    var setValue = function($value) { $value.val(cf.value); };
 
     switch (this.value)
     {
@@ -232,7 +232,7 @@ $(function()
       case 'orderNumber':
       case 'orderInvoice':
         multiline = false;
-        multiple  = false;
+        multiple = false;
 
         html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']"><option value="equals">równa się<option value="contains">zawiera<option value="starts">zaczyna się od<option value="ends">kończy się na</select>';
         html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="text" value="">';
@@ -272,7 +272,7 @@ $(function()
       case 'orderDate':
       case 'orderInvoiceDate':
         multiline = false;
-        date      = true;
+        date = true;
 
         html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']" onchange="onFilterDateChanged(this)"><option value="from">od<option value="to">do<option value="between">pomiędzy</select>';
         html += '<li><input class="value" name="v[f][v][' + viewFilterCount + '][]" type="date" onfocus="onFilterDateFocused(this)" placeholder="YYYY-MM-DD">';
@@ -304,14 +304,14 @@ $(function()
       setValue($('.value[name="v[f][v][' + viewFilterCount + ']' + (multiple ? '[]' : '') + '"]', parent));
     }
   });
-  
+
   $('#viewSelection').change(function()
   {
     window.location.href = '<?= url_for('service/filter.php') ?>' + (this.value != 0 ? '?v=' + this.value : '');
   });
 
   <? if (!empty($options['f']['c'])): ?>
-  var f  = <?= json_encode($options['f']) ?>;
+  var f = <?= json_encode($options['f']) ?>;
 
   for (var i in f.c)
   {

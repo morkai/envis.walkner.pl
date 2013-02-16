@@ -12,7 +12,7 @@ class PagedData implements IteratorAggregate
 
 	public function __construct($page, $perPage = 10)
 	{
-		$this->page    = $page < 1 ? 1 : (int)$page;
+		$this->page = $page < 1 ? 1 : (int)$page;
 		$this->perPage = (int)$perPage;
 	}
 
@@ -49,7 +49,7 @@ class PagedData implements IteratorAggregate
 	public function fill($totalItems, $items)
 	{
 		$this->pageCount = ceil($totalItems / $this->perPage);
-		$this->items     = $items;
+		$this->items = $items;
 	}
 
 	public function isLinkToFirstPageAvailable()
@@ -95,7 +95,7 @@ class PagedData implements IteratorAggregate
 
 		$page = $this->getPage();
 		$last = $page + $pageNumbers;
-		$cut  = true;
+		$cut = true;
 
 		if (($page - $pageNumbers) < 1)
 		{
@@ -111,7 +111,7 @@ class PagedData implements IteratorAggregate
 		if ($last > $this->getPageCount())
 		{
 			$last = $this->getPageCount();
-			$cut  = false;
+			$cut = false;
 		}
 
 		for (; $page <= $last; ++$page)

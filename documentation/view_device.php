@@ -26,38 +26,38 @@ $query = <<<SQL
 SELECT id, title
 FROM documentations
 WHERE machine=:machine
-	AND device=:device
+  AND device=:device
 ORDER BY title
 SQL;
 
 $docs = fetch_all($query, array(':machine' => $device->machine, ':device' => $_GET['id']));
 
-$hasDocs    = !empty($docs);
+$hasDocs = !empty($docs);
 $canAddDocs = is_allowed_to('documentation/add');
 
 ?>
 
 <? begin_slot('submenu') ?>
 <ul id="submenu">
-	<? if ($canAddDocs): ?><li><a href="<?= url_for("documentation/add.php?factory={$device->factory}&amp;machine={$device->machine}&amp;device={$device->id}") ?>">Dodaj dokumentację</a><? endif ?>
+  <? if ($canAddDocs): ?><li><a href="<?= url_for("documentation/add.php?factory={$device->factory}&amp;machine={$device->machine}&amp;device={$device->id}") ?>">Dodaj dokumentację</a><? endif ?>
 </ul>
 <? append_slot() ?>
 
 <? decorate("Dokumentacje urządzenia") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Dokumentacje urządzenia &lt;<?= $device->name ?>&gt; z maszyny &lt;<?= $device->machineName ?>&gt; w fabryce &lt;<?= $device->factoryName ?>&gt;</h1>
-	</div>
-	<div class="block-body">
-		<? if ($hasDocs): ?>
-		<ul>
-			<? foreach ($docs as $doc): ?>
-			<li><a href="<?= url_for('documentation/view.php?id=' . $doc->id) ?>"><?= escape($doc->title) ?></a>
-			<? endforeach ?>
-		</ul>
-		<? else: ?>
-		<p>Aktualnie nie ma dostępnej żadnej dokumentacji dla wybranego urządzenia.</p>
-		<? endif ?>
-	</div>
+  <div class="block-header">
+    <h1 class="block-name">Dokumentacje urządzenia &lt;<?= $device->name ?>&gt; z maszyny &lt;<?= $device->machineName ?>&gt; w fabryce &lt;<?= $device->factoryName ?>&gt;</h1>
+  </div>
+  <div class="block-body">
+    <? if ($hasDocs): ?>
+    <ul>
+      <? foreach ($docs as $doc): ?>
+      <li><a href="<?= url_for('documentation/view.php?id=' . $doc->id) ?>"><?= escape($doc->title) ?></a>
+      <? endforeach ?>
+    </ul>
+    <? else: ?>
+    <p>Aktualnie nie ma dostępnej żadnej dokumentacji dla wybranego urządzenia.</p>
+    <? endif ?>
+  </div>
 </div>

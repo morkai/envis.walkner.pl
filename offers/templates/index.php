@@ -29,7 +29,7 @@ $(function()
     var $fields = $(this).closest('.form-fields');
     var $option = $(this[this.selectedIndex]);
     var tpl = JSON.parse($option.attr('data-template'));
-    var id  = this.value;
+    var id = this.value;
 
     tpl.name = $option.text();
 

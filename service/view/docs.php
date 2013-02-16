@@ -61,8 +61,8 @@ if (!empty($issue->relatedMachine))
   }
 }
 
-$canAddDocumentation    = is_allowed_to('documentation/add');
-$canEditDocumentation   = is_allowed_to('documentation/edit');
+$canAddDocumentation = is_allowed_to('documentation/add');
+$canEditDocumentation = is_allowed_to('documentation/edit');
 $canDeleteDocumentation = is_allowed_to('documentation/delete');
 
 $addDocumentationUrl = url_for("documentation/add.php?factory={$issue->relatedFactory}&amp;machine={$issue->relatedMachine}&amp;device={$issue->relatedDevice}");

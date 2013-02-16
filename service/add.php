@@ -1,35 +1,35 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('service/add');
 
 $referer = get_referer('service');
 
 $newIssue = array(
-  'owner'            => '',
-  'assignees'        => '',
-  'relatedFactory'   => 0,
-  'relatedMachine'   => 0,
-  'relatedDevice'    => 0,
-  'relatedProduct'   => null,
-  'priority'         => 2,
-  'kind'             => 3,
-  'type'             => 3,
-  'subject'          => '',
-  'description'      => '',
-  'informPeople'     => 0,
-  'orderNumber'      => '',
-  'orderDate'        => '',
-  'orderInvoice'     => '',
+  'owner' => '',
+  'assignees' => '',
+  'relatedFactory' => 0,
+  'relatedMachine' => 0,
+  'relatedDevice' => 0,
+  'relatedProduct' => null,
+  'priority' => 2,
+  'kind' => 3,
+  'type' => 3,
+  'subject' => '',
+  'description' => '',
+  'informPeople' => 0,
+  'orderNumber' => '',
+  'orderDate' => '',
+  'orderInvoice' => '',
   'orderInvoiceDate' => '',
   'expectedFinishAt' => '',
-  'quantity'         => 1,
-  'unit'             => 'szt.',
-  'per'              => 1,
-  'price'            => '0.00',
-  'currency'         => 'PLN',
-  'vat'              => 23
+  'quantity' => 1,
+  'unit' => 'szt.',
+  'per' => 1,
+  'price' => '0.00',
+  'currency' => 'PLN',
+  'vat' => 23
 );
 
 $canAssign = is_allowed_to('service/assigning');
@@ -49,9 +49,9 @@ if (!empty($_POST['newIssue']))
 
   if (!$canAssign)
   {
-    $issue['owner']     = null;
+    $issue['owner'] = null;
     $issue['assignees'] = array();
-    $informPeople       = false;
+    $informPeople = false;
   }
   else
   {
@@ -78,7 +78,7 @@ if (!empty($_POST['newIssue']))
 
   unset($issue['informPeople'], $issue['assignees']);
 
-  $issue['creator']   = $_SESSION['user']->getId();
+  $issue['creator'] = $_SESSION['user']->getId();
   $issue['createdAt'] = $issue['updatedAt'] = time();
 
   foreach (array('relatedFactory', 'relatedMachine', 'relatedDevice', 'relatedProduct', 'kind', 'type', 'orderNumber', 'orderDate', 'orderInvoice', 'orderInvoiceDate', 'expectedFinishAt') as $field)
@@ -99,7 +99,7 @@ if (!empty($_POST['newIssue']))
     foreach ($assignees as $assignee)
     {
       if ($assignee->id === $issue['owner'] || $assignee->id === $issue['creator']) continue;
-      
+
       $stmt->execute(array($issueId, $assignee->id));
     }
 
@@ -108,7 +108,7 @@ if (!empty($_POST['newIssue']))
   catch (PDOException $x)
   {
     $conn->rollBack();
-    
+
     throw $x;
   }
 
@@ -133,17 +133,17 @@ if (!empty($_POST['newIssue']))
 VIEW:
 
 $factories = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM factories %s ORDER BY name', get_allowed_factories('WHERE id IN(%s)')));
-$machines  = array();
-$devices   = array();
+$machines = array();
+$devices = array();
 
 if (!empty($newIssue['relatedFactory']) && has_access_to_factory($newIssue['relatedFactory']))
 {
-	$machines = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM machines WHERE factory=? %s ORDER BY name', get_allowed_machines('AND id IN(%s)')), array(1 => $newIssue['relatedFactory']));
+  $machines = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM machines WHERE factory=? %s ORDER BY name', get_allowed_machines('AND id IN(%s)')), array(1 => $newIssue['relatedFactory']));
 }
 
 if (!empty($newIssue['relatedMachine']) && has_access_to_machine($newIssue['relatedMachine']))
 {
-	$devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=? ORDER BY name', array(1 => $newIssue['relatedMachine']));
+  $devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=? ORDER BY name', array(1 => $newIssue['relatedMachine']));
 }
 
 escape_array($newIssue);
@@ -244,7 +244,7 @@ $(function()
               peoples.push(people[i]);
             }
           }
-          
+
           response(peoples);
         }
       );
@@ -390,7 +390,7 @@ $(function()
 
       el.find('form').submit(function()
       {
-        var form   = $(this);
+        var form = $(this);
         var submit = form.find('ol.form-actions input').attr('disabled', 'disabled');
 
         $.post(this.action, form.serializeArray(), function(response)
@@ -419,7 +419,7 @@ $(function()
               form.find('ol.form-fields').before(response.errors);
             }
           }
-          
+
           submit.removeAttr('disabled');
         });
 
@@ -440,7 +440,7 @@ $(function()
   </div>
   <div class="block-body">
     <form id="newIssue" class="form" method="post" action="<?= url_for('service/add.php') ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Nowe zgłoszenie</legend>
         <? display_errors($errors) ?>

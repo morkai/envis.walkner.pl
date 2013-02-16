@@ -1,19 +1,19 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('service/delete*');
 
 $issue = fetch_one('SELECT id, owner, creator, subject, relatedFactory, relatedMachine FROM issues WHERE id=?', array(1 => $_GET['id']));
 
-if (empty($issue)) not_found();
+not_found_if(empty($issue));
 
 if (!$_SESSION['user']->isSuper())
 {
   $canDeleteAll = is_allowed_to('service/delete/all');
-  $isOwner      = $_SESSION['user']->getId() == $issue->owner
+  $isOwner = $_SESSION['user']->getId() == $issue->owner
                || $_SESSION['user']->getId() == $issue->creator;
 
   no_access_if(!$isOwner && !$canDeleteAll);
@@ -37,7 +37,7 @@ if (count($_POST))
   }
 
   exec_stmt('DELETE FROM issues WHERE id=?', array(1 => $issue->id));
-  
+
   send_issue_removal_email($issue);
 
   log_info('Usunięto zgłoszenie <%s>.', $issue->subject);
@@ -48,7 +48,7 @@ if (count($_POST))
 }
 
 $referer = get_referer('service/view.php?id=' . $issue->id);
-$errors  = array();
+$errors = array();
 
 ?>
 

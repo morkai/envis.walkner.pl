@@ -1,12 +1,12 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $tpl = fetch_one('SELECT t.*, u.name AS creator FROM issue_templates t INNER JOIN users u ON u.id=t.createdBy WHERE t.id=?', array(1 => $_GET['id']));
 
-if (empty($tpl)) not_found();
+not_found_if(empty($tpl));
 
 $tpl->tasks = fetch_all('SELECT * FROM issue_template_tasks WHERE template=? ORDER BY summary', array(1 => $tpl->id));
 

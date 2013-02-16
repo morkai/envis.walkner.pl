@@ -1,30 +1,30 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $issue = fetch_one('SELECT id, subject, owner, ownerStakes, ownerStakesType FROM issues WHERE id=? LIMIT 1', array(1 => $_GET['id']));
 
-if (empty($issue)) not_found();
+not_found_if(empty($issue));
 
-$user    = $_SESSION['user']->getId();
+$user = $_SESSION['user']->getId();
 $isOwner = false;
 
 if ($user == $issue->owner)
 {
   $isOwner = true;
-  
-  $issue->stakes     = $issue->ownerStakes;
+
+  $issue->stakes = $issue->ownerStakes;
   $issue->stakesType = $issue->ownerStakesType;
 }
 else
 {
   $assignee = fetch_one('SELECT stakes, stakesType FROM issue_assignees WHERE issue=? AND assignee=? LIMIT 1', array(1 => $issue->id, $user));
-  
+
   no_access_if(empty($assignee));
-  
-  $issue->stakes     = $assignee->stakes;
+
+  $issue->stakes = $assignee->stakes;
   $issue->stakesType = $assignee->stakesType;
 }
 
@@ -55,7 +55,7 @@ WHERE a.issue=:issue AND a.assignee <> :user
 SQL;
 
   $assignees = fetch_all($query, array(':issue' => $issue->id, ':user' => $user));
-  
+
   if (!$isOwner)
   {
     $query = <<<SQL

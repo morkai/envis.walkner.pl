@@ -2,7 +2,7 @@
 
 include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['issue1']) || empty($_GET['issue2'])) bad_request();
+bad_request_if(empty($_GET['issue1']) || empty($_GET['issue2']));
 
 $issues = fetch_all(sprintf('SELECT id, owner FROM issues WHERE id IN(%s)', implode(', ', array((int)$_GET['issue1'], (int)$_GET['issue2']))));
 
@@ -55,4 +55,4 @@ if ($dual)
   }
 }
 
-if (($errors === 1 && !$dual) || ($errors === 2 && $dual)) bad_request();
+bad_request_if(($errors === 1 && !$dual) || ($errors === 2 && $dual));

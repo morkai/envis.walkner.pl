@@ -1,6 +1,6 @@
 <?php
 
-if (empty($_GET['task'])) bad_request();
+bad_request_if(empty($_GET['task']));
 
 $query = <<<SQL
 SELECT t.id, t.summary, t.description, t.completed, t.completedBy, t.assignedTo,
@@ -42,16 +42,16 @@ if (!empty($_POST['task']))
   if (!empty($errors)) goto VIEW;
 
   $bindings = array(
-    'summary'     => $task['summary'],
+    'summary' => $task['summary'],
     'description' => $task['description'],
-    'assignedTo'  => is_numeric($task['assignedTo']) ? (int)$task['assignedTo'] : null
+    'assignedTo' => is_numeric($task['assignedTo']) ? (int)$task['assignedTo'] : null
   );
 
   if ($task['reopen'])
   {
     $bindings['completed'] = 0;
   }
-  
+
   $db = get_conn();
 
   try
@@ -79,7 +79,7 @@ if (!empty($_POST['task']))
 
     if ($task['inform'])
     {
-      $url     = url_for('service/view.php?id=' . $issue->id, true);
+      $url = url_for('service/view.php?id=' . $issue->id, true);
       $creator = $_SESSION['user']->getName();
       $message = <<<MSG
 Witaj!
@@ -118,11 +118,11 @@ MSG;
       }
 
       output_json(array(
-        'assignedTo'  => (int)$task['assignedTo'],
-        'assignee'    => $assignee,
-        'summary'     => $task['summary'],
+        'assignedTo' => (int)$task['assignedTo'],
+        'assignee' => $assignee,
+        'summary' => $task['summary'],
         'description' => markdown($task['description']),
-        'completed'   => $task['reopen']
+        'completed' => $task['reopen']
       ));
     }
     else
@@ -133,13 +133,13 @@ MSG;
   catch (PDOException $x)
   {
     $db->rollBack();
-    
+
     $errors[] = $x->getMessage();
   }
 }
 else
 {
-  $task   = $oldTask + array('reopen' => false, 'inform' => false);
+  $task = $oldTask + array('reopen' => false, 'inform' => false);
   $errors = array();
 }
 
@@ -168,7 +168,7 @@ $referer = get_referer('service/view.php?id=' . $issue->id);
   </div>
   <div class="block-body">
     <form id="task" class="form" method="post" action="<?= url_for("service/update.php?what=editTask&issue={$issue->id}&task={$oldTask['id']}") ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Edycja zadania</legend>
         <? display_errors($errors) ?>

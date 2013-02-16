@@ -2,11 +2,11 @@
 
 include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['issue1']) || empty($_GET['issue2'])) bad_request();
+bad_request_if(empty($_GET['issue1']) || empty($_GET['issue2']));
 
 $issue = fetch_all('SELECT id, owner FROM issues WHERE id=?', array(1 => $_GET['issue1']));
 
-if (empty($issue)) not_found();
+not_found_if(empty($issue));
 
 $currentUser = $_SESSION['user'];
 

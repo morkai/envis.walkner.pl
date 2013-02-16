@@ -59,14 +59,14 @@ try
     $type = $attachment->getContentType();
     $data = $attachment->getContent();
     $size = mb_strlen($data);
-    $ext  = $attachment->getFileExtension();
+    $ext = $attachment->getFileExtension();
 
     return array(
       'name' => $name,
       'type' => $type,
       'size' => $size,
       'data' => $data,
-      'ext'  => $ext
+      'ext' => $ext
     );
   }, $parser->getAttachments());
 

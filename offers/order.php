@@ -26,7 +26,7 @@ bad_request_if(!empty($offer->issue));
 
 no_access_if_not(is_allowed_to('offers/close') && !empty($offer->closedAt));
 
-$offer->items  = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
+$offer->items = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
 
 $referer = get_referer("offers/view.php?id={$offer->id}");
 
@@ -42,7 +42,7 @@ if (!empty($_POST['order']))
   $order = $_POST['order'];
 
   $offer->title = str_replace(array("\r", "\n"), array('', ' '), $offer->title);
-  $offer->url   = url_for("offers/view.php?id={$offer->id}");
+  $offer->url = url_for("offers/view.php?id={$offer->id}");
 
   if (is_empty($order['title']))
   {
@@ -56,7 +56,7 @@ MARKDOWN;
   foreach ($order['descriptionOptions'] as $option) switch ($option)
   {
     case 'client':
-      $client  = nl2brmd($offer->client);
+      $client = nl2brmd($offer->client);
       $contact = nl2brmd($offer->clientContact);
 
       $description .= "\n\n## Klient\n{$client}\n\n### Kontakt\n{$contact}";
@@ -64,7 +64,7 @@ MARKDOWN;
 
     case 'supplier':
       $supplier = nl2brmd($offer->supplier);
-      $contact  = nl2brmd($offer->supplierContact);
+      $contact = nl2brmd($offer->supplierContact);
 
       $description .= "\n\n## Dostawca\n{$client}\n\n### Kontakt\n{$contact}";
       break;
@@ -81,19 +81,19 @@ MARKDOWN;
   $currentUser = $_SESSION['user'];
 
   $mainIssue = array(
-    'status'         => 1,
-    'creator'        => $currentUser->getId(),
-    'createdAt'      => time(),
-    'updatedAt'      => time(),
-    'owner'          => $currentUser->getId(),
-    'subject'        => $order['title'],
-    'description'    => $description,
+    'status' => 1,
+    'creator' => $currentUser->getId(),
+    'createdAt' => time(),
+    'updatedAt' => time(),
+    'owner' => $currentUser->getId(),
+    'subject' => $order['title'],
+    'description' => $description,
     'relatedFactory' => $DEFAULT_RELATED_FACTORY,
-    'priority'       => 2,
-    'kind'           => 3,
-    'type'           => 4,
-    'orderNumber'    => $order['number'],
-    'orderDate'      => date('Y-m-d')
+    'priority' => 2,
+    'kind' => 3,
+    'type' => 4,
+    'orderNumber' => $order['number'],
+    'orderDate' => date('Y-m-d')
   );
 
   $itemIssues = array();
@@ -121,25 +121,25 @@ Jednostka
 MARKDOWN;
 
     $itemIssues[$item['id']] = array(
-      'status'         => 1,
-      'creator'        => $currentUser->getId(),
-      'createdAt'      => time(),
-      'updatedAt'      => time(),
-      'owner'          => $currentUser->getId(),
-      'subject'        => $item['description'],
-      'description'    => $description,
+      'status' => 1,
+      'creator' => $currentUser->getId(),
+      'createdAt' => time(),
+      'updatedAt' => time(),
+      'owner' => $currentUser->getId(),
+      'subject' => $item['description'],
+      'description' => $description,
       'relatedFactory' => $DEFAULT_RELATED_FACTORY,
-      'priority'       => 2,
-      'kind'           => 3,
-      'type'           => 4,
-      'orderNumber'    => $order['number'],
-      'orderDate'      => date('Y-m-d'),
-      'quantity'       => $item['quantity'],
-      'unit'           => $item['unit'],
-      'currency'       => $item['currency'],
-      'price'          => $item['price'],
-      'per'            => $item['per'],
-      'vat'            => $item['vat']
+      'priority' => 2,
+      'kind' => 3,
+      'type' => 4,
+      'orderNumber' => $order['number'],
+      'orderDate' => date('Y-m-d'),
+      'quantity' => $item['quantity'],
+      'unit' => $item['unit'],
+      'currency' => $item['currency'],
+      'price' => $item['price'],
+      'per' => $item['per'],
+      'vat' => $item['vat']
     );
   }
 
@@ -186,10 +186,10 @@ MARKDOWN;
 }
 
 $descriptionOptions = array(
-  'client'   => 'Informacje o kliencie',
+  'client' => 'Informacje o kliencie',
   'supplier' => 'Informacje o dostawcy',
-  'intro'    => 'Uzgodnienia wstępne',
-  'outro'    => 'Uzgodnienia końcowe'
+  'intro' => 'Uzgodnienia wstępne',
+  'outro' => 'Uzgodnienia końcowe'
 );
 $selectedDescriptionOptions = array('client', 'intro', 'outro');
 
@@ -222,7 +222,7 @@ escape_vars($offer->title);
   </div>
   <div class="block-body">
     <form class="form" action="<?= url_for("offers/order.php?offer={$offer->id}") ?>" method=post autocomplete=off>
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Zamówienie dla oferty</legend>
         <ol class="form-fields">
@@ -281,7 +281,7 @@ $(function()
   $('#toggleItems').click(function()
   {
     var state = this.checked;
-    
+
     $('#items input.item-toggle').each(function()
     {
       this.checked = state;

@@ -57,12 +57,12 @@ class User
 	 */
 	public function __construct($id, $name, $email, $createdAt, $lastVisitAt = null, $isSuper = false)
 	{
-		$this->id          = (int)$id;
-		$this->name        = $name;
-		$this->email       = $email;
-		$this->createdAt   = new DateTime($createdAt);
+		$this->id = (int)$id;
+		$this->name = $name;
+		$this->email = $email;
+		$this->createdAt = new DateTime($createdAt);
 		$this->lastVisitAt = $lastVisitAt ? new DateTime($lastVisitAt) : null;
-		$this->isSuper     = $isSuper;
+		$this->isSuper = $isSuper;
 	}
 
 	/**

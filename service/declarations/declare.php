@@ -1,8 +1,8 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['issue'])) bad_request();
+bad_request_if(empty($_GET['issue']));
 
 no_access_if_not_allowed('service/declare');
 
@@ -18,7 +18,7 @@ SQL;
 
 $issue = fetch_one($query, array(1 => $_GET['issue']));
 
-if (empty($issue)) not_found();
+not_found_if(empty($issue));
 
 $currentUser = $_SESSION['user'];
 
@@ -127,7 +127,7 @@ $(function()
   </div>
   <div class="block-body">
     <form id="issue" class="form" method="post" action="<?= url_for("service/declarations/declaration.php?issue={$issue->id}") ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Deklarowanie zgodności</legend>
         <? display_errors($errors) ?>

@@ -1,6 +1,6 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('help*');
 
@@ -10,23 +10,23 @@ $conn = get_conn();
 
 try
 {
-	$conn->beginTransaction();
+  $conn->beginTransaction();
 
-	$lastPage = fetch_one(sprintf('SELECT MAX(position) AS position FROM help WHERE parent %s', $parent ? '= ' . $parent : 'IS NULL'));
+  $lastPage = fetch_one(sprintf('SELECT MAX(position) AS position FROM help WHERE parent %s', $parent ? '= ' . $parent : 'IS NULL'));
 
-	$bindings = array(':parent' => $parent, ':position' => $lastPage->position + 1);
+  $bindings = array(':parent' => $parent, ':position' => $lastPage->position + 1);
 
-	exec_stmt("INSERT INTO help (parent, position, title, contents) VALUES(:parent, :position, 'Pusta strona', '')", $bindings);
+  exec_stmt("INSERT INTO help (parent, position, title, contents) VALUES(:parent, :position, 'Pusta strona', '')", $bindings);
 
-	$id = (int)get_conn()->lastInsertId();
+  $id = (int)get_conn()->lastInsertId();
 
-	$conn->commit();
+  $conn->commit();
 
-	output_json(array('status' => true, 'id' => $id, 'position' => $bindings[':position']));
+  output_json(array('status' => true, 'id' => $id, 'position' => $bindings[':position']));
 }
 catch (PDOException $x)
 {
-	$conn->rollBack();
+  $conn->rollBack();
 
-	output_json(array('status' => false, 'error' => $x->getMessage()));
+  output_json(array('status' => false, 'error' => $x->getMessage()));
 }

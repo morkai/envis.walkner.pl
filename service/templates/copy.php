@@ -1,17 +1,17 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['issue'])) bad_request();
+bad_request_if(empty($_GET['issue']));
 
 no_access_if_not_allowed('service/templates*');
 
 $issue = fetch_one('SELECT id, subject FROM issues WHERE id=?', array(1 => $_GET['issue']));
 
-if (empty($issue)) not_found();
+not_found_if(empty($issue));
 
 $referer = get_referer('service/view.php?id=' . $issue->id);
-$errors  = array();
+$errors = array();
 
 if (!empty($_POST['copy']))
 {
@@ -34,7 +34,7 @@ if (!empty($_POST['copy']))
     $tasks = fetch_all('SELECT summary, description FROM issue_template_tasks WHERE id IN(' . $tasks . ')');
 
     exec_stmt('UPDATE issue_tasks SET position=position+' . count($tasks) . ' WHERE issue=?', array(1 => $issue->id));
-    
+
     $position = 0;
 
     $stmt = prepare_stmt('INSERT INTO issue_tasks SET issue=?, position=?, summary=?, description=?, createdAt=?, createdBy=?');
@@ -44,7 +44,7 @@ if (!empty($_POST['copy']))
     foreach ($tasks as $task)
     {
       $comment .= "\n* {$task->summary}";
-      
+
       $stmt->execute(array(
         $issue->id,
         $position++,
@@ -96,7 +96,7 @@ else
 <script>
 $(function()
 {
-  var tpl   = $('#copyTemplate');
+  var tpl = $('#copyTemplate');
   var tasks = $('#copyTasks');
 
   tpl.change(function()
@@ -127,9 +127,9 @@ $(function()
   </div>
   <div class="block-body">
     <form method="post" action="<?= url_for("service/templates/copy.php?issue={$issue->id}") ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<? display_errors($errors) ?>
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <? display_errors($errors) ?>
         <ol class="form-fields">
           <li>
             <label>Zgłoszenie</label>

@@ -2,18 +2,18 @@
 
 include __DIR__ . '/_common.php';
 
-if (empty($_REQUEST['issue']) || empty($_REQUEST['what'])) bad_request();
+bad_request_if(empty($_REQUEST['issue']) || empty($_REQUEST['what']));
 
 $target = __DIR__ . '/update/' . preg_replace('/[^a-zA-Z]/', '', $_REQUEST['what']) . '.php';
 
-if (!file_exists($target)) bad_request();
+bad_request_if(!file_exists($target));
 
 no_access_if_not_allowed('service*');
 
 $bindings = array(':id' => $_REQUEST['issue']);
-$issue    = fetch_one('SELECT i.*, o.name AS ownerName FROM issues i LEFT JOIN users o ON o.id=i.owner WHERE i.id=:id', $bindings);
+$issue = fetch_one('SELECT i.*, o.name AS ownerName FROM issues i LEFT JOIN users o ON o.id=i.owner WHERE i.id=:id', $bindings);
 
-if (empty($issue)) bad_request();
+bad_request_if(empty($issue));
 
 define('ISSUE_ROLE_CREATOR',     1);
 define('ISSUE_ROLE_DOCS_VIEWER', 2);

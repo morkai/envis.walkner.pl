@@ -31,15 +31,15 @@ no_access_if_not(
 $dotPos = strrpos($_REQUEST['name'], '.');
 
 exec_insert('issue_files', $bindings = array(
-  'issue'        => $issue->id,
-  'file'         => substr(strrchr($_REQUEST['file'], '/'), 1),
-  'name'         => $dotPos === false ? $_REQUEST['name'] : substr($_REQUEST['name'], 0, $dotPos),
-  'uploader'     => $currentUser->getId(),
-  'uploadedAt'   => time()
+  'issue' => $issue->id,
+  'file' => substr(strrchr($_REQUEST['file'], '/'), 1),
+  'name' => $dotPos === false ? $_REQUEST['name'] : substr($_REQUEST['name'], 0, $dotPos),
+  'uploader' => $currentUser->getId(),
+  'uploadedAt' => time()
 ));
 
-$bindings['id']           = get_conn()->lastInsertId();
-$bindings['uploadedAt']   = date('Y-m-d, H:i', $bindings['uploadedAt']);
+$bindings['id'] = get_conn()->lastInsertId();
+$bindings['uploadedAt'] = date('Y-m-d, H:i', $bindings['uploadedAt']);
 $bindings['uploaderName'] = $currentUser->getName();
 
 unset($bindings['issue'], $bindings['file']);

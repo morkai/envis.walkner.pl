@@ -1,44 +1,44 @@
 <?php
 
 $_menu = array(
-	''              => array('Dashboard',    ''),
-	//'report'        => array('Raporty',      'report*'),
-	'service'       => array('Serwis',       'service*'),
-  'offers'        => array('Oferty',       'offers*'),
-	'factory'       => array('Fabryki',      'factory*'),
-	//'counter'       => array('Liczniki',     'counter*'),
-	'documentation' => array('Dokumentacje', 'documentation*'),
-	'catalog'       => array('Produkty',     'catalog*'),
-	'storage'       => array('Magazyny',     'storage*'),
-	'user'          => array('Użytkownicy',  'user*'),
-	'help'          => array('Pomoc',        ''),
-	//'info'          => array('Informacje',   ''),
+  '' => array('Dashboard',    ''),
+  //'report' => array('Raporty',      'report*'),
+  'service' => array('Serwis',       'service*'),
+  'offers' => array('Oferty',       'offers*'),
+  'factory' => array('Fabryki',      'factory*'),
+  //'counter' => array('Liczniki',     'counter*'),
+  'documentation' => array('Dokumentacje', 'documentation*'),
+  'catalog' => array('Produkty',     'catalog*'),
+  'storage' => array('Magazyny',     'storage*'),
+  'user' => array('Użytkownicy',  'user*'),
+  'help' => array('Pomoc',        ''),
+  //'info' => array('Informacje',   ''),
 );
 
 if (!isset($_SERVER['REQUEST_URI']) && isset($_SERVER['HTTP_X_REWRITE_URL']))
 {
-	$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
+  $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 }
 
 function get_menu_item_class($item)
 {
-	static $chosen = false;
+  static $chosen = false;
 
-	if ($chosen) return '';
+  if ($chosen) return '';
 
-	$len = strlen(ENVIS_BASE_URL) - 1;
+  $len = strlen(ENVIS_BASE_URL) - 1;
 
-	$uri  = explode('/', substr($_SERVER['REQUEST_URI'], $len));
-	$item = explode('/', substr($item, $len));
+  $uri = explode('/', substr($_SERVER['REQUEST_URI'], $len));
+  $item = explode('/', substr($item, $len));
 
-	if (($uri[1] === $item[1]) || (count($uri) === 2))
-	{
-		$chosen = true;
+  if (($uri[1] === $item[1]) || (count($uri) === 2))
+  {
+    $chosen = true;
 
-		return 'menu-current';
-	}
+    return 'menu-current';
+  }
 
-	return '';
+  return '';
 }
 
 begin_slot('flash');

@@ -20,9 +20,9 @@ SQL;
 
 $entries = array_map(function($entry)
 {
-  $entry->timeAgo      = format_time_ago($entry->createdAt);
+  $entry->timeAgo = format_time_ago($entry->createdAt);
   $entry->creationTime = date('Y-m-d, H:i', $entry->createdAt);
-  $entry->creator      = e($entry->creator);
+  $entry->creator = e($entry->creator);
 
   if (!$entry->system)
   {
@@ -32,18 +32,18 @@ $entries = array_map(function($entry)
   if ($entry->changes !== null)
   {
     $entry->showChanges = true;
-    $entry->changes     = array_map('prepare_issue_changes', unserialize($entry->changes));
+    $entry->changes = array_map('prepare_issue_changes', unserialize($entry->changes));
   }
   else
   {
     $entry->showChanges = false;
-    $entry->changes     = array();
+    $entry->changes = array();
   }
 
   if (!empty($entry->tasks))
   {
     $entry->showChanges = true;
-    $entry->tasks       = unserialize($entry->tasks);
+    $entry->tasks = unserialize($entry->tasks);
   }
   else
   {
@@ -53,7 +53,7 @@ $entries = array_map(function($entry)
   return $entry;
 }, fetch_all($query, array(1 => $issue->id)));
 
-$history   = array();
+$history = array();
 $lastEntry = null;
 
 foreach ($entries as $entry)
@@ -96,18 +96,18 @@ $currentUser = $_SESSION['user'];
 
 $unresolvedTasks = fetch_array('SELECT id AS `key`, summary AS `value` FROM issue_tasks WHERE issue=? AND completed=0 AND (assignedTo IS NULL OR assignedTo=?) ORDER BY position', array(1 => $issue->id, $currentUser->getId()));
 
-$isCreator  = $currentUser->getId() == $issue->creator;
-$isOwner    = $currentUser->getId() == $issue->owner;
+$isCreator = $currentUser->getId() == $issue->creator;
+$isOwner = $currentUser->getId() == $issue->owner;
 $isAssignee = fetch_one('SELECT 1 FROM issue_assignees WHERE issue=? AND assignee=? LIMIT 1', array(1 => $issue->id, $currentUser->getId())) ? true : false;
 
-$docsViewer       = is_issue_docs_viewer($currentUser, $issue);
+$docsViewer = is_issue_docs_viewer($currentUser, $issue);
 $docsViewerSuffix = $docsViewer ? '&docs=1' : '';
 
-$canUpdateIssue   = $currentUser->isSuper() || $isCreator || $isOwner || $isAssignee || $docsViewer;
+$canUpdateIssue = $currentUser->isSuper() || $isCreator || $isOwner || $isAssignee || $docsViewer;
 $canCompleteTasks = $currentUser->isSuper() || $isOwner || $isAssignee;
-$canUpdateTime    = $canCompleteTasks;
+$canUpdateTime = $canCompleteTasks;
 
-$now  = time();
+$now = time();
 $week = 24 * 3600 * 7;
 
 ?>
@@ -199,7 +199,7 @@ $(function()
   $.makeAutoResizable();
 
   var $activity = $('#activity');
-  
+
   var $collapsed = $activity.find('.collapsed').hide();
 
   if ($collapsed.length)

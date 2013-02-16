@@ -28,10 +28,10 @@ if (!empty($_FILES)) {
 	$targetPath = dirname(dirname(__FILE__)) . rtrim($_REQUEST['folder'], '/\\') . '/';
 	$targetFile = str_replace('//','/',$targetPath) . $_POST['id'] . $_FILES['Filedata']['name'];
 
-	// $fileTypes  = str_replace('*.','',$_REQUEST['fileext']);
-	// $fileTypes  = str_replace(';','|',$fileTypes);
+	// $fileTypes = str_replace('*.','',$_REQUEST['fileext']);
+	// $fileTypes = str_replace(';','|',$fileTypes);
 	// $typesArray = split('\|',$fileTypes);
-	// $fileParts  = pathinfo($_FILES['Filedata']['name']);
+	// $fileParts = pathinfo($_FILES['Filedata']['name']);
 
 	// if (in_array($fileParts['extension'],$typesArray)) {
 		// Uncomment the following line if you want to make the directory if it doesn't exist

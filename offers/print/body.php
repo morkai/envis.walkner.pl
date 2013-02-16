@@ -10,14 +10,14 @@ if (empty($offer))
 {
   $offer = new stdClass;
 
-  $offer->supplier        = '-';
+  $offer->supplier = '-';
   $offer->supplierContact = '-';
-  $offer->client          = '-';
-  $offer->clientContact   = '-';
-  $offer->intro           = '-';
-  $offer->outro           = '-';
-  $offer->items           = array();
-  $offer->summary         = array();
+  $offer->client = '-';
+  $offer->clientContact = '-';
+  $offer->intro = '-';
+  $offer->outro = '-';
+  $offer->items = array();
+  $offer->summary = array();
 }
 
 ?><!DOCTYPE html>

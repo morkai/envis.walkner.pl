@@ -33,9 +33,9 @@ $templates = fetch_offer_templates();
   $(function()
   {
     var newItemDefaults = {},
-        newItemTpl      = $('#newItemTpl').html(),
-        $items          = $('#items'),
-        dirty           = false;
+        newItemTpl = $('#newItemTpl').html(),
+        $items = $('#items'),
+        dirty = false;
 
     $(window).unload(function(e)
     {
@@ -78,8 +78,8 @@ $templates = fetch_offer_templates();
                     'price',
                     'per',
                     'vat'],
-          count  = $items.find('.item').length,
-          html   = newItemTpl.replace(/\{i\}/g, count)
+          count = $items.find('.item').length,
+          html = newItemTpl.replace(/\{i\}/g, count)
                              .replace(/\{position\}/g, count + 1);
 
       fields.forEach(function(field)
@@ -283,7 +283,7 @@ $templates = fetch_offer_templates();
           <? render_offer_templates($templates, 'outro') ?>
           <textarea id="offerOutro" name="offer[outro]" class="markdown resizable"><?= e($offer->outro) ?></textarea>
         <li>
-					<input type="submit" value="Aktualizuj ofertę">
+          <input type="submit" value="Aktualizuj ofertę">
       </ol>
     </div>
   </div>

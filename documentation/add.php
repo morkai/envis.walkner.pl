@@ -6,7 +6,7 @@ no_access_if_not_allowed('documentation/add');
 
 if (!empty($_GET['machine']))
 {
-	no_access_if_not(has_access_to_machine($_GET['machine']));
+  no_access_if_not(has_access_to_machine($_GET['machine']));
 }
 
 $product = empty($_GET['product']) ? 0 : $_GET['product'];
@@ -18,66 +18,66 @@ if ($product)
   bad_request_if(empty($product));
 }
 
-$errors  = array();
+$errors = array();
 $referer = get_referer('documentation/');
 
 if (isset($_POST['doc']))
 {
-	$doc = $_POST['doc'];
+  $doc = $_POST['doc'];
 
-	if (!between(1, $doc['title'], 128))
-	{
-		$errors[] = 'Tytuł musi się składać z od 1 do 128 znaków.';
-	}
+  if (!between(1, $doc['title'], 128))
+  {
+    $errors[] = 'Tytuł musi się składać z od 1 do 128 znaków.';
+  }
 
-	if (!empty($doc['machine']) && !has_access_to_machine($doc['machine']))
-	{
-		$errors[] = 'Nie masz uprawnień do wybranej maszyny.';
-	}
+  if (!empty($doc['machine']) && !has_access_to_machine($doc['machine']))
+  {
+    $errors[] = 'Nie masz uprawnień do wybranej maszyny.';
+  }
 
-	if (empty($errors))
-	{
-		$bindings = array(
-			':machine'     => empty($doc['machine']) ? null : $doc['machine'],
-			':device'      => empty($doc['device']) ? null : $doc['device'],
-			':title'       => $doc['title'],
-			':description' => $doc['description'],
-		);
+  if (empty($errors))
+  {
+    $bindings = array(
+      ':machine' => empty($doc['machine']) ? null : $doc['machine'],
+      ':device' => empty($doc['device']) ? null : $doc['device'],
+      ':title' => $doc['title'],
+      ':description' => $doc['description'],
+    );
 
-		$conn = get_conn();
-		
-		try
-		{
-			$conn->beginTransaction();
+    $conn = get_conn();
 
-			exec_stmt('INSERT INTO documentations SET title=:title, description=:description, machine=:machine, device=:device', $bindings);
+    try
+    {
+      $conn->beginTransaction();
 
-			$id = $conn->lastInsertId();
+      exec_insert('documentations', $bindings);
 
-			if (!empty($doc['filepaths']))
-			{
-				$dstDir = ENVIS_UPLOADS_PATH . '/documentation';
-				$srcDir = $dstDir . '-tmp';
+      $id = $conn->lastInsertId();
 
-				$stmt = prepare_stmt('INSERT INTO documentation_files SET documentation=:doc, file=:file, name=:name');
+      if (!empty($doc['filepaths']))
+      {
+        $dstDir = ENVIS_UPLOADS_PATH . '/documentation';
+        $srcDir = $dstDir . '-tmp';
 
-				foreach ($doc['filepaths'] as $i => $filepath)
-				{
-					$filepath = $_SERVER['DOCUMENT_ROOT'] . $filepath;
+        $stmt = prepare_stmt('INSERT INTO documentation_files SET documentation=:doc, file=:file, name=:name');
 
-					if (!file_exists($filepath) || empty($doc['filenames'][$i])) continue;
+        foreach ($doc['filepaths'] as $i => $filepath)
+        {
+          $filepath = $_SERVER['DOCUMENT_ROOT'] . $filepath;
 
-					$file = md5(microtime() . $filepath) . strrchr($filepath, '.');
+          if (!file_exists($filepath) || empty($doc['filenames'][$i])) continue;
 
-					rename($filepath, $dstDir . '/' . $file);
-					
-					exec_stmt($stmt, array(
-						'doc'  => $id,
-						'file' => $file,
-						'name' => $doc['filenames'][$i],
-					));
-				}
-			}
+          $file = md5(microtime() . $filepath) . strrchr($filepath, '.');
+
+          rename($filepath, $dstDir . '/' . $file);
+
+          exec_stmt($stmt, array(
+            'doc' => $id,
+            'file' => $file,
+            'name' => $doc['filenames'][$i],
+          ));
+        }
+      }
 
       if (!empty($product))
       {
@@ -87,46 +87,46 @@ if (isset($_POST['doc']))
         ));
       }
 
-			$conn->commit();
+      $conn->commit();
 
-			log_info('Dodano dokumentację <%s>.', $doc['title']);
+      log_info('Dodano dokumentację <%s>.', $doc['title']);
 
-			set_flash(sprintf('Dokumentacja <%s> została dodana pomyślnie.', $doc['title']));
+      set_flash(sprintf('Dokumentacja <%s> została dodana pomyślnie.', $doc['title']));
 
       if (empty($product))
       {
-			  go_to("documentation/view.php?id={$id}");
+        go_to("documentation/view.php?id={$id}");
       }
       else
       {
         go_to($referer . '#docs');
       }
-		}
-		catch (PDOException $x)
-		{
-			$conn->rollBack();
+    }
+    catch (PDOException $x)
+    {
+      $conn->rollBack();
 
-			set_flash('Dokumentacja nie została dodana. ' . $x, 'error');
+      set_flash('Dokumentacja nie została dodana. ' . $x, 'error');
 
-			go_to($referer);
-		}
-	}
+      go_to($referer);
+    }
+  }
 }
 else
 {
-	$doc = array(
-		'factory'     => null,
-		'machine'     => null,
-		'device'      => null,
-		'title'       => '',
-		'description' => '',
-		'id'          => md5(microtime()),
-	);
+  $doc = array(
+    'factory' => null,
+    'machine' => null,
+    'device' => null,
+    'title' => '',
+    'description' => '',
+    'id' => md5(microtime()),
+  );
 }
 
 $doc += array(
-	'filenames' => array(),
-	'filepaths' => array(),
+  'filenames' => array(),
+  'filepaths' => array(),
 );
 
 escape_array($doc);
@@ -135,39 +135,46 @@ $where = '';
 
 if (!$_SESSION['user']->isSuper())
 {
-	$where = 'f.id IN(' . implode(',', $_SESSION['user']->getAllowedFactoryIds()) . ') AND';
+  $where = 'f.id IN(' . implode(',', $_SESSION['user']->getAllowedFactoryIds()) . ') AND';
 }
 
-$factories = fetch_array('SELECT f.id AS `key`, f.name AS value FROM factories f WHERE ' . $where . ' (SELECT COUNT(*) FROM machines m WHERE m.factory=f.id) > 0 ORDER BY f.name');
-$machines  = array();
-$devices   = array();
+$q = <<<SQL
+SELECT f.id AS `key`, f.name AS value
+FROM factories f
+WHERE {$where} (SELECT COUNT(*) FROM machines m WHERE m.factory=f.id) > 0
+ORDER BY f.name
+SQL;
+
+$factories = fetch_array($q);
+$machines = array();
+$devices = array();
 
 if (!empty($_GET['factory']) && !empty($_GET['machine']))
 {
-	$doc['factory'] = (int)$_GET['factory'];
-	$doc['machine'] = $_GET['machine'];
+  $doc['factory'] = (int)$_GET['factory'];
+  $doc['machine'] = $_GET['machine'];
 
-	if (!empty($_GET['device']))
-	{
-		$doc['device'] = $_GET['device'];
-	}
+  if (!empty($_GET['device']))
+  {
+    $doc['device'] = $_GET['device'];
+  }
 }
 
 if (!empty($doc['factory']))
 {
-	$where = '';
+  $where = '';
 
-	if (!$_SESSION['user']->isSuper())
-	{
-		$where = ' AND id IN(' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
-	}
+  if (!$_SESSION['user']->isSuper())
+  {
+    $where = ' AND id IN(' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+  }
 
-	$machines = fetch_array('SELECT id AS `key`, name AS value FROM machines WHERE factory=:factory ' . $where . ' ORDER BY name', array(':factory' => $doc['factory']));
+  $machines = fetch_array('SELECT id AS `key`, name AS value FROM machines WHERE factory=:factory ' . $where . ' ORDER BY name', array(':factory' => $doc['factory']));
 }
 
 if (!empty($doc['machine']))
 {
-	$devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=:machine ORDER BY name', array(':machine' => $doc['machine']));
+  $devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=:machine ORDER BY name', array(':machine' => $doc['machine']));
 }
 
 $i = -1;
@@ -205,43 +212,43 @@ $action = $product
 <? decorate("Dodawanie nowej dokumentacji") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Nowa dokumentacja</h1>
-	</div>
-	<div class="block-body">
-		<form name="newdoc" method="post" action="<?= $action ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<input type="hidden" name="doc[id]" value="<?= $doc['id'] ?>">
-			<fieldset>
-				<legend>Nowa dokumentacja</legend>
-				<? display_errors($errors) ?>
-				<ol class="form-fields">
-					<li>
-						<fieldset>
-							<legend>Dotyczy</legend>
-							<ol class="form-fields">
-								<li class="horizontal">
-									<ol>
-										<li>
-											<label for="doc-factory">Fabryka</label>
-											<select id="doc-factory" name="doc[factory]">
-												<option value="0"></option>
-												<?= render_options($factories, $doc['factory']) ?>
-											</select>
-										<li>
-											<label for="doc-machine">Maszyna</label>
-											<select id="doc-machine" name="doc[machine]">
-												<option value="0"></option>
-												<?= render_options($machines, $doc['machine']) ?>
-											</select>
-										<li>
-											<label for="doc-device">Urządzenie</label>
-											<select id="doc-device" name="doc[device]">
-												<option value="0"></option>
-												<?= render_options($devices, $doc['device']) ?>
-											</select>
-									</ol>
-							</ol>
+  <div class="block-header">
+    <h1 class="block-name">Nowa dokumentacja</h1>
+  </div>
+  <div class="block-body">
+    <form name="newdoc" method="post" action="<?= $action ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="doc[id]" value="<?= $doc['id'] ?>">
+      <fieldset>
+        <legend>Nowa dokumentacja</legend>
+        <? display_errors($errors) ?>
+        <ol class="form-fields">
+          <li>
+            <fieldset>
+              <legend>Dotyczy</legend>
+              <ol class="form-fields">
+                <li class="horizontal">
+                  <ol>
+                    <li>
+                      <label for="doc-factory">Fabryka</label>
+                      <select id="doc-factory" name="doc[factory]">
+                        <option value="0"></option>
+                        <?= render_options($factories, $doc['factory']) ?>
+                      </select>
+                    <li>
+                      <label for="doc-machine">Maszyna</label>
+                      <select id="doc-machine" name="doc[machine]">
+                        <option value="0"></option>
+                        <?= render_options($machines, $doc['machine']) ?>
+                      </select>
+                    <li>
+                      <label for="doc-device">Urządzenie</label>
+                      <select id="doc-device" name="doc[device]">
+                        <option value="0"></option>
+                        <?= render_options($devices, $doc['device']) ?>
+                      </select>
+                  </ol>
+              </ol>
               <? if ($product): ?>
               <ol id="doc-product" class="form-fields">
                 <li>
@@ -249,132 +256,132 @@ $action = $product
                   <p><a href="<?= url_for("catalog/?product={$product->id}#docs") ?>"><?= e($product->name) ?></a></p>
               </ol>
               <? endif ?>
-						</fieldset>
-					<li>
-						<label for="doc-title">Tytuł<span class="form-field-required" title="Wymagane">*</span></label>
-						<input id="doc-title" name="doc[title]" type="text" maxlength="128" value="<?= $doc['title'] ?>">
-						<p class="form-field-help">Od 1 do 128 znaków.</p>
-					<li>
-						<label for="doc-description">Opis</label>
-						<textarea id="doc-description" class="markdown resizable" name="doc[description]"><?= $doc['description'] ?></textarea>
-					<li>
-						<label for="doc-files">Pliki</label>
-						<ul id="doc-fileList">
-						<? foreach ($doc['filepaths'] as $i => $filepath): ?>
-							<li><input name="doc[filepaths][<?= $i ?>]" type="checkbox" checked="checked" value="<?= $filepath ?>"><input name="doc[filenames][<?= $i ?>]" type="text" value="<?= $doc['filenames'][$i] ?>">
-						<? endforeach ?>
-						</ul>
-						<input id="doc-files" type="file">
-					<li>
-						<ol class="form-actions">
-							<li><input type="submit" value="Dodaj dokumentację">
-							<li><a href="<?= $referer ?>#docs">Anuluj</a>
-						</ol>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+            </fieldset>
+          <li>
+            <label for="doc-title">Tytuł<span class="form-field-required" title="Wymagane">*</span></label>
+            <input id="doc-title" name="doc[title]" type="text" maxlength="128" value="<?= $doc['title'] ?>">
+            <p class="form-field-help">Od 1 do 128 znaków.</p>
+          <li>
+            <label for="doc-description">Opis</label>
+            <textarea id="doc-description" class="markdown resizable" name="doc[description]"><?= $doc['description'] ?></textarea>
+          <li>
+            <label for="doc-files">Pliki</label>
+            <ul id="doc-fileList">
+            <? foreach ($doc['filepaths'] as $i => $filepath): ?>
+              <li><input name="doc[filepaths][<?= $i ?>]" type="checkbox" checked="checked" value="<?= $filepath ?>"><input name="doc[filenames][<?= $i ?>]" type="text" value="<?= $doc['filenames'][$i] ?>">
+            <? endforeach ?>
+            </ul>
+            <input id="doc-files" type="file">
+          <li>
+            <ol class="form-actions">
+              <li><input type="submit" value="Dodaj dokumentację">
+              <li><a href="<?= $referer ?>#docs">Anuluj</a>
+            </ol>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>
 
 <? begin_slot('js') ?>
 <script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
 <script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
 <script>
-	$(document).ready(function()
-	{
-		var factory = $('#doc-factory');
-		var machine = $('#doc-machine');
-		var device  = $('#doc-device');
+  $(document).ready(function()
+  {
+    var factory = $('#doc-factory');
+    var machine = $('#doc-machine');
+    var device = $('#doc-device');
 
-		if (machine.get(0).length == 1)
-		{
-			machine.parent().hide();
-		}
+    if (machine.get(0).length == 1)
+    {
+      machine.parent().hide();
+    }
 
-		if (device.get(0).length == 1)
-		{
-			device.parent().hide();
-		}
+    if (device.get(0).length == 1)
+    {
+      device.parent().hide();
+    }
 
-		factory.change(function()
-		{
-			device.parent().fadeOut(250, function() { device.empty(); });
+    factory.change(function()
+    {
+      device.parent().fadeOut(250, function() { device.empty(); });
 
-			if (factory.val() == 0)
-			{
-				machine.parent().fadeOut(500, function() { machine.empty(); });
+      if (factory.val() == 0)
+      {
+        machine.parent().fadeOut(500, function() { machine.empty(); });
 
-				return true;
-			}
+        return true;
+      }
 
-			startWaiting();
+      startWaiting();
 
-			$.get(
-				'<?= url_for('service/fetch_objects.php') ?>',
-				{
+      $.get(
+        '<?= url_for('service/fetch_objects.php') ?>',
+        {
           type: 1,
-					parent: factory.val()
-				},
-				function(data)
-				{
-					if (data.length > 0)
-					{
-						machine.empty().append('<option value="0"></option>');
+          parent: factory.val()
+        },
+        function(data)
+        {
+          if (data.length > 0)
+          {
+            machine.empty().append('<option value="0"></option>');
 
-						for (var i in data)
-						{
-							machine.append(render('<option value="${value}">${label}</option>', data[i]));
-						}
+            for (var i in data)
+            {
+              machine.append(render('<option value="${value}">${label}</option>', data[i]));
+            }
 
-						machine.parent().fadeIn(500, function() { machine.focus(); });
-					}
-					else
-					{
-						machine.parent().fadeOut(500, function() { machine.empty(); });
-					}
+            machine.parent().fadeIn(500, function() { machine.focus(); });
+          }
+          else
+          {
+            machine.parent().fadeOut(500, function() { machine.empty(); });
+          }
 
-					stopWaiting();
-				},
-				'json'
-			);
-		});
+          stopWaiting();
+        },
+        'json'
+      );
+    });
 
-		machine.change(function()
-		{
-			device.parent().fadeOut(500, function() { device.empty(); });
+    machine.change(function()
+    {
+      device.parent().fadeOut(500, function() { device.empty(); });
 
-			if (machine.val() == 0) return true;
+      if (machine.val() == 0) return true;
 
-			startWaiting();
+      startWaiting();
 
-			$.get(
-				'<?= url_for('service/fetch_objects.php') ?>',
-				{
+      $.get(
+        '<?= url_for('service/fetch_objects.php') ?>',
+        {
           type: 2,
-					parent: machine.val()
-				},
-				function(data)
-				{
-					if (data.length > 0)
-					{
-						device.append('<option value="0"></option>');
+          parent: machine.val()
+        },
+        function(data)
+        {
+          if (data.length > 0)
+          {
+            device.append('<option value="0"></option>');
 
-						for (var i in data)
-						{
-							device.append(render('<option value="${value}">${label}</option>', data[i]));
-						}
+            for (var i in data)
+            {
+              device.append(render('<option value="${value}">${label}</option>', data[i]));
+            }
 
-						device.parent().fadeIn(500, function() { device.focus() });
-					}
+            device.parent().fadeIn(500, function() { device.focus() });
+          }
 
-					stopWaiting();
-				},
-				'json'
-			);
-		});
+          stopWaiting();
+        },
+        'json'
+      );
+    });
 
-		var fileList  = $('#doc-fileList');
-		var fileCount = <?= $i + 1 ?>;
+    var fileList = $('#doc-fileList');
+    var fileCount = <?= $i + 1 ?>;
 
     $('#doc-files').uploadify({
       uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
@@ -396,6 +403,6 @@ $action = $product
         ));
       }
     });
-	});
+  });
 </script>
 <? append_slot() ?>

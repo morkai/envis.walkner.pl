@@ -2,13 +2,12 @@
 
 include_once __DIR__ . '/../_common.php';
 
-if (!is('post') || empty($_POST['template']) || empty($_GET['type']))
-  bad_request();
+bad_request_if(!is('post') || empty($_POST['template']) || empty($_GET['type']));
 
 $referer = get_referer('offers/templates/');
 
 $tpl = array_merge(array(
-  'id'   => 0,
+  'id' => 0,
   'name' => '',
   'type' => $_GET['type'],
 ), $_POST['template']);
@@ -20,8 +19,7 @@ if (isset($tpl['delete']) && !empty($tpl['id']))
   go_to($referer);
 }
 
-if (!in_array($tpl['type'], array('client', 'intro', 'outro')))
-  bad_request();
+bad_request_if(!in_array($tpl['type'], array('client', 'intro', 'outro')));
 
 if (is_empty($tpl['name']))
 {
@@ -43,7 +41,7 @@ switch ($tpl['type'])
 
   case 'client':
     $bindings['template'] = serialize(array(
-      'clientName'    => $tpl['clientName'],
+      'clientName' => $tpl['clientName'],
       'clientContact' => $tpl['clientContact']
     ));
     break;

@@ -10,13 +10,13 @@ function catalog_move_subcategories($category)
   );
 }
 
-if (empty($_REQUEST['id'])) bad_request();
+bad_request_if(empty($_REQUEST['id']));
 
 no_access_if_not_allowed('catalog/manage');
 
 $category = fetch_one('SELECT id, parent, name FROM catalog_categories WHERE id=?', array(1 => $_REQUEST['id']));
 
-if (empty($category)) not_found();
+not_found_if(empty($category));
 
 if (is('delete'))
 {

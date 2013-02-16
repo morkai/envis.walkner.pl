@@ -6,7 +6,7 @@ function render(template, data)
 
 	if (template.selector != undefined)
 	{
-		el       = template;
+		el = template;
 		template = el.html();
 	}
 
@@ -79,7 +79,7 @@ $(function()
   });
 
   var windowEl = $(window);
-  var bodyEl   = $('body');
+  var bodyEl = $('body');
 
   function resizeMenu()
   {

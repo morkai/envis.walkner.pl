@@ -2,16 +2,16 @@
 
 include_once './_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('offers/add');
 
 $offer = fetch_one('SELECT * FROM offers WHERE id=?', array(1 => $_GET['id']));
 
-if (empty($offer)) not_found();
+not_found_if(empty($offer));
 
-$referer  = get_referer('offers/view.php?id=' . $offer->id);
-$errors   = array();
+$referer = get_referer('offers/view.php?id=' . $offer->id);
+$errors = array();
 $newOffer = array_merge(array(
   'title' => $offer->title,
 ), empty($_POST['newOffer']) ? array() : $_POST['newOffer']);
@@ -41,7 +41,7 @@ if (is('post'))
       }
     }
 
-    $newOffer['number']    = fetch_next_offer_number();
+    $newOffer['number'] = fetch_next_offer_number();
     $newOffer['createdAt'] = date('Y-m-d');
 
     exec_insert('offers', $newOffer);
@@ -58,7 +58,7 @@ if (is('post'))
 
       exec_insert('offer_items', $item);
     }
-    
+
     log_info('Skopiowano ofertę <%s> do <%s>.', $offer->title, $newOffer['title']);
 
     $conn->commit();
@@ -83,16 +83,16 @@ escape_var($referer);
 <? decorate("Kopiowanie oferty") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Kopiowanie oferty</h1>
-	</div>
-	<div class="block-body">
-		<form method="post" action="<?= url_for("offers/copy.php?id={$offer->id}") ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<legend>Kopiowanie oferty</legend>
+  <div class="block-header">
+    <h1 class="block-name">Kopiowanie oferty</h1>
+  </div>
+  <div class="block-body">
+    <form method="post" action="<?= url_for("offers/copy.php?id={$offer->id}") ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <legend>Kopiowanie oferty</legend>
         <? display_errors($errors) ?>
-				<ol class="form-fields">
+        <ol class="form-fields">
           <li>
             <?= label('baseOfferTitle', 'Oferta bazowa') ?>
             <p><?= e($offer->title) ?> (<?= e($offer->number) ?>)</p>
@@ -104,8 +104,8 @@ escape_var($referer);
               <li><input type="submit" value="Kopiuj ofertę">
               <li><a href="<?= $referer ?>">Anuluj</a>
             </ol>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>

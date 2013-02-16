@@ -44,7 +44,7 @@ if (is('post'))
 }
 else
 {
-	$kind = (array)$oldKind;
+  $kind = (array)$oldKind;
 }
 
 VIEW:
@@ -54,29 +54,29 @@ VIEW:
 <? decorate("Edycja rodzaju produktów - Katalog produktów") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Edycja rodzaju produktów &lt;<?= $oldKind->id ?>&gt;</h1>
-	</div>
-	<div class="block-body">
-		<form method="post" action="<?= url_for("catalog/kinds/edit.php?id={$oldKind->id}") ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<legend>Edycja rodzaju produktów</legend>
-				<? display_errors($errors) ?>
-				<ol class="form-fields">
+  <div class="block-header">
+    <h1 class="block-name">Edycja rodzaju produktów &lt;<?= $oldKind->id ?>&gt;</h1>
+  </div>
+  <div class="block-body">
+    <form method="post" action="<?= url_for("catalog/kinds/edit.php?id={$oldKind->id}") ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <legend>Edycja rodzaju produktów</legend>
+        <? display_errors($errors) ?>
+        <ol class="form-fields">
           <li>
             <?= label('kind-nr', 'Nr') ?>
             <p><?= $oldKind->nr ?></p>
-					<li>
-						<?= label('kind-name', 'Nazwa') ?>
-						<input id="kind-name" name="kind[name]" type="text" maxlength="100" value="<?= e($kind['name']) ?>">
-					<li>
-						<ol class="form-actions">
-							<li><input type="submit" value="Edytuj rodzaj produktów">
-							<li><a href="<?= $referer ?>">Anuluj</a>
-						</ol>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+          <li>
+            <?= label('kind-name', 'Nazwa') ?>
+            <input id="kind-name" name="kind[name]" type="text" maxlength="100" value="<?= e($kind['name']) ?>">
+          <li>
+            <ol class="form-actions">
+              <li><input type="submit" value="Edytuj rodzaj produktów">
+              <li><a href="<?= $referer ?>">Anuluj</a>
+            </ol>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>

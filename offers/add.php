@@ -4,19 +4,19 @@ include_once './_common.php';
 
 no_access_if_not_allowed('offers/add');
 
-$errors  = array();
+$errors = array();
 $referer = get_referer('offers/');
-$offer   = array_merge(
+$offer = array_merge(
   array(
-    'number'          => '',
-    'title'           => '',
-    'client'          => '',
-    'clientContact'   => '',
-    'supplier'        => $defaultOfferSupplier,
+    'number' => '',
+    'title' => '',
+    'client' => '',
+    'clientContact' => '',
+    'supplier' => $defaultOfferSupplier,
     'supplierContact' => $defaultOfferSupplierContact,
-    'intro'           => '',
-    'outro'           => '',
-    'createdAt'       => date('Y-m-d')
+    'intro' => '',
+    'outro' => '',
+    'createdAt' => date('Y-m-d')
   ),
   empty($_POST['offer']) ? array() : $_POST['offer']
 );

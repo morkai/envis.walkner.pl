@@ -19,7 +19,7 @@ $relatedIssues = array_map(function($issue) use($statuses)
 {
   escape_vars($issue->subject);
 
-  $issue->status  = e($statuses[$issue->status]);
+  $issue->status = e($statuses[$issue->status]);
   $issue->percent = is_numeric($issue->percent) ? ((int)$issue->percent . '%') : '-';
 
   return $issue;
@@ -30,7 +30,7 @@ $currentUser = $_SESSION['user'];
 
 $canAddLinks = $currentUser->isSuper() || $issue->owner == $currentUser->getId() || (!$issue->owner && is_allowed_to('service/edit'));
 
-$docsViewer  = is_issue_docs_viewer($currentUser, $issue);
+$docsViewer = is_issue_docs_viewer($currentUser, $issue);
 $docsViewerSuffix = $docsViewer ? '&docs=1' : '';
 
 ?>

@@ -4,22 +4,22 @@ include_once './_common.php';
 
 no_access_if_not_allowed('offers/close');
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $offer = fetch_one('SELECT id, number, title, clientContact, closedAt FROM offers WHERE id=? LIMIT 1', array(1 => $_GET['id']));
 
-if (empty($offer)) not_found();
+not_found_if(empty($offer));
 
-if (!empty($offer->closedAt)) bad_request();
+bad_request_if(!empty($offer->closedAt));
 
 preg_match('/([a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+\.[a-zA-Z]{2,10})/s', $offer->clientContact, $matches);
 
 $referer = get_referer("offers/view.phpg?id={$offer->id}");
-$errors  = array();
-$mail    = array_merge(array(
+$errors = array();
+$mail = array_merge(array(
   'subject' => strpos(strtolower($offer->title), 'oferta') === false ? ('Oferta: ' . $offer->title) : $offer->title,
-  'to'      => empty($matches[1]) ? '' : $matches[1],
-  'text'    => ''
+  'to' => empty($matches[1]) ? '' : $matches[1],
+  'text' => ''
 ), empty($_POST['mail']) ? array() : $_POST['mail']);
 
 if (is('post'))
@@ -44,11 +44,11 @@ if (is('post'))
     $_GET['format'] = 'html';
 
     ob_start();
-    include './export.php';
+    include_once __DIR__ . '/export.php';
     $contents = ob_get_clean();
 
     $offerHtmlFile = make_offer_file($offer->id, 'html');
-    $offerPdfFile  = make_offer_file($offer->id, 'pdf');
+    $offerPdfFile = make_offer_file($offer->id, 'pdf');
 
     if (file_put_contents($offerHtmlFile, $contents) === false)
     {
@@ -60,7 +60,7 @@ if (is('post'))
 
     if ($_SERVER['HTTP_HOST'] === 'localhost')
     {
-      $result       = 0;
+      $result = 0;
       $offerPdfFile = make_offer_file(0, 'pdf');
     }
     else

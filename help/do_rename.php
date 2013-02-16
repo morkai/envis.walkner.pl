@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_POST['id']) || empty($_POST['title'])) bad_request();
+bad_request_if(empty($_POST['id']) || empty($_POST['title']));
 
 no_access_if_not_allowed('help*');
 

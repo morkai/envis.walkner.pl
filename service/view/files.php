@@ -24,7 +24,7 @@ $files = array_map(function($file)
 
 $currentUser = $_SESSION['user'];
 
-$docsViewer  = is_issue_docs_viewer($currentUser, $issue);
+$docsViewer = is_issue_docs_viewer($currentUser, $issue);
 $docsViewerSuffix = $docsViewer ? '&docs=1' : '';
 
 $canAddFiles = $currentUser->isSuper()
@@ -132,7 +132,7 @@ $(function()
     function save()
     {
       var newName = $.trim($input.val());
-      
+
       $input.remove();
       $name.html(oldHtml);
 
@@ -174,7 +174,7 @@ $(function()
         success: function(data)
         {
           $('#files .nofiles').remove();
-          
+
           $('#files tbody').append('<tr>'
             + '<td class="name clickable"><a href="<?= url_for("service/files/download.php?id=") ?>' + data.id + '<?= $docsViewerSuffix ?>">' + data.name + '</a>'
             + '<td>' + file.type.toUpperCase().substr(1)

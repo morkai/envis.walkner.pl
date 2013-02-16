@@ -1,8 +1,8 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 no_access_if_not_allowed('service/templates*');
 
@@ -11,16 +11,16 @@ $oldTpl = (array)fetch_one('SELECT id, name FROM issue_templates WHERE id=?', ar
 if (empty($oldTpl)) not_found();
 
 $referer = get_referer("service/templates/view.php?id={$oldTpl['id']}");
-$errors  = array();
+$errors = array();
 
 if (!empty($_POST['template']))
 {
   $template = $_POST['template'] + array('tasks' => array());
 
-	if (!between(1, $template['name'], 255))
-	{
-		$errors[] = 'Nazwa jest wymagana.';
-	}
+  if (!between(1, $template['name'], 255))
+  {
+    $errors[] = 'Nazwa jest wymagana.';
+  }
 
   if (!empty($errors)) goto VIEW;
 
@@ -41,7 +41,7 @@ if (!empty($_POST['template']))
 }
 else
 {
-	$template = $oldTpl;
+  $template = $oldTpl;
 }
 
 VIEW:
@@ -53,25 +53,25 @@ escape_array($template);
 <? decorate("Edycja szablonu zadań") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Edycja szablonu zadań</h1>
-	</div>
-	<div class="block-body">
-		<form method="post" action="<?= url_for("service/templates/edit.php?id={$oldTpl['id']}") ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<? display_errors($errors) ?>
-				<ol class="form-fields">
-					<li>
-						<?= label('templateName', 'Nazwa*') ?>
-						<input id="templateName" name="template[name]" type="text" maxlength="255" value="<?= $template['name'] ?>">
-					<li>
-						<ol class="form-actions">
-							<li><input type="submit" value="Edytuj szablon zadań">
-							<li><a href="<?= $referer ?>">Anuluj</a>
-						</ol>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+  <div class="block-header">
+    <h1 class="block-name">Edycja szablonu zadań</h1>
+  </div>
+  <div class="block-body">
+    <form method="post" action="<?= url_for("service/templates/edit.php?id={$oldTpl['id']}") ?>" autocomplete="off">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <? display_errors($errors) ?>
+        <ol class="form-fields">
+          <li>
+            <?= label('templateName', 'Nazwa*') ?>
+            <input id="templateName" name="template[name]" type="text" maxlength="255" value="<?= $template['name'] ?>">
+          <li>
+            <ol class="form-actions">
+              <li><input type="submit" value="Edytuj szablon zadań">
+              <li><a href="<?= $referer ?>">Anuluj</a>
+            </ol>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>

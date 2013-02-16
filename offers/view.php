@@ -4,7 +4,7 @@ include_once './_common.php';
 
 no_access_if_not_allowed('offers*');
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $query = <<<SQL
 SELECT o.*
@@ -15,15 +15,15 @@ SQL;
 
 $offer = fetch_one($query, array(1 => $_GET['id']));
 
-if (empty($offer)) not_found();
+not_found_if(empty($offer));
 
-$offer->items  = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
+$offer->items = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
 $offer->closed = !empty($offer->closedAt);
 
-$canAdd    = is_allowed_to('offers/add');
+$canAdd = is_allowed_to('offers/add');
 $canDelete = is_allowed_to('offers/delete');
-$canEdit   = is_allowed_to('offers/edit');
-$canClose  = is_allowed_to('offers/close') && !$offer->closed;
+$canEdit = is_allowed_to('offers/edit');
+$canClose = is_allowed_to('offers/close') && !$offer->closed;
 
 ?>
 

@@ -1,12 +1,12 @@
 <?php
 
-if (empty($_POST['task']) || !isset($_POST['pos'])) bad_request();
+bad_request_if(empty($_POST['task']) || !isset($_POST['pos']));
 
 no_access_if(!$role & ISSUE_ROLE_SUPER && !$role & ISSUE_ROLE_OWNER);
 
 $task = fetch_one('SELECT id, issue, position AS oldPosition FROM issue_tasks WHERE id=? LIMIT 1', array(1 => $_POST['task']));
 
-if (empty($task)) not_found();
+not_found_if(empty($task));
 
 $task->newPosition = (int)$_POST['pos'];
 
@@ -19,7 +19,7 @@ try
 {
   $conn->beginTransaction();
 
-  $bindings = array(':issue'       => $task->issue,
+  $bindings = array(':issue' => $task->issue,
                     ':oldPosition' => $task->oldPosition,
                     ':newPosition' => $task->newPosition);
 
@@ -35,7 +35,7 @@ try
   }
 
   unset($bindings[':oldPosition']);
-  
+
   $bindings[':task'] = $task->id;
 
   exec_stmt('UPDATE issue_tasks SET position=:newPosition WHERE issue=:issue AND id=:task', $bindings);

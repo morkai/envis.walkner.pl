@@ -6,7 +6,7 @@ no_access_if_not_allowed('offers*');
 
 include_once '../_lib_/PagedData.php';
 
-$page    = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
+$page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
 $perPage = 15;
 
 $offers = new PagedData($page, $perPage);
@@ -32,9 +32,9 @@ $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $offers->getOffset(), $offe
 
 $offers->fill($totalItems, $items);
 
-$canAdd             = is_allowed_to('offers/add');
-$canDelete          = is_allowed_to('offers/delete');
-$canClose           = is_allowed_to('offers/close');
+$canAdd = is_allowed_to('offers/add');
+$canDelete = is_allowed_to('offers/delete');
+$canClose = is_allowed_to('offers/close');
 $canManageTemplates = is_allowed_to('offers/templates');
 
 ?>

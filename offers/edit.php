@@ -4,7 +4,7 @@ include_once './_common.php';
 
 no_access_if_not_allowed('offers/edit');
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $referer = get_referer("offers/view.php?id={$_GET['id']}");
 
@@ -23,7 +23,7 @@ try
 {
   $conn->beginTransaction();
 
-  $fields   = array('title', 'supplier', 'supplierContact', 'client', 'clientContact', 'intro', 'outro');
+  $fields = array('title', 'supplier', 'supplierContact', 'client', 'clientContact', 'intro', 'outro');
   $bindings = array();
 
   foreach ($fields as $field)
@@ -40,7 +40,7 @@ try
   foreach ($items as $item)
   {
     $item['offer'] = $oldOffer->id;
-    
+
     exec_insert('offer_items', $item);
   }
 

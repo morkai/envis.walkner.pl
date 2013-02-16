@@ -1,10 +1,10 @@
 <?php
 
 $comment = !empty($_POST['comment']) ? trim($_POST['comment']) : '';
-$tasks   = !empty($_POST['tasks']) && is_array($_POST['tasks']) ? implode(', ', array_filter($_POST['tasks'], 'is_numeric')) : array();
+$tasks = !empty($_POST['tasks']) && is_array($_POST['tasks']) ? implode(', ', array_filter($_POST['tasks'], 'is_numeric')) : array();
 
 $timeSpent = !empty($_POST['timeSpent']) ? (int)$_POST['timeSpent'] : 0;
-$reason    = !empty($_POST['reason']) ? trim($_POST['reason']) : '';
+$reason = !empty($_POST['reason']) ? trim($_POST['reason']) : '';
 
 if (empty($comment) && empty($_POST['tasks']) && empty($timeSpent))
 {
@@ -37,18 +37,18 @@ try
   if (!empty($completedTasks))
   {
     $tasks = implode(',', array_keys($completedTasks));
-    
+
     exec_stmt('UPDATE issue_tasks SET completed=1, completedAt=' . time() . ', completedBy=' . $userId . ' WHERE id IN(' . $tasks . ')');
   }
 
   if ($timeSpent)
   {
     exec_insert('issue_times', array(
-      'issue'     => $issue->id,
-      'user'      => $userId,
+      'issue' => $issue->id,
+      'user' => $userId,
       'createdAt' => time(),
       'timeSpent' => $timeSpent,
-      'comment'   => $reason
+      'comment' => $reason
     ));
   }
 
@@ -92,7 +92,7 @@ try
 catch (PDOException $x)
 {
   $db->rollBack();
-  
+
   set_flash($x->getMessage(), 'error');
 }
 

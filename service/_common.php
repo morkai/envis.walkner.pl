@@ -25,28 +25,28 @@ $types = array(1 => 'Awaria', 'Zmiana', 'Prewencja', 'Zamówienie');
 define('ISSUE_TYPE_ORDER', 4);
 
 $columnNames = array(
-  'id'               => 'ID',
-  'subject'          => 'Temat',
-  'status'           => 'Status',
-  'percent'          => '%',
-  'priority'         => 'Priorytet',
-  'type'             => 'Typ',
-  'kind'             => 'Rodzaj',
-  'creator'          => 'Zgłaszający',
-  'owner'            => 'Właściciel',
-  'createdAt'        => 'Czas zgłoszenia',
-  'updatedAt'        => 'Czas ostatniej zmiany',
+  'id' => 'ID',
+  'subject' => 'Temat',
+  'status' => 'Status',
+  'percent' => '%',
+  'priority' => 'Priorytet',
+  'type' => 'Typ',
+  'kind' => 'Rodzaj',
+  'creator' => 'Zgłaszający',
+  'owner' => 'Właściciel',
+  'createdAt' => 'Czas zgłoszenia',
+  'updatedAt' => 'Czas ostatniej zmiany',
   'expectedFinishAt' => 'Przew. data zak.',
-  'orderNumber'      => 'Numer zamówienia',
-  'orderDate'        => 'Data zamówienia',
-  'orderInvoice'     => 'Numer faktury',
+  'orderNumber' => 'Numer zamówienia',
+  'orderDate' => 'Data zamówienia',
+  'orderInvoice' => 'Numer faktury',
   'orderInvoiceDate' => 'Data faktury',
-  'relatedProduct'   => 'Powiązany produkt'
+  'relatedProduct' => 'Powiązany produkt'
 );
 
 function send_assign_email($receivers, $subject, $issue)
 {
-  $url     = url_for('service/view.php?id=' . $issue, true);
+  $url = url_for('service/view.php?id=' . $issue, true);
   $creator = $_SESSION['user']->getName();
   $message = <<<MSG
 Witaj!
@@ -69,13 +69,13 @@ MSG;
 function send_issue_removal_email($issue)
 {
   $subscribers = get_issue_subscribers($issue->id, false);
-  
+
   $subject = 'Usunięto zgłoszenie: ' . $issue->subject;
-  
+
   foreach ($subscribers as $subscriber)
   {
     if ($subscriber == $_SESSION['user']->getId()) continue;
-    
+
     $message = <<<MSG
 Witaj, {$subscriber->name}!
 
@@ -86,7 +86,7 @@ Witaj, {$subscriber->name}!
 
 Ta wiadomość została wygenerowana automatycznie.
 MSG;
-    
+
     send_email($subscriber->email, $subject, $message);
   }
 }
@@ -126,7 +126,7 @@ function fetch_issues_grid_options($view = null)
 {
   if (func_num_args() === 0)
     $view = isset($_GET['v']) ? $_GET['v'] : null;
-  
+
   $defaultOptions = array(
     'n' => '', // name
     'p' => 20, // per page
@@ -137,7 +137,7 @@ function fetch_issues_grid_options($view = null)
       'c' => array(),          // columns
       'v' => array(),          // values
     ),
-    'o'  => array(                     // order
+    'o' => array(                     // order
       'f' => array('updatedAt',),      // fields
       'd' => array(-1,         ),      // directions
     ),
@@ -173,7 +173,7 @@ function fetch_issues_grid_options($view = null)
   {
     $options = fetch_grid_options('service/issues', $view) + $defaultOptions;
   }
-  
+
   $options['n'] = trim($options['n']);
 
   apply_issue_query($options);
@@ -253,7 +253,7 @@ function apply_issue_query(&$options)
 function prepare_issue_changes($change)
 {
   global $statuses, $priorities, $kinds, $types, $columnNames;
-  
+
   $columnNames += array('description' => 'Opis', 'relatedObject' => 'Powiązany obiekt');
 
   if (!isset($columnNames[$change['field']]))
@@ -306,14 +306,14 @@ function prepare_issue_changes($change)
 function record_issue_change($issue, $system, $comment, array $changes = array(), array $tasks = array(), $parent = null)
 {
   $creator = $_SESSION['user']->getId();
-  
+
   $bindings = array(
-    'issue'     => (int)$issue,
-    'parent'    => $parent,
-    'system'    => $system ? 1 : 0,
-    'comment'   => $comment,
-    'changes'   => empty($changes) ? null : serialize($changes),
-    'tasks'     => empty($tasks) ? null : serialize($tasks),
+    'issue' => (int)$issue,
+    'parent' => $parent,
+    'system' => $system ? 1 : 0,
+    'comment' => $comment,
+    'changes' => empty($changes) ? null : serialize($changes),
+    'tasks' => empty($tasks) ? null : serialize($tasks),
     'createdAt' => time(),
     'createdBy' => $creator,
   );
@@ -323,61 +323,61 @@ function record_issue_change($issue, $system, $comment, array $changes = array()
   $id = get_conn()->lastInsertId();
 
   exec_update('issues', array('updatedAt' => $bindings['createdAt']), 'id=' . $bindings['issue']);
-  
+
   $subscribers = get_issue_subscribers($issue);
-  
+
   if (!empty($subscribers))
   {
-    $issue       = fetch_one('SELECT id, subject FROM issues WHERE id=? LIMIT 1', array(1 => $issue));
+    $issue = fetch_one('SELECT id, subject FROM issues WHERE id=? LIMIT 1', array(1 => $issue));
     $creatorName = $_SESSION['user']->getName();
-    
-    $issueUrl       = url_for('service/view.php?id=' . $issue->id, true);
+
+    $issueUrl = url_for('service/view.php?id=' . $issue->id, true);
     $unsubscribeUrl = url_for('service/update.php?issue=' . $issue->id . '&what=subscription', true);
-    
+
     $changedProperties = '';
-    $completedTasks    = '';
-    $creatorComment    = empty($comment) ? '' : trim(strip_tags($comment)) . "\n\n";
-    
+    $completedTasks = '';
+    $creatorComment = empty($comment) ? '' : trim(strip_tags($comment)) . "\n\n";
+
     if (!empty($changes))
     {
       $changedProperties = "Zmienione właściwości:";
-      
+
       foreach (array_map('prepare_issue_changes', $changes) as $change)
       {
         $changedProperties .= "\n * {$change['field']} ";
-        
+
         if (empty($change['old']))
           $changedProperties .= 'ustawiono na ';
         else
           $changedProperties .= "zmieniono z [{$change['old']}] na ";
-        
+
         $changedProperties .= "[{$change['new']}]";
       }
-      
+
       $changedProperties .= "\n\n";
     }
-    
+
     if (!empty($tasks))
     {
       $completedTasks = 'Ukończone zadania:';
-      
+
       foreach ($tasks as $task)
       {
         $completedTasks .= "\n * {$task}";
       }
-      
+
       $completedTasks .= "\n\n";
     }
-    
+
     $subject = 'Zmiana zgłoszenia: ' . $issue->subject;
-    
+
     foreach ($subscribers as $subscriber)
     {
       if ($subscriber->id == $creator) continue;
-      
+
       $message = <<<MSG
 Witaj, {$subscriber->name}!
-  
+
 {$creatorName} dokonał zmian w obserwowanym przez Ciebie zgłoszeniu:
 {$issue->subject}
 dostępnym pod adresem
@@ -453,7 +453,7 @@ function format_time_ago($time)
   if ($diff < 31104000)
   {
     $months = (int)($diff / 5184000);
-    
+
     if ($months === 1) return 'miesiąc temu';
 
     if ($months < 5) return $months . ' miesiące temu';

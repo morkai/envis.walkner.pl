@@ -30,25 +30,25 @@ $issue = fetch_one($query, array(1 => $_GET['id']));
 
 not_found_if(empty($issue));
 
-$issue->statusText   = $statuses[$issue->status];
+$issue->statusText = $statuses[$issue->status];
 $issue->priorityText = $priorities[$issue->priority];
-$issue->kindText     = $kinds[$issue->kind];
-$issue->typeText     = $types[$issue->type];
-$issue->order        = $issue->type == ISSUE_TYPE_ORDER;
-$issue->description  = trim($issue->description);
+$issue->kindText = $kinds[$issue->kind];
+$issue->typeText = $types[$issue->type];
+$issue->order = $issue->type == ISSUE_TYPE_ORDER;
+$issue->description = trim($issue->description);
 
 $issue->assignees = fetch_all('SELECT u.id, u.name FROM issue_assignees ia INNER JOIN users u ON u.id=ia.assignee WHERE ia.issue=?', array(1 => $issue->id));
 
 $issue->subscribers = get_issue_subscribers($issue->id, false);
 
 $currentUser = $_SESSION['user'];
-$inform      = false;
+$inform = false;
 $participant = true;
-$assignee    = false;
-$owner       = false;
-$creator     = false;
+$assignee = false;
+$owner = false;
+$creator = false;
 
-$docsViewer  = is_issue_docs_viewer($currentUser, $issue);
+$docsViewer = is_issue_docs_viewer($currentUser, $issue);
 $docsViewerSuffix = $docsViewer ? '&docs=1' : '';
 
 foreach ($issue->subscribers as $subscriber)
@@ -88,13 +88,13 @@ switch ($currentUser->getId())
 }
 
 $canChangeProperties = $currentUser->isSuper() || $owner || (!$issue->owner && is_allowed_to('service/edit'));
-$canManageAssignees  = $canChangeProperties || ($issue->owner == null && is_allowed_to('service/assigning'));
-$canViewTasks        = $currentUser->isSuper() || $participant;
-$canAddNewTasks      = $currentUser->isSuper() || $owner;
-$canCompleteTasks    = $canChangeProperties || $assignee;
-$canComment          = $canChangeProperties || $participant || $docsViewer;
-$canUpdateTime       = $currentUser->isSuper() || $owner || $assignee;
-$canViewPrices       = $issue->order && ($currentUser->isSuper() || $owner || $creator);
+$canManageAssignees = $canChangeProperties || ($issue->owner == null && is_allowed_to('service/assigning'));
+$canViewTasks = $currentUser->isSuper() || $participant;
+$canAddNewTasks = $currentUser->isSuper() || $owner;
+$canCompleteTasks = $canChangeProperties || $assignee;
+$canComment = $canChangeProperties || $participant || $docsViewer;
+$canUpdateTime = $currentUser->isSuper() || $owner || $assignee;
+$canViewPrices = $issue->order && ($currentUser->isSuper() || $owner || $creator);
 
 no_access_if_not($canComment);
 
@@ -112,7 +112,7 @@ escape_vars($issue->subject);
   <li><a href="<?= url_for("service/time.php?id={$issue->id}") ?>">Aktualizuj czas pracy</a>
   <? endif ?>
   <? if ($participant): ?>
-	<li>
+  <li>
     <a href="<?= url_for("service/update.php?issue={$issue->id}&what=subscription{$docsViewerSuffix}") ?>">
       <? if ($inform): ?>
       Nie obserwuj

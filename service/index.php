@@ -1,6 +1,6 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
 no_access_if_not_allowed('service*');
 
@@ -10,12 +10,12 @@ $related = false;
 if (!empty($_GET['relate']))
 {
   $baseUrl .= '&relate=' . $_GET['relate'];
-  $related  = fetch_one('SELECT id, subject, owner FROM issues WHERE id=?', array(1 => $_GET['relate']));
+  $related = fetch_one('SELECT id, subject, owner FROM issues WHERE id=?', array(1 => $_GET['relate']));
 
-  if (empty($related)) bad_request();
+  bad_request_if(empty($related));
 
   $currentUser = $_SESSION['user'];
-  
+
   no_access_if_not($currentUser->isSuper()
                    || $related->owner == $currentUser->getId()
                    || (!$related->owner && is_allowed_to('service/edit')));
@@ -26,15 +26,15 @@ if (!empty($_GET['relate']))
   $related->related[] = $related->id;
 }
 
-include '../_lib_/PagedData.php';
+include_once __DIR__ . '/../_lib_/PagedData.php';
 
 function construct_issues_grid_queries(array $options)
 {
   global $statuses, $priorities, $kinds, $types, $related;
 
   $bindings = array();
-  $columns  = array();
-  $query    = "SELECT %s\nFROM issues i ";
+  $columns = array();
+  $query = "SELECT %s\nFROM issues i ";
 
   foreach ($options['c'] as $column)
   {
@@ -56,20 +56,20 @@ function construct_issues_grid_queries(array $options)
         break;
 
       case 'status':
-        $columns['status']           = 'i.status';
-        $columns['createdAt']        = 'i.createdAt';
+        $columns['status'] = 'i.status';
+        $columns['createdAt'] = 'i.createdAt';
         $columns['expectedFinishAt'] = 'i.expectedFinishAt';
         break;
 
       case 'owner':
-        $columns['owner']     = 'i.owner';
+        $columns['owner'] = 'i.owner';
         $columns['ownerName'] = 'o.name AS ownerName';
 
         $query .= "\nLEFT JOIN users o ON o.id=i.owner";
         break;
 
       case 'creator':
-        $columns['creator']     = 'i.creator';
+        $columns['creator'] = 'i.creator';
         $columns['creatorName'] = 'c.name AS creatorName';
 
         $query .= "\nINNER JOIN users c ON c.id=i.creator";
@@ -79,7 +79,7 @@ function construct_issues_grid_queries(array $options)
         $columns['percent'] = 'i.percent';
 
         $columns += array(
-          'allTasks'       => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id) AS allTasks',
+          'allTasks' => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id) AS allTasks',
           'completedTasks' => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id AND t.completed=1) AS completedTasks',
         );
         break;
@@ -87,7 +87,7 @@ function construct_issues_grid_queries(array $options)
   }
 
   $allowedFactories = implode(', ', $_SESSION['user']->getAllowedFactoryIds());
-  $allowedMachines  = '"' . implode('", "', $_SESSION['user']->getAllowedMachineIds()) . '"';
+  $allowedMachines = '"' . implode('", "', $_SESSION['user']->getAllowedMachineIds()) . '"';
 
   $query .= <<<SQL
 
@@ -117,7 +117,7 @@ SQL;
 
     foreach ($options['f']['c'] as $k => $column)
     {
-      $bindingKey   = ':' . $column . '_' . $k;
+      $bindingKey = ':' . $column . '_' . $k;
       $bindingValue = empty($options['f']['v'][$k]) ? 0 : $options['f']['v'][$k];
 
       if (empty($bindingValue)) continue;
@@ -157,7 +157,7 @@ SQL;
               break;
           }
 
-          $conditions[]          = $condition;
+          $conditions[] = $condition;
           $bindings[$bindingKey] = $bindingValue;
           break;
 
@@ -188,7 +188,7 @@ SQL;
           }
           elseif (isset($values[$bindingValue]))
           {
-            $conditions[]          = "i.{$column} = {$bindingKey}";
+            $conditions[] = "i.{$column} = {$bindingKey}";
             $bindings[$bindingKey] = $bindingValue;
           }
           break;
@@ -201,7 +201,7 @@ SQL;
             default:   $cmp = '='; break;
           }
 
-          $conditions[]          = "i.percent {$cmp} {$bindingKey}";
+          $conditions[] = "i.percent {$cmp} {$bindingKey}";
           $bindings[$bindingKey] = (float)$bindingValue;
           break;
 
@@ -239,7 +239,7 @@ SQL;
                                     $isDateType ? "CAST({$bindingKey}_to AS DATE)" : "{$bindingKey}_to");
 
               $bindings[$bindingKey . '_from'] = $bindingValue[0];
-              $bindings[$bindingKey . '_to']   = $isDateType ? $bindingValue[1] : ($bindingValue[1] + 3600 * 24 - 1);
+              $bindings[$bindingKey . '_to'] = $isDateType ? $bindingValue[1] : ($bindingValue[1] + 3600 * 24 - 1);
               break;
 
             default: // to
@@ -322,7 +322,7 @@ SQL;
 function fetch_issues_grid($queries, PagedData $issues)
 {
   $rowCount = fetch_one($queries['countSql'], $queries['bindings'])->count;
-  $rows     = array();
+  $rows = array();
 
   if ($rowCount != 0)
   {
@@ -370,13 +370,13 @@ function construct_issues_grid_row(array $columns, $issue)
       }
       elseif (!empty($issue->expectedFinishAt))
       {
-        $finishAt  = new DateTime($issue->expectedFinishAt);
+        $finishAt = new DateTime($issue->expectedFinishAt);
         $createdAt = new DateTime('@' . $issue->createdAt);
-        $now       = new DateTime();
+        $now = new DateTime();
 
-        $minutesFromNow      = date_interval_to_minutes($finishAt->diff($now));
+        $minutesFromNow = date_interval_to_minutes($finishAt->diff($now));
         $minutesFromCreation = date_interval_to_minutes($finishAt->diff($createdAt));
-        
+
         $percentTillFinish = 100 - (($minutesFromNow * 100) / $minutesFromCreation);
 
         if ($percentTillFinish < 0)
@@ -388,11 +388,11 @@ function construct_issues_grid_row(array $columns, $issue)
         $td['title'] = '';
 
         $boundries = array(
-          10   => 'lt10',
-          25   => 'lt25',
-          50   => 'lt50',
-          75   => 'lt75',
-          100  => 'lt100'
+          10 => 'lt10',
+          25 => 'lt25',
+          50 => 'lt50',
+          75 => 'lt75',
+          100 => 'lt100'
         );
 
         foreach ($boundries as $boundry => $class)
@@ -463,8 +463,8 @@ if (empty($options['@']))
   $options['@'] = construct_issues_grid_queries($options);
 }
 
-$options['@']['bindings'][':admin']  = $_SESSION['user']->isSuper() ? 1 : 0;
-$options['@']['bindings'][':user']   = $_SESSION['user']->getId();
+$options['@']['bindings'][':admin'] = $_SESSION['user']->isSuper() ? 1 : 0;
+$options['@']['bindings'][':user'] = $_SESSION['user']->getId();
 $options['@']['bindings'][':editor'] = is_allowed_to('service/edit') ? 1 : 0;
 $options['@']['bindings'][':docsViewer'] = isset($_GET['docs']);
 
@@ -491,7 +491,7 @@ $views = fetch_array("SELECT view AS `key`, name AS `value` FROM grid_views WHER
 
 $v = empty($_GET['v']) ? null : $_GET['v'];
 
-$view        = http_build_query(array('v' => $v));
+$view = http_build_query(array('v' => $v));
 $currentView = is_valid_view_id($v) ? $v : null;
 
 unset($v);

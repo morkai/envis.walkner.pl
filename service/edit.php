@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['id'])) bad_request();
+bad_request_if(empty($_GET['id']));
 
 $query = <<<SQL
 SELECT
@@ -44,7 +44,7 @@ $oldIssue['tasks'] = fetch_array('SELECT id AS `key`, summary AS value FROM issu
                                  array(1 => $oldIssue['id']));
 
 $referer = get_referer("service/view.php?id={$oldIssue['id']}");
-$errors  = array();
+$errors = array();
 
 if (!empty($_POST['issue']))
 {
@@ -88,7 +88,7 @@ if (!empty($_POST['issue']))
   $comment = $issue['comment'];
   unset($issue['comment']);
 
-  $changes              = array();
+  $changes = array();
   $changedRelatedObject = false;
   $relatedObjectFields = array('relatedFactory', 'relatedMachine', 'relatedDevice');
 
@@ -97,7 +97,7 @@ if (!empty($_POST['issue']))
     if ($newValue !== $oldIssue[$field])
     {
       if ($field === 'tasks') continue;
-      
+
       if (in_array($field, $relatedObjectFields))
       {
         $changedRelatedObject = true;
@@ -117,15 +117,15 @@ if (!empty($_POST['issue']))
       }
 
       $changes[] = array('field' => $field,
-                         'old'   => $oldIssue[$field],
-                         'new'   => $newValue);
+                         'old' => $oldIssue[$field],
+                         'new' => $newValue);
     }
   }
 
   if (empty($changes) && !$changedRelatedObject && empty($issue['tasks']))
   {
     $errors[] = 'Nie dokonano żadnych zmian.';
-    
+
     goto VIEW;
   }
 
@@ -133,11 +133,11 @@ if (!empty($_POST['issue']))
   {
     $oldRelatedObject = array($oldIssue['relatedFactory'] => $oldIssue['factoryName'],
                               $oldIssue['relatedMachine'] => $oldIssue['machineName'],
-                              $oldIssue['relatedDevice']  => $oldIssue['deviceName'],);
+                              $oldIssue['relatedDevice'] => $oldIssue['deviceName'],);
 
     $newRelatedObject = array($issue['relatedFactory'] => null,
                               $issue['relatedMachine'] => null,
-                              $issue['relatedDevice']  => null,);
+                              $issue['relatedDevice'] => null,);
 
     $tables = array('factories', 'machines', 'engines');
 
@@ -159,8 +159,8 @@ if (!empty($_POST['issue']))
 
     $changes[] = array(
       'field' => 'relatedObject',
-      'old'   => $oldRelatedObject,
-      'new'   => $newRelatedObject
+      'old' => $oldRelatedObject,
+      'new' => $newRelatedObject
     );
   }
 
@@ -170,8 +170,8 @@ if (!empty($_POST['issue']))
 
   if (!empty($owner))
   {
-    $issue['owner']           = $owner->id;
-    $issue['ownerStakes']     = 0;
+    $issue['owner'] = $owner->id;
+    $issue['ownerStakes'] = 0;
     $issue['ownerStakesType'] = 0;
   }
 
@@ -186,7 +186,7 @@ if (!empty($_POST['issue']))
   }
 
   unset($issue['tasks']);
-  
+
   $conn = get_conn();
 
   try
@@ -197,7 +197,7 @@ if (!empty($_POST['issue']))
     {
       exec_stmt('UPDATE issue_tasks SET completed=1, completedAt=' . time() . ', completedBy=' . $_SESSION['user']->getId() . ' WHERE id IN(' . implode(',', array_keys($completedTasks)) . ')');
     }
-    
+
     if (!empty($owner))
     {
       exec_stmt('DELETE FROM issue_times WHERE issue=? and user=?', array(1 => $oldIssue['id'], $owner->id));
@@ -237,17 +237,17 @@ VIEW:
 $issue += array('comment' => '', 'informOwner' => 0, 'tasks' => array());
 
 $factories = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM factories %s ORDER BY name', get_allowed_factories('WHERE id IN(%s)')));
-$machines  = array();
-$devices   = array();
+$machines = array();
+$devices = array();
 
 if (!empty($issue['relatedFactory']) && has_access_to_factory($issue['relatedFactory']))
 {
-	$machines = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM machines WHERE factory=? %s ORDER BY name', get_allowed_machines('AND id IN(%s)')), array(1 => $issue['relatedFactory']));
+  $machines = fetch_array(sprintf('SELECT id AS `key`, name AS value FROM machines WHERE factory=? %s ORDER BY name', get_allowed_machines('AND id IN(%s)')), array(1 => $issue['relatedFactory']));
 }
 
 if (!empty($issue['relatedMachine']) && has_access_to_machine($issue['relatedMachine']))
 {
-	$devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=? ORDER BY name', array(1 => $issue['relatedMachine']));
+  $devices = fetch_array('SELECT id AS `key`, name AS value FROM engines WHERE machine=? ORDER BY name', array(1 => $issue['relatedMachine']));
 }
 
 escape_array($issue);
@@ -464,7 +464,7 @@ $(function()
   </div>
   <div class="block-body">
     <form id="issue" class="form" method="post" action="<?= url_for("service/edit.php?id={$oldIssue['id']}") ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Edycja zgłoszenia</legend>
         <? display_errors($errors) ?>

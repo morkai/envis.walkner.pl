@@ -1,6 +1,6 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
 bad_request_if(empty($_POST['template']));
 

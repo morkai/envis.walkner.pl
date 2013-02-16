@@ -5,13 +5,13 @@ bad_request_if(empty($_POST['newTask']));
 no_access_if(!$role & ISSUE_ROLE_SUPER && !$role & ISSUE_ROLE_OWNER);
 
 $bindings = array(
-  'issue'       => $issue->id,
-  'summary'     => trim($_POST['newTask']['summary']),
+  'issue' => $issue->id,
+  'summary' => trim($_POST['newTask']['summary']),
   'description' => trim($_POST['newTask']['description']),
-  'assignedTo'  => null,
-  'createdAt'   => time(),
-  'createdBy'   => $_SESSION['user']->getId(),
-  'position'    => 0
+  'assignedTo' => null,
+  'createdAt' => time(),
+  'createdBy' => $_SESSION['user']->getId(),
+  'position' => 0
 );
 
 if (!empty($bindings['summary']))
@@ -22,7 +22,7 @@ if (!empty($bindings['summary']))
   }
 
   $assignee = 0;
-  
+
   if (is_numeric($_POST['newTask']['assignee']))
   {
     $assignee = (int)$_POST['newTask']['assignee'];
@@ -63,20 +63,20 @@ if (!empty($bindings['summary']))
     if (is_ajax())
     {
       output_json(array(
-        'id'           => $id,
-        'summary'      => $bindings['summary'],
-        'description'  => markdown($bindings['description']),
-        'assigneeId'   => $assignee,
+        'id' => $id,
+        'summary' => $bindings['summary'],
+        'description' => markdown($bindings['description']),
+        'assigneeId' => $assignee,
         'assigneeName' => empty($assigneeName) ? '-' : $assigneeName,
-        'createdBy'    => $_SESSION['user']->getName() . ' @ ' . date('Y-m-d, H:i', $bindings['createdAt']),
-        'classNames'   => ($issue->owner == $assignee ? 'own' : '') . ' unresolved'
+        'createdBy' => $_SESSION['user']->getName() . ' @ ' . date('Y-m-d, H:i', $bindings['createdAt']),
+        'classNames' => ($issue->owner == $assignee ? 'own' : '') . ' unresolved'
       ));
     }
   }
   catch (PDOException $x)
   {
     $conn->rollBack();
-    
+
     set_flash($x->getMessage(), 'error');
   }
 }

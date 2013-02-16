@@ -1,8 +1,8 @@
 <?php
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['parent']) || empty($_GET['type'])) bad_request();
+bad_request_if(empty($_GET['parent']) || empty($_GET['type']));
 
 no_access_if_not_allowed('service*');
 

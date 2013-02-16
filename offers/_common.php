@@ -66,10 +66,10 @@ function summarize_offer($offer)
 function fetch_offer_templates()
 {
   $allTemplates = fetch_all('SELECT * FROM offer_templates');
-  $templates    = array(
+  $templates = array(
     'client' => array(new_object(array('id' => 0, 'name' => '', 'template' => e(json_encode(array('clientName' => '', 'clientContact' => '')))))),
-    'intro'  => array(new_object(array('id' => 0, 'name' => '', 'template' => e(json_encode(array('intro' => '')))))),
-    'outro'  => array(new_object(array('id' => 0, 'name' => '', 'template' => e(json_encode(array('outro' => ''))))))
+    'intro' => array(new_object(array('id' => 0, 'name' => '', 'template' => e(json_encode(array('intro' => '')))))),
+    'outro' => array(new_object(array('id' => 0, 'name' => '', 'template' => e(json_encode(array('outro' => ''))))))
   );
 
   foreach ($allTemplates as $template)
@@ -119,8 +119,8 @@ function fetch_and_prepare_offer_for_printing($id)
   foreach ($offer->items as $item)
   {
     $item->description = nl2br(e($item->description));
-    $item->quantity    = (string)(float)$item->quantity;
-    $item->unit        = e($item->unit);
+    $item->quantity = (string)(float)$item->quantity;
+    $item->unit = e($item->unit);
   }
 
   summarize_offer($offer);

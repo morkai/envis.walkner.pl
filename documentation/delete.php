@@ -21,31 +21,31 @@ $referer = get_referer("documentation/view.php?id={$doc->id}");
 
 if (count($_POST))
 {
-	$conn = get_conn();
+  $conn = get_conn();
 
-	try
-	{
-		$conn->beginTransaction();
+  try
+  {
+    $conn->beginTransaction();
 
-		$files = fetch_all('SELECT file FROM documentation_files WHERE documentation=?', array(1 => $_GET['id']));
+    $files = fetch_all('SELECT file FROM documentation_files WHERE documentation=?', array(1 => $_GET['id']));
 
-		exec_stmt('DELETE FROM documentations WHERE id=?', array(1 => $_GET['id']));
-		
-		foreach ($files as $file)
-		{
-			$file = dirname(__DIR__) . ENVIS_UPLOADS_DIR . '/documentation/' . $file->file;
+    exec_stmt('DELETE FROM documentations WHERE id=?', array(1 => $_GET['id']));
 
-			if (file_exists($file))
-			{
-				unlink($file);
-			}
-		}
+    foreach ($files as $file)
+    {
+      $file = dirname(__DIR__) . ENVIS_UPLOADS_DIR . '/documentation/' . $file->file;
 
-		$conn->commit();
+      if (file_exists($file))
+      {
+        unlink($file);
+      }
+    }
 
-		log_info('Usunięto dokumentację <%s>.', $doc->title);
+    $conn->commit();
 
-		set_flash(sprintf('Dokumentacja <%s> została usunięta pomyślnie.', $doc->title));
+    log_info('Usunięto dokumentację <%s>.', $doc->title);
+
+    set_flash(sprintf('Dokumentacja <%s> została usunięta pomyślnie.', $doc->title));
 
     if ($product)
     {
@@ -55,13 +55,13 @@ if (count($_POST))
     {
       go_to('documentation/');
     }
-	}
-	catch (PDOException $x)
-	{
-		set_flash(sprintf('Dokumentacja <%s> nie została usunięta.', $doc->title), 'error');
+  }
+  catch (PDOException $x)
+  {
+    set_flash(sprintf('Dokumentacja <%s> nie została usunięta.', $doc->title), 'error');
 
-		go_to($referer);
-	}
+    go_to($referer);
+  }
 }
 
 ?>
@@ -69,20 +69,20 @@ if (count($_POST))
 <? decorate("Usuwanie dokumentacji") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Usuwanie dokumentacji</h1>
-	</div>
-	<div class="block-body">
-		<form method="post" action="<?= url_for("documentation/delete.php?id={$doc->id}&product={$product}") ?>">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
-			<fieldset>
-				<legend>Usuwanie dokumentacji</legend>
-				<p>Na pewno chcesz usunąć dokumentację &lt;<?= e($doc->title) ?>&gt;?</p>
-				<ol class="form-actions">
-					<li><input type="submit" value="Usuń dokumentację">
-					<li><a href="<?= $referer ?>#docs">Anuluj</a>
-				</ol>
-			</fieldset>
-		</form>
-	</div>
+  <div class="block-header">
+    <h1 class="block-name">Usuwanie dokumentacji</h1>
+  </div>
+  <div class="block-body">
+    <form method="post" action="<?= url_for("documentation/delete.php?id={$doc->id}&product={$product}") ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
+      <fieldset>
+        <legend>Usuwanie dokumentacji</legend>
+        <p>Na pewno chcesz usunąć dokumentację &lt;<?= e($doc->title) ?>&gt;?</p>
+        <ol class="form-actions">
+          <li><input type="submit" value="Usuń dokumentację">
+          <li><a href="<?= $referer ?>#docs">Anuluj</a>
+        </ol>
+      </fieldset>
+    </form>
+  </div>
 </div>

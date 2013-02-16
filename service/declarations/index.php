@@ -1,6 +1,6 @@
 <?php
 
-include '../_common.php';
+include_once __DIR__ . '/../_common.php';
 
 no_access_if_not_allowed('service/declare');
 
@@ -103,7 +103,7 @@ $(function()
   </div>
   <div class="block-body">
     <form id="issue" class="form" method="post" action="<?= url_for("service/declarations/act.php") ?>" autocomplete="off">
-			<input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="referer" value="<?= $referer ?>">
       <fieldset>
         <legend>Szablony deklaracji zgodności</legend>
         <? display_errors($errors) ?>

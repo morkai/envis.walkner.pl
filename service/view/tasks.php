@@ -36,7 +36,7 @@ $currentUser = $_SESSION['user'];
 
 $tasks = array_map(function($task) use($currentUser)
 {
-  $task->classNames  = $task->completed ? 'resolved' : 'unresolved';
+  $task->classNames = $task->completed ? 'resolved' : 'unresolved';
 
   if (!$task->assignedTo)
   {
@@ -165,7 +165,7 @@ $(function()
     }
   });
   <? endif ?>
-  
+
   if (localStorage)
   {
     $('.task', $tasks).each(function()
@@ -311,7 +311,7 @@ $(function()
     if (confirm('Na pewno chcesz usunąć wybrane zadanie?'))
     {
       var $task = $(this).closest('.task');
-      
+
       $.ajax({
         type: 'POST',
         url: this.href,

@@ -2,9 +2,9 @@
 
 $bypassAuth = true;
 
-include './_common.php';
+include_once __DIR__ . '/_common.php';
 
-if (empty($_GET['device']) || empty($_GET['machine'])) bad_request();
+bad_request_if(empty($_GET['device']) || empty($_GET['machine']));
 
 $query = <<<SQL
 SELECT `value`
@@ -17,14 +17,12 @@ LIMIT 1
 SQL;
 
 $counter = fetch_one(
-	$query,
-	$bindings = array(
-		':variable' => get_counter_var(),
-		':machine'  => $_GET['machine'],
-		':device'   => $_GET['device'],
-	)
+  $query,
+  $bindings = array(
+    ':variable' => get_counter_var(),
+    ':machine' => $_GET['machine'],
+    ':device' => $_GET['device'],
+  )
 );
 
 output_json(empty($counter) ? 0 : (int)$counter->value);
-
-?>

@@ -10,7 +10,7 @@ if (empty($offer))
 {
   $offer = new stdClass;
 
-  $offer->number   = 'SEK00000000/0';
+  $offer->number = 'SEK00000000/0';
   $offer->closedAt = '-';
 }
 

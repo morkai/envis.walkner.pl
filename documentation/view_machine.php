@@ -14,38 +14,38 @@ $query = <<<SQL
 SELECT id, title
 FROM documentations
 WHERE machine=:machine
-	AND device IS NULL
+  AND device IS NULL
 ORDER BY title
 SQL;
 
 $docs = fetch_all($query, array(':machine' => $_GET['id']));
 
-$hasDocs    = !empty($docs);
+$hasDocs = !empty($docs);
 $canAddDocs = is_allowed_to('documentation/add');
 
 ?>
 
 <? begin_slot('submenu') ?>
 <ul id="submenu">
-	<? if ($canAddDocs): ?><li><a href="<?= url_for("documentation/add.php?factory={$machine->factory}&amp;machine={$machine->id}") ?>">Dodaj dokumentację</a><? endif ?>
+  <? if ($canAddDocs): ?><li><a href="<?= url_for("documentation/add.php?factory={$machine->factory}&amp;machine={$machine->id}") ?>">Dodaj dokumentację</a><? endif ?>
 </ul>
 <? append_slot() ?>
 
 <? decorate("Dokumentacje maszyny") ?>
 
 <div class="block">
-	<div class="block-header">
-		<h1 class="block-name">Dokumentacje maszyny &lt;<?= $machine->name ?>&gt; z fabryki &lt;<?= $machine->factoryName ?>&gt;</h1>
-	</div>
-	<div class="block-body">
-		<? if ($hasDocs): ?>
-		<ul>
-			<? foreach ($docs as $doc): ?>
-			<li><a href="<?= url_for('documentation/view.php?id=' . $doc->id) ?>"><?= escape($doc->title) ?></a>
-			<? endforeach ?>
-		</ul>
-		<? else: ?>
-		<p>Aktualnie nie ma dostępnej żadnej dokumentacji dla wybranej maszyny.</p>
-		<? endif ?>
-	</div>
+  <div class="block-header">
+    <h1 class="block-name">Dokumentacje maszyny &lt;<?= $machine->name ?>&gt; z fabryki &lt;<?= $machine->factoryName ?>&gt;</h1>
+  </div>
+  <div class="block-body">
+    <? if ($hasDocs): ?>
+    <ul>
+      <? foreach ($docs as $doc): ?>
+      <li><a href="<?= url_for('documentation/view.php?id=' . $doc->id) ?>"><?= escape($doc->title) ?></a>
+      <? endforeach ?>
+    </ul>
+    <? else: ?>
+    <p>Aktualnie nie ma dostępnej żadnej dokumentacji dla wybranej maszyny.</p>
+    <? endif ?>
+  </div>
 </div>
