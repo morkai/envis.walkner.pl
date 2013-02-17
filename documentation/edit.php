@@ -407,7 +407,7 @@ $i = -1;
       multi: true,
       buttonText: 'Wybierz pliki',
       fileDesc: 'Plik dokumentacji',
-      fileExt: '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.png;*.jpg;*.jpeg;*.gif',
+      fileExt: '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.gz;*.7z;*.png;*.jpg;*.jpeg;*.gif;*.txt;*.csv;*.md',
       scriptData: {id: '<?= $doc['id'] ?>'},
       onComplete   : function(e, id, file, response, data)
       {
