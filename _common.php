@@ -134,6 +134,11 @@ function _exec_query_with_set($query, $bindings)
 
   foreach ($bindings as $field => $_)
   {
+    if ($field[0] === ':')
+    {
+      $field = substr($field, 1);
+    }
+
     $set .= ' `' . $field . '`=:' . $field . ',';
   }
 
