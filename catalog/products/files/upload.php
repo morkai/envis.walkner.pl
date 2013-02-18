@@ -6,9 +6,16 @@ no_access_if_not_allowed('catalog/manage');
 
 bad_request_if(empty($_REQUEST['product']) || !is_numeric($_REQUEST['product']));
 
-$file = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . ltrim($_REQUEST['file'], '/\\');
+$file = $_REQUEST['file'];
 
-bad_request_if(!file_exists($file));
+if (strpos($file, '://') === false)
+{
+  $file = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . ltrim($file, '/\\');
+
+  bad_request_if(!file_exists($file) || !is_file($file));
+
+  $file = substr(strrchr($_REQUEST['file'], DIRECTORY_SEPARATOR), 1);
+}
 
 $currentUser = $_SESSION['user'];
 
@@ -18,7 +25,7 @@ exec_insert('catalog_product_files', $bindings = array(
   'product' => $_REQUEST['product'],
   'uploader' => $_SESSION['user']->getId(),
   'uploadedAt' => time(),
-  'file' => substr(strrchr($_REQUEST['file'], DIRECTORY_SEPARATOR), 1),
+  'file' => $file,
   'name' => $dotPos === false ? $_REQUEST['name'] : substr($_REQUEST['name'], 0, $dotPos)
 ));
 

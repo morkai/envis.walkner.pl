@@ -12,11 +12,14 @@ not_found_if(empty($file));
 
 exec_stmt('DELETE FROM catalog_product_files WHERE id=?', array(1 => $_REQUEST['id']));
 
-$path = __DIR__ . '/../../../_files_/products/' . $file->file;
-
-if (file_exists($path))
+if (strpos($file->file, ':') === false)
 {
-  unlink($path);
+  $path = __DIR__ . '/../../../_files_/products/' . $file->file;
+
+  if (file_exists($path))
+  {
+    unlink($path);
+  }
 }
 
 if (!is_ajax())

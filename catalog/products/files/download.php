@@ -21,6 +21,11 @@ $file = fetch_one($query, array(1 => $_GET['id']));
 
 not_found_if(empty($file));
 
+if (strpos($file->file, ':') !== false)
+{
+  go_to($file->file);
+}
+
 $file->path = __DIR__ . '/../../../_files_/products/' . $file->file;
 
 if (!file_exists($file->path))

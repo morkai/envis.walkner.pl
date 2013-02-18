@@ -200,7 +200,29 @@
             <? endif ?>
           <? endforeach ?>
     </table>
+    <? if ($canManageProducts): ?>
+    <input id="productFileUrl" name=fileUrl type=button value="Dodaj zewnętrzne pliki">
     <input id="productFile" name=file type=file>
+    <form id="productFileUrlForm" action="<?= url_for("/catalog/products/files/upload.php?product={$product->id}") ?>" method="post">
+      <ol class="form-fields">
+        <li class="horizontal">
+          <ol>
+            <li>
+              <label for="productFileUrlName">Nazwa:</label>
+              <input id="productFileUrlName" name="name" type="text">
+            </li>
+            <li>
+              <label for="productFileUrlFile">Adres URL:</label>
+              <input id="productFileUrlFile" name="file" type="text">
+            </li>
+          </ol>
+        </li>
+        <li>
+          <input type="submit" value="Dodaj zewnętrzny plik">
+        </li>
+      </ol>
+    </form>
+    <? endif ?>
   </div>
 </div>
 

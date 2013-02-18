@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `catalog_product_files` (
   `product` int(10) unsigned NOT NULL,
   `uploader` tinyint(3) unsigned NOT NULL,
   `uploadedAt` int(10) unsigned NOT NULL,
-  `file` varchar(60) COLLATE utf8_polish_ci NOT NULL,
+  `file` varchar(250) COLLATE utf8_polish_ci NOT NULL,
   `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `product` (`product`),

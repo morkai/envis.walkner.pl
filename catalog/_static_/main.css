@@ -214,3 +214,20 @@ ul.actions a {
   text-decoration: none;
   vertical-align: top;
 }
+
+#productFileUrlForm {
+  display: none;
+}
+#productFileUploader {
+  vertical-align: top;
+}
+#productFileUrl {
+  margin-top: 1em;
+  height: 30px;
+}
+#productFileUrlName {
+  width: 286px;
+}
+#productFileUrlFile {
+  width: 500px;
+}

@@ -179,26 +179,56 @@ $(function()
       folder: '/products',
       auto: true,
       multi: true,
-      buttonText: 'Dodaj pliki',
-      onComplete: function(e, id, file, response, data)
+      buttonText: 'Dodaj lokalne pliki',
+      onComplete: function(e, id, file, response)
       {
-        $.ajax({
-          type: 'POST',
-          url: PRODUCT_FILE_UPLOADER_CONFIG.uploadFileUrl || 'catalog/products/files/upload.php',
-          data: {
-            product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
-            file: response,
-            name: file.name
-          },
-          success: function(data)
-          {
-            $productFiles.find('.nofiles').remove();
+        uploadFile(file.name, response);
+      }
+    });
 
-            var $productFile = $(render(productFileTpl, data)).hide();
+    var $productFileUrlForm = $('#productFileUrlForm');
 
-            $productFile.appendTo($productFiles).fadeIn();
-          }
-        });
+    $('#productFileUrl').click(function()
+    {
+      $(this).attr('disabled', true);
+
+      $productFileUrlForm.fadeIn().find('input').first().focus();
+    });
+
+    $productFileUrlForm.submit(function()
+    {
+      var name = $productFileUrlForm.find('#productFileUrlName').val().trim();
+      var file = $productFileUrlForm.find('#productFileUrlFile').val().trim();
+
+      if (name.length && file.indexOf('://') !== -1)
+      {
+        uploadFile(name, file);
+      }
+
+      this.reset();
+      $productFileUrlForm.find('input').first().focus();
+
+      return false;
+    });
+  }
+
+  function uploadFile(name, file)
+  {
+    $.ajax({
+      type: 'POST',
+      url: PRODUCT_FILE_UPLOADER_CONFIG.uploadFileUrl || 'catalog/products/files/upload.php',
+      data: {
+        product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
+        file: file,
+        name: name
+      },
+      success: function(data)
+      {
+        $productFiles.find('.nofiles').remove();
+
+        var $productFile = $(render(productFileTpl, data)).hide();
+
+        $productFile.appendTo($productFiles).fadeIn();
       }
     });
   }
