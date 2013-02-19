@@ -396,7 +396,6 @@ $action = $product
       scriptData: {id: '<?= $doc['id'] ?>'},
       onComplete   : function(e, id, file, response, data)
       {
-        console.log(arguments);
         fileList.append(render(
           '<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">',
           {i: fileCount++, file: response, name: file.name}

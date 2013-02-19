@@ -97,8 +97,6 @@ $(function()
 
   $('#addTask').click(function()
   {
-    console.log('hello!');
-
     var tpl = taskTemplate.clone();
 
     tpl.find('label').each(function()

@@ -406,8 +406,6 @@ $(function()
           }
           else
           {
-            console.log(response.errors);
-
             var errors = form.find('ul.form-errors');
 
             if (errors.size())
