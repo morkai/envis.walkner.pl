@@ -85,7 +85,7 @@
 #productImages .thumb.default {
   background: #adff2f;
 }
-#productImages img {
+#productImages .thumb img {
   max-width: 178px;
   max-height: 100px;
 }

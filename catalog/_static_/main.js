@@ -60,6 +60,28 @@ $(function()
     return false;
   });
 
+  $productImages.on('click', '.actions .rotate', function()
+  {
+    var $parent = $(this).closest('li');
+    var $img = $parent.find('.thumb img');
+
+    if (!$img.attr('data-src'))
+    {
+      $img.attr('data-src', $img.attr('src'));
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: this.href,
+      success: function()
+      {
+        $img.attr('src', $img.attr('data-src') + '&' + Math.random());
+      }
+    });
+
+    return false;
+  });
+
   $productFiles.on('click', '.actions .delete', function()
   {
     var parent = $(this).closest('tr');

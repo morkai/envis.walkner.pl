@@ -134,6 +134,7 @@
           <!-- <?= fff('Edytuj opis obrazu', 'pencil', "catalog/products/images/edit.php?product={$product->id}&id={$image->id}") ?> //-->
           <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id={$image->id}", null, 'default') ?>
           <?= fff('Usuń obraz', 'bullet_cross', "catalog/products/images/delete.php?product={$product->id}&id={$image->id}", null, 'delete') ?>
+          <?= fff('Obróć o 90°', 'arrow_rotate_clockwise', "catalog/products/images/rotate.php?product={$product->id}&id={$image->id}", null, 'rotate') ?>
         </div>
         <? endif ?>
       <? endforeach ?>
@@ -232,6 +233,7 @@
   <div class="actions">
     <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id=\${id}", null, 'default') ?>
     <?= fff('Usuń obraz', 'bullet_cross', "catalog/products/images/delete.php?product={$product->id}&id=\${id}", null, 'delete') ?>
+    <?= fff('Obróć o 90°', 'arrow_rotate_clockwise', "catalog/products/files/rotate.php?product={$product->id}&id=\${id}", null, 'rotate') ?>
   </div>
 </script>
 
