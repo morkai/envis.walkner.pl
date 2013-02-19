@@ -178,7 +178,6 @@
           <th>Nazwa
           <th>Typ
           <th>Czas wysłania
-          <th>Wysyłający
           <th>Akcje
       <tbody id="productFiles">
         <? if (empty($product->files)): ?>
@@ -190,7 +189,6 @@
           <td class="name clickable"><a href="<?= url_for("catalog/products/files/download.php?product={$product->id}&id={$file->id}") ?>"><?= e($file->name) ?></a>
           <td><?= $file->type ?>
           <td><?= date('Y-m-d, H:i', $file->uploadedAt) ?>
-          <td><a href="<?= url_for("user/view.php?id={$file->uploader}") ?>"><?= e($file->uploaderName) ?></a>
           <td class="actions">
             <? if ($canManageProducts): ?>
             <ul>
