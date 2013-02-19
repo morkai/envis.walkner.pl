@@ -18,14 +18,30 @@ if (is('delete'))
 
   foreach ($files as $file)
   {
-    unlink(ENVIS_UPLOADS_PATH . '/products/' . $file);
+    $path = ENVIS_UPLOADS_PATH . '/products/' . $file;
+
+    if (file_exists($path))
+    {
+      unlink($path);
+    }
   }
 
   $images = fetch_all('SELECT file FROM catalog_product_images WHERE product=?', $product->id);
 
   foreach ($images as $file)
   {
-    unlink(ENVIS_UPLOADS_PATH . '/products/' . $file);
+    $path = ENVIS_UPLOADS_PATH . '/products/' . $file;
+    $thumbPath = preg_replace('/([a-z0-9]{32})\.([a-zA-Z]+)$/', '$1.thumb.$2', $path);
+
+    if (file_exists($path))
+    {
+      unlink($path);
+    }
+
+    if (file_exists($thumbPath))
+    {
+      unlink($thumbPath);
+    }
   }
 
   exec_stmt('DELETE FROM catalog_products WHERE id=?', array(1 => $_REQUEST['id']));
