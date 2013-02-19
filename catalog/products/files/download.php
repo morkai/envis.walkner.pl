@@ -26,7 +26,7 @@ if (strpos($file->file, ':') !== false)
   go_to($file->file);
 }
 
-$file->path = __DIR__ . '/../../../_files_/products/' . $file->file;
+$file->path = ENVIS_UPLOADS_PATH . '/products/' . $file->file;
 
 if (!file_exists($file->path))
 {

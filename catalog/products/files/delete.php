@@ -14,7 +14,7 @@ exec_stmt('DELETE FROM catalog_product_files WHERE id=?', array(1 => $_REQUEST['
 
 if (strpos($file->file, ':') === false)
 {
-  $path = __DIR__ . '/../../../_files_/products/' . $file->file;
+  $path = ENVIS_UPLOADS_PATH . '/products/' . $file->file;
 
   if (file_exists($path))
   {

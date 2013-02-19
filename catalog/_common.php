@@ -2,7 +2,7 @@
 
 include_once __DIR__ . '/../_common.php';
 
-$CATALOG_CATEGORIES_CACHE_FILE = __DIR__ . '/../_files_/catalog-categories.txt';
+$CATALOG_CATEGORIES_CACHE_FILE = ENVIS_UPLOADS_PATH . '/catalog-categories.txt';
 
 /**
  * @return array

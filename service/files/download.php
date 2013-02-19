@@ -28,7 +28,7 @@ if (empty($_GET['docs']))
   no_access_if_not($currentUser->isSuper() || is_issue_participant($currentUser, $file) || (!$file->owner && is_allowed_to('service/edit')) || is_issue_docs_viewer($currentUser, $file));
 }
 
-$file->path = __DIR__ . '/../../_files_/issues/' . $file->file;
+$file->path = ENVIS_UPLOADS_PATH . '/issues/' . $file->file;
 
 if (!file_exists($file->path))
 {

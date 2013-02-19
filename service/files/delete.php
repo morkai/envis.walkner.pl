@@ -22,7 +22,7 @@ $participant = $file->owner == $currentUser->getId() || $file->uploader == $curr
 
 no_access_if_not($currentUser->isSuper() || $participant || (!$file->owner && is_allowed_to('service/edit')));
 
-$file->path = __DIR__ . '/../../_files_/issues/' . $file->file;
+$file->path = ENVIS_UPLOADS_PATH . '/issues/' . $file->file;
 
 $referer = get_referer("service/view.php?id={$file->issue}#files");
 

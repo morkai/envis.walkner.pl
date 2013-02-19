@@ -33,7 +33,7 @@ function fetch_next_offer_number()
 
 function make_offer_file($id, $format)
 {
-  return dirname(__DIR__) . '/_files_/offers/' . $id . '.' . $format;
+  return ENVIS_UPLOADS_PATH . '/offers/' . $id . '.' . $format;
 }
 
 function summarize_offer($offer)
