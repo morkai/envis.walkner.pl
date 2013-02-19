@@ -14,11 +14,11 @@ $referer = get_referer('catalog/');
 
 if (is('delete'))
 {
-  $files = fetch_all('SELECT file FROM catalog_product_files WHERE product=?', $product->id);
+  $files = fetch_all('SELECT file FROM catalog_product_files WHERE product=?', array(1 => $product->id));
 
   foreach ($files as $file)
   {
-    $path = ENVIS_UPLOADS_PATH . '/products/' . $file;
+    $path = ENVIS_UPLOADS_PATH . '/products/' . $file->file;
 
     if (file_exists($path))
     {
@@ -26,11 +26,11 @@ if (is('delete'))
     }
   }
 
-  $images = fetch_all('SELECT file FROM catalog_product_images WHERE product=?', $product->id);
+  $images = fetch_all('SELECT file FROM catalog_product_images WHERE product=?', array(1 => $product->id));
 
-  foreach ($images as $file)
+  foreach ($images as $image)
   {
-    $path = ENVIS_UPLOADS_PATH . '/products/' . $file;
+    $path = ENVIS_UPLOADS_PATH . '/products/' . $image->file;
     $thumbPath = preg_replace('/([a-z0-9]{32})\.([a-zA-Z]+)$/', '$1.thumb.$2', $path);
 
     if (file_exists($path))
