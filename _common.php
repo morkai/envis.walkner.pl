@@ -369,11 +369,25 @@ function is_ajax()
   return $is;
 }
 
-function output_json($value = array())
+function output_json($value = array(), $callback = null)
 {
-  header('Content-Type: application/json; charset=UTF-8');
+  if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
+  {
+    header('Content-Type: text/html; charset=UTF-8');
+  }
+  else
+  {
+    header('Content-Type: application/json; charset=UTF-8');
+  }
 
-  echo json_encode($value);
+  if (empty($callback))
+  {
+    echo json_encode($value);
+  }
+  else
+  {
+    echo $callback, '(', json_encode($value), ');';
+  }
   exit;
 }
 
