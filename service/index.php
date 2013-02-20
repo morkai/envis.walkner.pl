@@ -83,6 +83,13 @@ function construct_issues_grid_queries(array $options)
           'completedTasks' => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id AND t.completed=1) AS completedTasks',
         );
         break;
+
+      case 'relatedProduct':
+        $columns['relatedProduct'] = 'i.relatedProduct';
+        $columns['relatedProductName'] = 'p.name AS relatedProductName';
+
+        $query .= "\nLEFT JOIN catalog_products p ON p.id=i.relatedProduct";
+        break;
     }
   }
 
@@ -433,6 +440,17 @@ function construct_issues_grid_row(array $columns, $issue)
     case 'createdAt':
     case 'updatedAt':
       $row[] = date('Y-m-d, H:i', $issue->$column);
+      break;
+
+    case 'relatedProduct':
+      if ($issue->relatedProduct)
+      {
+        $row[] = '<a href="/catalog/?product=' . $issue->relatedProduct . '">' . e($issue->relatedProductName) . '</a>';
+      }
+      else
+      {
+        $row[] = '-';
+      }
       break;
 
     default:
