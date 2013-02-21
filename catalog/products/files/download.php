@@ -47,7 +47,7 @@ if ($contentType === false)
 
 setlocale(LC_CTYPE, 'pl_PL.utf8');
 
-$filename = preg_replace('/[^a-zA-Z_\-\.\']+/', '', str_replace(' ', '-', @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $file->name))) . ($extension === '' ? '' : ('.' . $extension));
+$filename = preg_replace('/[^a-zA-Z0-9_\-\.\' ]+/', '', @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $file->name)) . ($extension === '' ? '' : ('.' . $extension));
 
 header(sprintf('Content-Type: %s', $contentType));
 header(sprintf('Content-Disposition: inline; filename="%s"', $filename));
