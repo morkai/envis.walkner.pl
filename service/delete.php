@@ -29,7 +29,7 @@ if (!$_SESSION['user']->isSuper())
 
 if (count($_POST))
 {
-  $files = fetch_all('SELECT file FROM issue_files WHERE issue=?', $issue->id);
+  $files = fetch_all('SELECT file FROM issue_files WHERE issue=?', array(1 => $issue->id));
 
   foreach ($files as $file)
   {
