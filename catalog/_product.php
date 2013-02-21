@@ -245,8 +245,8 @@
   <td class="actions">
     <? if ($canManageProducts): ?>
     <ul>
-      <li class="edit"><?= fff('Edytuj nazwę', 'bullet_edit', "catalog/products/files/edit.php?product={$product->id}&id=\${id}") ?>
-      <li class="delete"><?= fff('Usuń plik', 'bullet_cross', "catalog/products/files/delete.php?product={$product->id}&id=\${id}") ?>
+      <li><?= fff('Edytuj nazwę', 'bullet_edit', "catalog/products/files/edit.php?product={$product->id}&id=\${id}", null, 'edit') ?>
+      <li><?= fff('Usuń plik', 'bullet_cross', "catalog/products/files/delete.php?product={$product->id}&id=\${id}", null, 'delete') ?>
     </ul>
     <? endif ?>
 </script>
