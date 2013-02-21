@@ -371,13 +371,20 @@ function is_ajax()
 
 function output_json($value = array(), $callback = null)
 {
-  if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
+  if (empty($callback))
   {
-    header('Content-Type: text/html; charset=UTF-8');
+    if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
+    {
+      header('Content-Type: text/html; charset=UTF-8');
+    }
+    else
+    {
+      header('Content-Type: application/json; charset=UTF-8');
+    }
   }
   else
   {
-    header('Content-Type: application/json; charset=UTF-8');
+    header('Content-Type: text/javascript; charset=UTF-8');
   }
 
   if (empty($callback))
