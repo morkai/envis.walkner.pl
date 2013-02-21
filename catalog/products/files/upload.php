@@ -20,13 +20,6 @@ if (strpos($file, '://') === false)
 $currentUser = $_SESSION['user'];
 
 $name = $_REQUEST['name'];
-$dotPos = strrpos($name, '.');
-$afterDot = substr($name, $dotPos);
-
-if (strpos($afterDot, ' ') === false)
-{
-  $name = substr($name, 0, $dotPos);
-}
 
 exec_insert('catalog_product_files', $bindings = array(
   'product' => $_REQUEST['product'],
