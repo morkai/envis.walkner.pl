@@ -70,7 +70,7 @@ $(function()
     }
     .property
     {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     .name
     {
@@ -116,9 +116,21 @@ $(function()
 <body>
 <h1>Deklaracja zgodności WE <img id=ce src="<?= url_for_media('img/CE.png', true) ?>" alt="CE" height=40></h1>
 <div class=property>
-  <p class=name>Numer:</p>
+  <p class=name>Numer deklaracji:</p>
   <p class=value><?= e($declaration['number']) ?></p>
 </div>
+<? if (!empty($declaration['orderNumber'])): ?>
+<div class=property>
+  <p class=name>Numer zamówienia:</p>
+  <p class=value><?= e($declaration['orderNumber']) ?></p>
+</div>
+<? endif ?>
+<? if (!empty($declaration['productNumber'])): ?>
+  <div class=property>
+    <p class=name>Numer produktu:</p>
+    <p class=value><?= e($declaration['productNumber']) ?></p>
+  </div>
+<? endif ?>
 <div class=property>
   <p class=name>Wytwórca:</p>
   <p class=value>Walkner elektronika przemysłowa<br>Zbigniew Walukiewicz</p>
@@ -131,7 +143,7 @@ $(function()
   <p class=name>Deklaruje, że:</p>
   <p class=value>
     <strong><?= e($declaration['subject']) ?></strong>
-    <br><br>
+    <br>
     Numer fabryczny: <?= e($declaration['serial']) ?><br>
     <? if (!empty($declaration['productType'])): ?>
     Typ produktu: <?= e($declaration['productType']) ?><br>

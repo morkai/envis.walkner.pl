@@ -9,7 +9,8 @@ no_access_if_not_allowed('service/declare');
 $query = <<<SQL
 SELECT
   i.*,
-  p.type AS productType
+  p.type AS productType,
+  p.nr AS productNumber
 FROM issues i
 LEFT JOIN catalog_products p ON p.id=i.relatedProduct
 WHERE i.id=?
@@ -138,6 +139,12 @@ $(function()
           <li>
             <?= label('declarationNumber', 'Numer deklaracji') ?>
             <input id="declarationNumber" name="declaration[number]" type="text" maxlength="30" value="<?= e($issue->number) ?>">
+          <li>
+            <?= label('declarationOrderNumber', 'Numer zamówienia') ?>
+            <input id="declarationOrderNumber" name="declaration[orderNumber]" type="text" maxlength="30" value="<?= e($issue->orderNumber) ?>">
+          <li>
+            <?= label('declarationProductNumber', 'Numer produktu') ?>
+            <input id="declarationProductNumber" name="declaration[productNumber]" type="text" maxlength="30" value="<?= e($issue->productNumber) ?>">
           <li>
             <?= label('declarationSerial', 'Numer fabryczny') ?>
             <input id="declarationSerial" name="declaration[serial]" type="text" maxlength="30" value="<?= e($issue->serial) ?>">
