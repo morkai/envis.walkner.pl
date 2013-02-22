@@ -18,7 +18,7 @@ if (empty($product->pages))
     'product' => $product->id,
     'position' => 1,
     'layout' => 'qrFrontPage',
-    'Ccontents' => markdown($product->description)
+    'contents' => markdown($product->description)
   );
 
   exec_insert('catalog_card_pages', $frontPage);
