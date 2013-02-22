@@ -24,3 +24,6 @@ body {
 #toc {
   display: none;
 }
+.partsMarker {
+  opacity: 1;
+}

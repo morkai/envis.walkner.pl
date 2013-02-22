@@ -81,6 +81,31 @@ try
     {
       $bindings['contents'] = (string)$_REQUEST['contents'];
     }
+    else if (!empty($_REQUEST['data']) && is_string($_REQUEST['data']))
+    {
+      $bindings['contents'] = json_decode($page->contents);
+
+      $data = json_decode($_REQUEST['data']);
+
+      if (!empty($data->src))
+      {
+        include_once __DIR__ . '/../../../_lib_/wideimage/lib/WideImage.php';
+
+        $pos = strpos($data->src, ',');
+        $prefix = substr($data->src, 0, $pos + 1);
+
+        $data->src = $prefix . base64_encode(WideImage::load(base64_decode(substr($data->src, $pos + 1)))
+          ->resize(800, 1000, 'inside', 'down')
+          ->asString('jpg', 80));
+      }
+
+      foreach ($data as $key => $value)
+      {
+        $bindings['contents']->{$key} = is_numeric($value) ? (int)$value : $value;
+      }
+
+      $bindings['contents'] = json_encode($bindings['contents']);
+    }
 
     if (!empty($bindings))
     {

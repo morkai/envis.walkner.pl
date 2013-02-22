@@ -99,6 +99,67 @@ h1, h2, h3 {
 .page[data-layout="qrFrontPage"] .contentsContainer {
   height: 679px;
 }
+.page.editable[data-layout="partsPage"] .contentsContainer:hover {
+  cursor: default;
+}
+.page[data-layout="partsPage"] .contents {
+  text-align: center;
+}
+.page[data-layout="partsPage"] h1 {
+  text-align: left;
+}
+.partsContainer {
+  height: 860px;
+}
+.partsCanvas {
+  margin: 0 auto;
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.partsImage {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #666;
+}
+.editable .partsImage {
+  cursor: crosshair;
+}
+.partsImageFile {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+}
+.partsMarker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: .8;
+  background: #666;
+  color: #FFF;
+  font-weight: bold;
+  border: 2px solid #FFF;
+  border-radius: 100px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 26px;
+  box-shadow: 0 0 3px #000;
+  cursor: default;
+}
+.editable .partsMarker {
+  cursor: move;
+}
+.partsMarker:hover {
+  opacity: 1;
+}
+.ui-resizable-resizing > .partsMarker {
+  display: none;
+}
 .contents {
   height: 100%;
   outline: none;

@@ -15,6 +15,11 @@ return array(
   'simplePage' => (object)array(
     'title' => 'Prosta strona',
     'description' => 'Strona z nagłówkiem (nazwa firmy i nr fabryczny), edytowalną zawartością oraz stopką (adres i kontakt firmy).'
+  ),
+
+  'partsPage' => (object)array(
+    'title' => 'Rozmieszczenie części',
+    'description' => 'Strona z jednym obrazem, na którym można definiować znaczniki numeryczne. Podwójne kliknięcie na obrazie utworzy w tym miejscu znacznik. Podwójne kliknięcie na znaczniku usuwa go. Kliknięcie ppm wybiera nowy obraz.'
   )
 
 );

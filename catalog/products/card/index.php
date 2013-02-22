@@ -18,7 +18,7 @@ if (empty($product->pages))
     'product' => $product->id,
     'position' => 1,
     'layout' => 'qrFrontPage',
-    'contents' => markdown($product->description)
+    'Ccontents' => markdown($product->description)
   );
 
   exec_insert('catalog_card_pages', $frontPage);
@@ -140,6 +140,7 @@ $(function()
 <script src="<?= url_for_media('/ckeditor/4.0beta/ckeditor.js') ?>"></script>
 <script src="<?= url_for("/catalog/products/card/_static_/ckeditor.js") ?>"></script>
 <script src="<?= url_for("/catalog/products/card/_static_/actions.js") ?>"></script>
+<script src="<?= url_for("/catalog/products/card/_static_/partsPage.js") ?>"></script>
 <script>
 $(function()
 {
@@ -153,6 +154,7 @@ $(function()
 
   setUpCkeditor(options);
   setUpActions(options);
+  setUpPartsPage(options);
 
   var $pages = $('#pages');
 

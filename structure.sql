@@ -10,7 +10,7 @@ CREATE TABLE `catalog_card_pages` (
   `product` int(10) unsigned NOT NULL,
   `position` tinyint(3) unsigned NOT NULL,
   `layout` varchar(50) COLLATE utf8_polish_ci NOT NULL,
-  `contents` text COLLATE utf8_polish_ci NOT NULL,
+  `contents` longblob NOT NULL,
   PRIMARY KEY (`id`),
   KEY `product` (`product`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
