@@ -219,7 +219,12 @@ function setUpActions(options)
 
           if (typeof CKEDITOR === 'object' && CKEDITOR !== null)
           {
-            CKEDITOR.inline($pageContainer.find('.contents')[0])
+            var $contents = $pageContainer.find('.contents');
+
+            if ($contents.is('[contenteditable]'))
+            {
+              CKEDITOR.inline($contents[0])
+            }
           }
 
           $pages.trigger('pageAdded', [$pageContainer]);
