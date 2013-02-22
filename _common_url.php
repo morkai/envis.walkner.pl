@@ -15,7 +15,7 @@ function url_for($href, $abs = false)
       $url .= 's';
     }
 
-    $url .= '://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ENVIS_DOMAIN);
+    $url .= '://' . ENVIS_DOMAIN;
   }
 
   return $url . '/' . ltrim((strpos($href, ENVIS_BASE_URL) === 0 ? '' : ENVIS_BASE_URL) . ltrim($href, '/'), '/');
