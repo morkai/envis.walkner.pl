@@ -2,6 +2,18 @@ function setUpPartsPage(options)
 {
   var $pages = $('#pages');
 
+  $pages.on('pageAdded', function(e, $pageContainer)
+  {
+    var $page = $pageContainer.find('.page');
+
+    if ($page.attr('data-layout') !== 'partsPage')
+    {
+      return;
+    }
+
+    makeResizable($page.find('.partsCanvas'));
+  });
+
   $pages.on('dragstart', '.partsImage', function()
   {
     return false;
