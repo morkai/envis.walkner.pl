@@ -236,6 +236,7 @@ dl ul, dl ol {
 }
 textarea.markdown {
   font-family: monospace;
+  font-size: 1.3em;
   background-image: url(markdown.png);
   background-position: top right;
   background-repeat: no-repeat;
