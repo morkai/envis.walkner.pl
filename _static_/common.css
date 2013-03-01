@@ -459,15 +459,10 @@ ul.block-header h1 {
   background: none;
 }
 .ui-tabs .ui-tabs-nav li.ui-state-default a {
-  border-left: 1px solid #DBDBDB;
-  border-right: 1px solid #DBDBDB;
-  border-top-left-radius: .1em;
-  border-top-right-radius: .1em;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
   font-size: 1.6em;
   line-height: 1;
-  color: #333;
-  text-shadow: #DBDBDB 0 1px 1px;
-  background: #FFF;
   margin-right: .25em;
   padding: .4em .5em;
   text-align: center;
@@ -479,9 +474,10 @@ ul.block-header h1 {
 }
 .ui-tabs .ui-tabs-nav li.ui-state-active a {
   cursor: default;
-  color: #FFF;
-  text-shadow: #000 0 1px 1px;
-  background: #357;
+  border-color: #DBDBDB;
+  color: #333;
+  text-shadow: none;
+  background: #FFF;
 }
 .ui-tabs .ui-tabs-panel {
   padding: 0;
