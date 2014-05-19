@@ -33,7 +33,7 @@ if (count($_POST))
 
   foreach ($files as $file)
   {
-    unlink(ENVIS_UPLOADS_PATH . '/issues/' . $file);
+    unlink(ENVIS_UPLOADS_PATH . '/issues/' . $file->file);
   }
 
   exec_stmt('DELETE FROM issues WHERE id=?', array(1 => $issue->id));
