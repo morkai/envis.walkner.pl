@@ -197,7 +197,7 @@ $action = $product
   margin-bottom: 0.5em;
 }
 #doc-fileList input[type="text"] {
-  width: 20em;
+  width: 75%;
   margin-left: 0.5em;
 }
 #doc-product {
