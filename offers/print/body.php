@@ -127,7 +127,7 @@ if (empty($offer))
       page-break-before: auto;
       page-break-after: avoid;
       page-break-inside: avoid;
-      margin: 3em 5em 0 0;
+      margin: 2em 5em 0 0;
       text-align: right;
     }
   </style>
