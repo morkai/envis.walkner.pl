@@ -19,16 +19,26 @@ TXT;
 function fetch_next_offer_number()
 {
   $number = 'SEK' . date('dmY') . '/';
-  $lastOffer = fetch_one('SELECT number FROM offers WHERE createdAt=?', array(1 => date('Y-m-d')));
+  $offers = fetch_all('SELECT number FROM offers WHERE createdAt=?', array(1 => date('Y-m-d')));
 
-  if (empty($lastOffer))
+  if (empty($offers))
   {
     return $number . '1';
   }
 
-  $parts = explode('/', $lastOffer->number);
+  $lastNumber = 0;
 
-  return $number . ((int)$parts[1] + 1);
+  foreach ($offers as $offer)
+  {
+    $parts = explode('/', $offer->number);
+
+    if (count($parts) > 1 && is_numeric($parts[1]) && $parts[1] > $lastNumber)
+    {
+      $lastNumber = (int)$parts[1];
+    }
+  }
+
+  return $number . ($lastNumber + 1);
 }
 
 function make_offer_file($id, $format)
