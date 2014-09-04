@@ -21,6 +21,7 @@ $mail = array_merge(array(
   'to' => empty($matches[1]) ? '' : $matches[1],
   'text' => ''
 ), empty($_POST['mail']) ? array() : $_POST['mail']);
+$lang = !empty($_POST['lang']) && $_POST['lang'] === 'en' ? 'en' : 'pl';
 
 if (is('post'))
 {
@@ -65,10 +66,10 @@ if (is('post'))
     }
     else
     {
-      $cmd = sprintf('wkhtmltopdf -B 23mm -R 0 -L 0 -T 23mm --header-spacing 7 --header-html %s --footer-html %s %s %s',
-               url_for("/offers/print/header.php?id={$offer->id}", true),
-               url_for("/offers/print/footer.php?id={$offer->id}", true),
-               url_for("/offers/print/body.php?id={$offer->id}", true),
+      $cmd = sprintf('wkhtmltopdf -B 23mm -R 0 -L 0 -T 23mm --header-spacing 7 --header-html "%s" --footer-html "%s" "%s" "%s"',
+               url_for("/offers/print/header.php?id={$offer->id}&lang={$lang}", true),
+               url_for("/offers/print/footer.php?id={$offer->id}&lang={$lang}", true),
+               url_for("/offers/print/body.php?id={$offer->id}&lang={$lang}", true),
                $offerPdfFile);
 
       $errors[] = $cmd;
@@ -125,6 +126,14 @@ if (is_array($mail['to']))
 
 <? decorate('Wysyłanie oferty') ?>
 
+<? begin_slot('head') ?>
+<style>
+li.form-choice ol.form-fields {
+  margin-top: 5px;
+}
+</style>
+<? append_slot() ?>
+
 <?= render_message('Przed wysłaniem oferty sprawdź czy jej wygląd jest odpowiedni. [Eksportuj do HTML](/offers/export.php?id=' . $offer->id . '&format=html).', 'warning') ?>
 
 <div class="block">
@@ -138,22 +147,23 @@ if (is_array($mail['to']))
       <p>Jeżeli chcesz wysłać i zamknąć ofertę <strong><?= $offer->number ?></strong> wypełnij poniższe pola.
          Do danego adresata zostanie wysłana wiadomość o podanej treści i kopia oferty w formacie PDF jako załącznik.</p>
       <p>W przypadku, gdy chcesz jedynie zamknąć ofertę na zmiany, pozostaw pole <em>Adresat</em> puste.</p>
-      <ol class="form-fields">
-        <li>
-          <?= label('mailTo', 'Adresat') ?>
-          <input id="mailTo" name="mail[to]" type="text" value="<?= e($mail['to']) ?>">
-        <li>
-          <?= label('mailSubject', 'Temat') ?>
-          <input id="mailSubject" name="mail[subject]" type="text" value="<?= e($mail['subject']) ?>">
-        <li>
-          <?= label('mailText', 'Treść') ?>
-          <textarea id="mailText" name="mail[text]"><?= e($mail['text']) ?></textarea>
-        <li>
-          <ol class="form-actions">
-            <li><input type="submit" value="Wyślij ofertę">
-            <li><a class="cancel" href="<?= $referer ?>">Anuluj</a>
-          </ol>
-      </ol>
+      <fieldset>
+        <ol class="form-fields">
+          <li>
+            <?= label('mailTo', 'Adresat') ?>
+            <input id="mailTo" name="mail[to]" type="text" value="<?= e($mail['to']) ?>">
+          <li>
+            <?= label('mailSubject', 'Temat') ?>
+            <input id="mailSubject" name="mail[subject]" type="text" value="<?= e($mail['subject']) ?>">
+          <li class="form-choice">
+            <?= render_choice('Język szablonu', 'lang', 'lang', array('pl' => 'Polski', 'en' => 'Angielski'), $lang) ?>
+          <li>
+            <ol class="form-actions">
+              <li><input type="submit" value="Wyślij ofertę">
+              <li><a class="cancel" href="<?= $referer ?>">Anuluj</a>
+            </ol>
+        </ol>
+      </fieldset>
     </form>
   </div>
 </div>

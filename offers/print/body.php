@@ -20,11 +20,13 @@ if (empty($offer))
   $offer->summary = array();
 }
 
+$en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
+
 ?><!DOCTYPE html>
 <html lang=pl>
 <head>
   <meta charset=utf-8>
-  <title>Oferta <?= $offer->number ?></title>
+  <title><?= $en ? 'Offer' : 'Oferta' ?> <?= $offer->number ?></title>
   <style>
     body {
       font-size: .75em;
@@ -134,39 +136,39 @@ if (empty($offer))
 </head>
 <body>
   <fieldset id="supplier">
-    <legend>Dostawca</legend>
+    <legend><?= $en ? 'Supplier' : 'Dostawca' ?></legend>
     <p class="left">
       <?= $offer->supplier ?>
     </p>
     <div class="right">
-      <h4>Kontakt:</h4>
+      <h4><?= $en ? 'Contact' : 'Kontakt' ?>:</h4>
       <p><?= $offer->supplierContact ?></p>
     </div>
   </fieldset>
   <fieldset id="client">
-    <legend>Klient</legend>
+    <legend><?= $en ? 'Client' : 'Klient' ?></legend>
     <p class="left">
       <?= $offer->client ?>
     </p>
     <div class="right">
-      <h4>Kontakt:</h4>
+      <h4><?= $en ? 'Contact' : 'Kontakt' ?>:</h4>
       <p><?= $offer->clientContact ?></p>
     </div>
   </fieldset>
   <div id="intro">
-    <h3>Uzgodnienia wstępne</h3>
+    <h3><?= $en ? 'Preliminary arrangements' : 'Uzgodnienia wstępne' ?></h3>
     <?= markdown($offer->intro) ?>
   </div>
   <div id="items">
-    <h3>Specyfikacja</h3>
+    <h3><?= $en ? 'Specification' : 'Specyfikacja' ?></h3>
     <table>
       <thead>
         <tr>
-          <th>Lp.</th>
-          <th>Opis</th>
-          <th>Ilość</th>
-          <th>Cena netto</th>
-          <th>Za</th>
+          <th><?= $en ? 'No' : 'Lp.' ?></th>
+          <th><?= $en ? 'Description' : 'Opis' ?></th>
+          <th><?= $en ? 'Quantity' : 'Ilość' ?></th>
+          <th><?= $en ? 'Price netto' : 'Cena netto' ?></th>
+          <th><?= $en ? 'Per' : 'Za' ?></th>
           <th>% VAT</th>
         </tr>
       </thead>
@@ -178,7 +180,7 @@ if (empty($offer))
               <?= $money ?> <?= $currency ?><br>
               <? endforeach ?>
             </p>
-            <p>W sumie (netto):</p>
+            <p><?= $en ? 'Total' : 'W sumie' ?> (netto):</p>
           </td>
         </tr>
       </tfoot>
@@ -197,7 +199,7 @@ if (empty($offer))
     </table>
   </div>
   <div id="outro">
-    <h3>Uzgodnienia końcowe</h3>
+    <h3><?= $en ? 'Final arrangements' : 'Uzgodnienia końcowe' ?></h3>
     <?= markdown($offer->outro) ?>
   </div>
   <div id="stamp">

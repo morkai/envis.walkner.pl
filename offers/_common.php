@@ -5,14 +5,14 @@ include_once __DIR__ . '/../service/_common.php';
 $defaultOfferSupplier = <<<TXT
 Walkner elektronika przemysłowa Zbigniew Walukiewicz
 Nowa Wieś Kętrzyńska 7
-11-400 Kętrzyn
+11-400 Kętrzyn, POLAND
 NIP: 742-100-54-87
 REGON: 510329685
 TXT;
 
 $defaultOfferSupplierContact = <<<TXT
 Zbigniew Walukiewicz
-Tel.: 0 603 930 725
+Tel.: +48 603 930 725
 E-mail: walkner@walkner.pl
 TXT;
 

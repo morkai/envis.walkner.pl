@@ -14,6 +14,8 @@ if (empty($offer))
   $offer->closedAt = '-';
 }
 
+$en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
+
 ?>
 <!DOCTYPE html>
 <html lang=pl>
@@ -53,7 +55,7 @@ if (empty($offer))
     <h2>Kętrzyn, <?= date('Y-m-d') ?></h2>
   </div>
   <div>
-    <h1>OFERTA</h1>
+    <h1><?= $en ? 'OFFER' : 'OFERTA' ?></h1>
     <h2><?= $offer->number ?></h2>
   </div>
   <hr>

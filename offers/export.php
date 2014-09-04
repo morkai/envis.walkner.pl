@@ -24,4 +24,6 @@ $offer = fetch_and_prepare_offer_for_printing($_GET['id']);
 
 not_found_if(empty($offer));
 
+$en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
+
 include_once __DIR__ . '/print/full.php';

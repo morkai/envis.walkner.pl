@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<?php
+
+$en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
+
+?><!DOCTYPE html>
 <html lang=pl>
 <head>
   <meta charset=utf-8>
@@ -74,7 +78,7 @@
   <div id="address">
     <p>
       Walkner elektronika przemysłowa Zbigniew Walukiewicz<br>
-      Nowa Wieś Kętrzyńska 7, 11-400 Kętrzyn, POLSKA
+      Nowa Wieś Kętrzyńska 7, 11-400 Kętrzyn, <?= $en ? 'POLAND' : 'POLSKA' ?>
     </p>
     <div class="property">
       <p class="name">NIP:</p>
@@ -86,25 +90,27 @@
     </div>
   </div>
   <div id="contact">
+    <? if (!$en): ?>
+      <div class="property">
+        <p class="name">Telefon stac.:</p>
+        <p class="value">+48 (89) 752 27 78</p>
+      </div>
+    <? endif ?>
     <div class="property">
-      <p class="name">Telefon stac.:</p>
-      <p class="value">(89) 752 27 78</p>
+      <p class="name"><?= $en ? 'Mobile phone' : 'Telefon kom.' ?>:</p>
+      <p class="value">+48 603 930 725</p>
     </div>
     <div class="property">
-      <p class="name">Telefon kom.:</p>
-      <p class="value">603 930 725</p>
-    </div>
-    <div class="property">
-      <p class="name">Adres e-mail:</p>
+      <p class="name"><?= $en ? 'E-mail' : 'Adres e-mail' ?>:</p>
       <p class="value">walkner@walkner.pl</p>
     </div>
     <div class="property">
-      <p class="name">Strona WWW:</p>
+      <p class="name"><?= $en ? 'Website' : 'Strona WWW' ?>:</p>
       <p class="value">http://walkner.pl/</p>
     </div>
   </div>
   <div id="page">
-    <p>Strona <span class="page">0</span> z <span class="topage">0</span></p>
+    <p><?= $en ? 'Page' : 'Strona' ?> <span class="page">0</span> <?= $en ? 'of' : 'z' ?> <span class="topage">0</span></p>
   </div>
 </body>
 </html>
