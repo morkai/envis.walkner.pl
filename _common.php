@@ -824,14 +824,49 @@ function label($for, $text, $required = false)
   return $label . '</label>';
 }
 
-function send_email($receivers, $subject, $message)
+function create_email($receivers, $subject, $message, $replyTo = null)
 {
-  $headers = "From: envis@walkner.pl";
+  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
 
-  foreach ((array)$receivers as $to)
+  $message = Swift_Message::newInstance()
+    ->setSubject($subject)
+    ->setFrom(ENVIS_SMTP_FROM_EMAIL, ENVIS_SMTP_FROM_NAME)
+    ->setTo($receivers)
+    ->setBody($message);
+
+  if ($replyTo === null)
   {
-    mail($to, $subject, $message, $headers);
+    $message->setReplyTo(ENVIS_SMTP_REPLY_EMAIL, ENVIS_SMTP_REPLY_NAME);
   }
+  else
+  {
+    $message->setReplyTo($replyTo);
+  }
+
+  return $message;
+}
+
+function send_email($receivers, $subject, $message, $replyTo = null)
+{
+  send_email_message(create_email($receivers, $subject, $message, $replyTo));
+}
+
+function send_email_message(Swift_Message $message)
+{
+  static $mailer = null;
+
+  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
+
+  if ($mailer === null)
+  {
+    $transport = Swift_SmtpTransport::newInstance(ENVIS_SMTP_HOST, ENVIS_SMTP_PORT, ENVIS_SMTP_SECURITY)
+      ->setUsername(ENVIS_SMTP_USER)
+      ->setPassword(ENVIS_SMTP_PASS);
+
+    $mailer = Swift_Mailer::newInstance($transport);
+  }
+
+  $mailer->send($message);
 }
 
 function adjust_plural_of_time($time, $_234, $other)

@@ -124,6 +124,10 @@ if (!empty($_POST['newIssue']))
 
     send_assign_email($receivers, $issue['subject'], $issueId);
   }
+  else
+  {
+    send_assign_email(array(), $issue['subject'], $issueId);
+  }
 
   log_info('Dodano nowe zgłoszenie <%s>.', $issue['subject']);
 

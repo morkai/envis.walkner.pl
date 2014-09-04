@@ -84,19 +84,12 @@ if (is('post'))
 
     if (!empty($mail['to']))
     {
-      require_once __DIR__ . '/../_lib_/swiftmailer/swift_required.php';
+      $attachment = Swift_Attachment::fromPath($offerPdfFile)
+        ->setFilename(str_replace(array('/', '\\'), '-', $offer->number) . '.pdf');
 
-      $mailer = Swift_Mailer::newInstance(Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'tls')
-        ->setUsername(ENVIS_SMTP_USER)
-        ->setPassword(ENVIS_SMTP_PASS));
-      $mailer->send(Swift_Message::newInstance()
-        ->setSubject($mail['subject'])
-        ->setFrom(ENVIS_SMTP_FROM_EMAIL, ENVIS_SMTP_FROM_NAME)
-        ->setTo($mail['to'])
-        ->setBody($mail['text'])
-        ->setReplyTo(ENVIS_SMTP_REPLY_EMAIL, ENVIS_SMTP_REPLY_NAME)
-        ->attach(Swift_Attachment::fromPath($offerPdfFile)
-                                 ->setFilename(str_replace(array('/', '\\'), '-', $offer->number) . '.pdf')));
+      $message = create_email($mail['to'], $mail['subject'], $mail['text'])->attach($attachment);
+
+      send_email_message($message);
     }
 
     log_info(sprintf('Wysłano ofertę <%s>.', $offer->title));

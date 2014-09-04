@@ -63,6 +63,16 @@ Pozdrawiam, envis.
 Ta wiadomość została wygenerowana automatycznie.
 MSG;
 
+  if (is_string($receivers))
+  {
+    $receivers = array($receivers);
+  }
+
+  if (ENVIS_SUB_EMAIL !== null && !in_array(ENVIS_SUB_EMAIL, $receivers))
+  {
+    $receivers[] = ENVIS_SUB_EMAIL;
+  }
+
   send_email($receivers, 'Nowe zlecenie', $message);
 }
 
@@ -103,7 +113,29 @@ SQL;
 
   $bindings = array(':issue' => $issue, ':exclude' => $excludeRecentlyNotified ? 1 : 0);
 
-  return fetch_all($query, $bindings);
+  $subscribers = fetch_all($query, $bindings);
+  $found = false;
+
+  foreach ($subscribers as $subscriber)
+  {
+    if ($subscriber->id === 1)
+    {
+      $found = true;
+
+      break;
+    }
+  }
+
+  if (!$found && ENVIS_SUB_EMAIL !== null)
+  {
+    $subscribers[] = (object)array(
+      'id' => 1,
+      'name' => ENVIS_SUB_NAME,
+      'email' => ENBIS_SUB_EMAIL
+    );
+  }
+
+  return $subscribers;
 }
 
 function update_issue_completion_percent($issue)

@@ -18,7 +18,6 @@ fclose($fd);
 $fromImport = true;
 
 include_once __DIR__ . '/../_lib_/mime-mail-parser/MimeMailParser.php';
-require_once __DIR__ . '/../_lib_/swiftmailer/swift_required.php';
 include_once __DIR__ . '/../_common.php';
 
 if (!function_exists('mailparse_msg_create'))
@@ -109,16 +108,7 @@ catch (Exception $x)
 
 if (!empty($replyText) && !empty($fromEmail) && !empty($toEmail))
 {
-  $mailer = Swift_Mailer::newInstance(Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'tls')
-    ->setUsername(ENVIS_SMTP_USER)
-    ->setPassword(ENVIS_SMTP_PASS));
-
-  $mailer->send(Swift_Message::newInstance()
-    ->setSubject("Re: {$subject}")
-    ->setFrom(ENVIS_SMTP_FROM_EMAIL, ENVIS_SMTP_FROM_NAME)
-    ->setTo($fromEmail)
-    ->setBody($replyText)
-    ->setReplyTo($toEmail));
+  send_email($fromEmail, "Re: {$subject}", $replyText, $toEmail);
 }
 
 if ($err)

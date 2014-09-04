@@ -4,12 +4,18 @@ define('ENVIS_PDO_DSN', 'mysql:host=localhost;dbname=envis');
 define('ENVIS_PDO_USER', 'root');
 define('ENVIS_PDO_PASS', '');
 
+define('ENVIS_SMTP_HOST', 'smtp.the.net');
+define('ENVIS_SMTP_PORT', 465);
+define('ENVIS_SMTP_SECURITY', 'tls');
 define('ENVIS_SMTP_USER', 'someone@the.net');
 define('ENVIS_SMTP_PASS', 'nohax');
 define('ENVIS_SMTP_FROM_EMAIL', 'someone@the.net');
 define('ENVIS_SMTP_FROM_NAME', 'Some One');
 define('ENVIS_SMTP_REPLY_EMAIL', 'someone@the.net');
 define('ENVIS_SMTP_REPLY_NAME', 'Some One');
+
+define('ENVIS_SUB_EMAIL', null);
+define('ENVIS_SUB_NAME', null);
 
 define('ENVIS_DOMAIN', 'localhost');
 define('ENVIS_BASE_URL', '/');
