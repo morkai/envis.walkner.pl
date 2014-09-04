@@ -268,7 +268,7 @@ class Base {/*{{{*/
         if ($std == 0) {
             return PEAR::raiseError('cannot studentize data, standard deviation is zero.');
         }
-        $arr  = array();
+        $arr = array();
         if ($this->_dataOption == STATS_DATA_CUMMULATIVE) {
             foreach ($this->_data as $val=>$freq) {
                 $newval = ($val - $mean) / $std;
@@ -297,7 +297,7 @@ class Base {/*{{{*/
         if (PEAR::isError($mean)) {
             return $mean;
         }
-        $arr  = array();
+        $arr = array();
         if ($this->_dataOption == STATS_DATA_CUMMULATIVE) {
             foreach ($this->_data as $val=>$freq) {
                 $newval = $val - $mean;

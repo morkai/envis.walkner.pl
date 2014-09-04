@@ -1073,7 +1073,7 @@ class Matrix {
 	 */
 	public function times() {
 		if (func_num_args() > 0) {
-			$args  = func_get_args();
+			$args = func_get_args();
 			$match = implode(",", array_map('gettype', $args));
 
 			switch($match) {

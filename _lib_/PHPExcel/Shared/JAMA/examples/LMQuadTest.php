@@ -16,7 +16,7 @@ class LMQuadTest {
 
 		$ox = $a[0];
 		$oy = $a[1];
-		$s  = $a[2];
+		$s = $a[2];
 
 		$sdx = $s * ($x[0] - $ox);
 		$sdy = $s * ($x[1] - $oy);
@@ -48,7 +48,7 @@ class LMQuadTest {
 
 		$ox = $a[0];
 		$oy = $a[1];
-		$s  = $a[2];
+		$s = $a[2];
 
 		$dx = ($x[0] - $ox);
 		$dy = ($x[1] - $oy);

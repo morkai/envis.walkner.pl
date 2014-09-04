@@ -48,9 +48,9 @@ class MagicSquareExample {
       for ($j = 0; $j < $p; ++$j) {
         for ($i = 0; $i < $p; ++$i) {
           $aij = $A->get($i,$j);
-          $M[$i][$j]       = $aij;
-          $M[$i][$j+$p]    = $aij + 2*$p*$p;
-          $M[$i+$p][$j]    = $aij + 3*$p*$p;
+          $M[$i][$j] = $aij;
+          $M[$i][$j+$p] = $aij + 2*$p*$p;
+          $M[$i+$p][$j] = $aij + 3*$p*$p;
           $M[$i+$p][$j+$p] = $aij + $p*$p;
         }
       }
@@ -68,7 +68,7 @@ class MagicSquareExample {
         }
       }
 
-      $t = $M[$k][0];  $M[$k][0]  = $M[$k+$p][0];  $M[$k+$p][0]  = $t;
+      $t = $M[$k][0];  $M[$k][0] = $M[$k+$p][0];  $M[$k+$p][0] = $t;
       $t = $M[$k][$k]; $M[$k][$k] = $M[$k+$p][$k]; $M[$k+$p][$k] = $t;
 
     }
@@ -88,14 +88,14 @@ class MagicSquareExample {
   /**
   * Tests LU, QR, SVD and symmetric Eig decompositions.
   *
-  *   n       = order of magic square.
-  *   trace   = diagonal sum, should be the magic sum, (n^3 + n)/2.
+  *   n = order of magic square.
+  *   trace = diagonal sum, should be the magic sum, (n^3 + n)/2.
   *   max_eig = maximum eigenvalue of (A + A')/2, should equal trace.
-  *   rank    = linear algebraic rank, should equal n if n is odd,
+  *   rank = linear algebraic rank, should equal n if n is odd,
   *             be less than n if n is even.
-  *   cond    = L_2 condition number, ratio of singular values.
-  *   lu_res  = test of LU factorization, norm1(L*U-A(p,:))/(n*eps).
-  *   qr_res  = test of QR factorization, norm1(Q*R-A)/(n*eps).
+  *   cond = L_2 condition number, ratio of singular values.
+  *   lu_res = test of LU factorization, norm1(L*U-A(p,:))/(n*eps).
+  *   qr_res = test of QR factorization, norm1(Q*R-A)/(n*eps).
   */
   function main() {
     ?>

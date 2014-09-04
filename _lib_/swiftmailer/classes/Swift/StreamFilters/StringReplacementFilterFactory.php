@@ -54,7 +54,7 @@ class Swift_StreamFilters_StringReplacementFilterFactory
       }
       
       $this->_filters[$search][$replace]
-        = new Swift_StreamFilters_StringReplacementFilter($search, $replace);
+ = new Swift_StreamFilters_StringReplacementFilter($search, $replace);
     }
     
     return $this->_filters[$search][$replace];

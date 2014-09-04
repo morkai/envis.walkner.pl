@@ -274,13 +274,13 @@ class PHPExcel_Style_Borders implements PHPExcel_IComparable
      * <code>
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->getBorders()->applyFromArray(
      * 		array(
-     * 			'bottom'     => array(
+     * 			'bottom' => array(
      * 				'style' => PHPExcel_Style_Border::BORDER_DASHDOT,
      * 				'color' => array(
      * 					'rgb' => '808080'
      * 				)
      * 			),
-     * 			'top'     => array(
+     * 			'top' => array(
      * 				'style' => PHPExcel_Style_Border::BORDER_DASHDOT,
      * 				'color' => array(
      * 					'rgb' => '808080'

@@ -665,7 +665,7 @@ Extra 1.0 - 5 September 2005
 *   Added support for setting the id attributes for headers like this:
 	
         Header 1            {#header1}
-        ========
+ ========
 	
         ## Header 2 ##      {#header2}
 	

@@ -225,12 +225,12 @@ class PHPExcel_Style_Fill implements PHPExcel_IComparable
      * <code>
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->getFill()->applyFromArray(
      * 		array(
-     * 			'type'       => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-     * 			'rotation'   => 0,
+     * 			'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+     * 			'rotation' => 0,
      * 			'startcolor' => array(
      * 				'rgb' => '000000'
      * 			),
-     * 			'endcolor'   => array(
+     * 			'endcolor' => array(
      * 				'argb' => 'FFFFFFFF'
      * 			)
      * 		)

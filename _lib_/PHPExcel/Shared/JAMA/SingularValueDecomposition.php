@@ -64,11 +64,11 @@ class SingularValueDecomposition  {
 		$A = $Arg->getArrayCopy();
 		$this->m = $Arg->getRowDimension();
 		$this->n = $Arg->getColumnDimension();
-		$nu      = min($this->m, $this->n);
-		$e       = array();
-		$work    = array();
-		$wantu   = true;
-		$wantv   = true;
+		$nu = min($this->m, $this->n);
+		$e = array();
+		$work = array();
+		$wantu = true;
+		$wantv = true;
 		$nct = min($this->m - 1, $this->n);
 		$nrt = max(0, min($this->n - 2, $this->m));
 
@@ -237,9 +237,9 @@ class SingularValueDecomposition  {
 		}
 
 		// Main iteration loop for the singular values.
-		$pp   = $p - 1;
+		$pp = $p - 1;
 		$iter = 0;
-		$eps  = pow(2.0, -52.0);
+		$eps = pow(2.0, -52.0);
 
 		while ($p > 0) {
 			// Here is where a test for too many iterations would go.
@@ -291,7 +291,7 @@ class SingularValueDecomposition  {
 						$f = $e[$p-2];
 						$e[$p-2] = 0.0;
 						for ($j = $p - 2; $j >= $k; --$j) {
-							$t  = hypo($this->s[$j],$f);
+							$t = hypo($this->s[$j],$f);
 							$cs = $this->s[$j] / $t;
 							$sn = $f / $t;
 							$this->s[$j] = $t;
@@ -334,13 +334,13 @@ class SingularValueDecomposition  {
 						$scale = max(max(max(max(
 									abs($this->s[$p-1]),abs($this->s[$p-2])),abs($e[$p-2])),
 									abs($this->s[$k])), abs($e[$k]));
-						$sp   = $this->s[$p-1] / $scale;
+						$sp = $this->s[$p-1] / $scale;
 						$spm1 = $this->s[$p-2] / $scale;
 						$epm1 = $e[$p-2] / $scale;
-						$sk   = $this->s[$k] / $scale;
-						$ek   = $e[$k] / $scale;
-						$b    = (($spm1 + $sp) * ($spm1 - $sp) + $epm1 * $epm1) / 2.0;
-						$c    = ($sp * $epm1) * ($sp * $epm1);
+						$sk = $this->s[$k] / $scale;
+						$ek = $e[$k] / $scale;
+						$b = (($spm1 + $sp) * ($spm1 - $sp) + $epm1 * $epm1) / 2.0;
+						$c = ($sp * $epm1) * ($sp * $epm1);
 						$shift = 0.0;
 						if (($b != 0.0) || ($c != 0.0)) {
 							$shift = sqrt($b * $b + $c);
@@ -353,7 +353,7 @@ class SingularValueDecomposition  {
 						$g = $sk * $ek;
 						// Chase zeros.
 						for ($j = $k; $j < $p-1; ++$j) {
-							$t  = hypo($f,$g);
+							$t = hypo($f,$g);
 							$cs = $f/$t;
 							$sn = $g/$t;
 							if ($j != $k) {

@@ -95,7 +95,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recInstance	= 0x0000;
 			$recType		= 0xF006;
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			// dgg data
@@ -126,7 +126,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF000;
 			$length			= strlen($innerData);
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -154,7 +154,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF001;
 			$length			= strlen($innerData);
 			
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 			
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -202,7 +202,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF007;
 			$length			= strlen($data);
 			
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |=	$recInstance << 4;
 			
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -235,7 +235,7 @@ class PHPExcel_Writer_Excel5_Escher
 				$recType		= 0xF01D;
 				$length			= strlen($innerData);
 				
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |=	$recInstance << 4;
 				
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -262,7 +262,7 @@ class PHPExcel_Writer_Excel5_Escher
 				$recType		= 0xF01E;
 				$length			= strlen($innerData);
 				
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |=	$recInstance << 4;
 				
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -287,7 +287,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF008;
 			$length			= 8;
 			
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -319,7 +319,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF002;
 			$length			= strlen($innerData);
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -354,7 +354,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF003;
 			$length			= strlen($innerData);
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -376,7 +376,7 @@ class PHPExcel_Writer_Excel5_Escher
 				$recType		= 0xF009;
 				$length			= 0x00000010;
 
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |= $recInstance << 4;
 
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -390,7 +390,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF00A;
 			$length			= 0x00000008;
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -410,7 +410,7 @@ class PHPExcel_Writer_Excel5_Escher
 				}
 				$length			= strlen($optData);
 				
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |= $recInstance << 4;
 
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -453,7 +453,7 @@ class PHPExcel_Writer_Excel5_Escher
 
 				$length			= strlen($clientAnchorData);
 
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |= $recInstance << 4;
 
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -470,7 +470,7 @@ class PHPExcel_Writer_Excel5_Escher
 
 				$length = strlen($clientDataData);
 
-				$recVerInstance  = $recVer;
+				$recVerInstance = $recVer;
 				$recVerInstance |= $recInstance << 4;
 
 				$header = pack('vvV', $recVerInstance, $recType, $length);
@@ -483,7 +483,7 @@ class PHPExcel_Writer_Excel5_Escher
 			$recType		= 0xF004;
 			$length			= strlen($data);
 
-			$recVerInstance  = $recVer;
+			$recVerInstance = $recVer;
 			$recVerInstance |= $recInstance << 4;
 
 			$header = pack('vvV', $recVerInstance, $recType, $length);

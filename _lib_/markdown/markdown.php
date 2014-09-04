@@ -339,7 +339,7 @@ class Markdown_Parser {
 		# Strip link definitions, store in hashes.
 		"stripLinkDefinitions" => 20,
 		
-		"runBasicBlockGamut"   => 30,
+		"runBasicBlockGamut" => 30,
 		);
 
 
@@ -525,7 +525,7 @@ class Markdown_Parser {
 	}
 	function _hashHTMLBlocks_callback($matches) {
 		$text = $matches[1];
-		$key  = $this->hashBlock($text);
+		$key = $this->hashBlock($text);
 		return "\n\n$key\n\n";
 	}
 	
@@ -566,12 +566,12 @@ class Markdown_Parser {
 	# These are all the transformations that form block-level
 	# tags like paragraphs, headers, and list items.
 	#
-		"doHeaders"         => 10,
+		"doHeaders" => 10,
 		"doHorizontalRules" => 20,
 		
-		"doLists"           => 40,
-		"doCodeBlocks"      => 50,
-		"doBlockQuotes"     => 60,
+		"doLists" => 40,
+		"doCodeBlocks" => 50,
+		"doBlockQuotes" => 60,
 		);
 
 	function runBlockGamut($text) {
@@ -630,21 +630,21 @@ class Markdown_Parser {
 	#
 		# Process character escapes, code spans, and inline HTML
 		# in one shot.
-		"parseSpan"           => -30,
+		"parseSpan" => -30,
 
 		# Process anchor and image tags. Images must come first,
 		# because ![foo][f] looks like an anchor.
-		"doImages"            =>  10,
-		"doAnchors"           =>  20,
+		"doImages" =>  10,
+		"doAnchors" =>  20,
 		
 		# Make links out of things like `<http://example.com/>`
 		# Must come after doAnchors, because you can use < and >
 		# delimiters in inline links like [this](<url>).
-		"doAutoLinks"         =>  30,
+		"doAutoLinks" =>  30,
 		"encodeAmpsAndAngles" =>  40,
 
-		"doItalicsAndBold"    =>  50,
-		"doHardBreaks"        =>  60,
+		"doItalicsAndBold" =>  50,
+		"doHardBreaks" =>  60,
 		);
 
 	function runSpanGamut($text) {
@@ -741,8 +741,8 @@ class Markdown_Parser {
 	}
 	function _doAnchors_reference_callback($matches) {
 		$whole_match =  $matches[1];
-		$link_text   =  $matches[2];
-		$link_id     =& $matches[3];
+		$link_text =  $matches[2];
+		$link_id =& $matches[3];
 
 		if ($link_id == "") {
 			# for shortcut links like [this][] or [this].
@@ -851,8 +851,8 @@ class Markdown_Parser {
 	}
 	function _doImages_reference_callback($matches) {
 		$whole_match = $matches[1];
-		$alt_text    = $matches[2];
-		$link_id     = strtolower($matches[3]);
+		$alt_text = $matches[2];
+		$link_id = strtolower($matches[3]);
 
 		if ($link_id == "") {
 			$link_id = strtolower($alt_text); # for shortcut links like ![this][].
@@ -899,7 +899,7 @@ class Markdown_Parser {
 	function doHeaders($text) {
 		# Setext-style headers:
 		#	  Header 1
-		#	  ========
+		#	 ========
 		#  
 		#	  Header 2
 		#	  --------
@@ -949,8 +949,8 @@ class Markdown_Parser {
 		$less_than_tab = $this->tab_width - 1;
 
 		# Re-usable patterns to match list item bullets and number markers:
-		$marker_ul_re  = '[*+-]';
-		$marker_ol_re  = '\d+[.]';
+		$marker_ul_re = '[*+-]';
+		$marker_ol_re = '\d+[.]';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 
 		$markers_relist = array(
@@ -1010,8 +1010,8 @@ class Markdown_Parser {
 	}
 	function _doLists_callback($matches) {
 		# Re-usable patterns to match list item bullets and number markers:
-		$marker_ul_re  = '[*+-]';
-		$marker_ol_re  = '\d+[.]';
+		$marker_ul_re = '[*+-]';
+		$marker_ol_re = '\d+[.]';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 		
 		$list = $matches[1];
@@ -1065,7 +1065,7 @@ class Markdown_Parser {
 			('.$marker_any_re.'				# list marker and space = $3
 				(?:[ ]+|(?=\n))	# space only required if item is not empty
 			)
-			((?s:.*?))						# list item text   = $4
+			((?s:.*?))						# list item text = $4
 			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
 			(?= \n* (\z | \2 ('.$marker_any_re.') (?:[ ]+|(?=\n))))
 			}xm',
@@ -1141,17 +1141,17 @@ class Markdown_Parser {
 
 
 	var $em_relist = array(
-		''  => '(?:(?<!\*)\*(?!\*)|(?<!_)_(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*(?!\*)|(?<!_)_(?!_))(?=\S|$)(?![.,:;]\s)',
 		'*' => '(?<=\S|^)(?<!\*)\*(?!\*)',
 		'_' => '(?<=\S|^)(?<!_)_(?!_)',
 		);
 	var $strong_relist = array(
-		''   => '(?:(?<!\*)\*\*(?!\*)|(?<!_)__(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*\*(?!\*)|(?<!_)__(?!_))(?=\S|$)(?![.,:;]\s)',
 		'**' => '(?<=\S|^)(?<!\*)\*\*(?!\*)',
 		'__' => '(?<=\S|^)(?<!_)__(?!_)',
 		);
 	var $em_strong_relist = array(
-		''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<!_)___(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*\*\*(?!\*)|(?<!_)___(?!_))(?=\S|$)(?![.,:;]\s)',
 		'***' => '(?<=\S|^)(?<!\*)\*\*\*(?!\*)',
 		'___' => '(?<=\S|^)(?<!_)___(?!_)',
 		);
@@ -1703,18 +1703,18 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# Parent constructor will do the sorting.
 		$this->document_gamut += array(
 			"doFencedCodeBlocks" => 5,
-			"stripFootnotes"     => 15,
+			"stripFootnotes" => 15,
 			"stripAbbreviations" => 25,
-			"appendFootnotes"    => 50,
+			"appendFootnotes" => 50,
 			);
 		$this->block_gamut += array(
 			"doFencedCodeBlocks" => 5,
-			"doTables"           => 15,
-			"doDefLists"         => 45,
+			"doTables" => 15,
+			"doDefLists" => 45,
 			);
 		$this->span_gamut += array(
-			"doFootnotes"        => 5,
-			"doAbbreviations"    => 70,
+			"doFootnotes" => 5,
+			"doAbbreviations" => 70,
 			);
 		
 		parent::Markdown_Parser();
@@ -1924,7 +1924,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				break;
 			}
 			
-			$tag  = $parts[1]; # Tag to handle.
+			$tag = $parts[1]; # Tag to handle.
 			$text = $parts[2]; # Remaining text after current tag.
 			$tag_re = preg_quote($tag); # For use in a regular expression.
 			
@@ -2123,8 +2123,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}
 			
 			$block_text .= $parts[0]; # Text before current tag.
-			$tag         = $parts[1]; # Tag to handle.
-			$text        = $parts[2]; # Remaining text after current tag.
+			$tag = $parts[1]; # Tag to handle.
+			$text = $parts[2]; # Remaining text after current tag.
 			
 			#
 			# Check for: Auto-close tag (like <hr/>)
@@ -2226,7 +2226,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 		# Setext-style headers:
 		#	  Header 1  {#header1}
-		#	  ========
+		#	 ========
 		#  
 		#	  Header 2  {#header2}
 		#	  --------
@@ -2268,13 +2268,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($id =& $matches[2]);
+		$attr = $this->_doHeaders_attr($id =& $matches[2]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->_doHeaders_attr($id =& $matches[3]);
+		$attr = $this->_doHeaders_attr($id =& $matches[3]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
@@ -2588,17 +2588,17 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# work in the middle of a word.
 	#
 	var $em_relist = array(
-		''  => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?=\S|$)(?![.,:;]\s)',
 		'*' => '(?<=\S|^)(?<!\*)\*(?!\*)',
 		'_' => '(?<=\S|^)(?<!_)_(?![a-zA-Z0-9_])',
 		);
 	var $strong_relist = array(
-		''   => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?=\S|$)(?![.,:;]\s)',
 		'**' => '(?<=\S|^)(?<!\*)\*\*(?!\*)',
 		'__' => '(?<=\S|^)(?<!_)__(?![a-zA-Z0-9_])',
 		);
 	var $em_strong_relist = array(
-		''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?=\S|$)(?![.,:;]\s)',
+		'' => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?=\S|$)(?![.,:;]\s)',
 		'***' => '(?<=\S|^)(?<!\*)\*\*\*(?!\*)',
 		'___' => '(?<=\S|^)(?<!_)___(?![a-zA-Z0-9_])',
 		);

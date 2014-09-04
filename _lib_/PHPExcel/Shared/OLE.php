@@ -50,12 +50,12 @@ $GLOBALS['_OLE_INSTANCES'] = array();
 */
 class PHPExcel_Shared_OLE
 {
-	const OLE_PPS_TYPE_ROOT   =      5;
-	const OLE_PPS_TYPE_DIR    =      1;
-	const OLE_PPS_TYPE_FILE   =      2;
+	const OLE_PPS_TYPE_ROOT =      5;
+	const OLE_PPS_TYPE_DIR =      1;
+	const OLE_PPS_TYPE_FILE =      2;
 	const OLE_DATA_SIZE_SMALL = 0x1000;
-	const OLE_LONG_INT_SIZE   =      4;
-	const OLE_PPS_SIZE        =   0x80;
+	const OLE_LONG_INT_SIZE =      4;
+	const OLE_PPS_SIZE =   0x80;
 
 	/**
 	 * The file handle for reading an OLE container
@@ -125,7 +125,7 @@ class PHPExcel_Shared_OLE
 		}
 		// Size of blocks and short blocks in bytes
 		$this->bigBlockSize = pow(2, $this->_readInt2($fh));
-		$this->smallBlockSize  = pow(2, $this->_readInt2($fh));
+		$this->smallBlockSize = pow(2, $this->_readInt2($fh));
 
 		// Skip UID, revision number and version number
 		fseek($fh, 44);
@@ -303,11 +303,11 @@ class PHPExcel_Shared_OLE
 				continue;
 			}
 			fseek($fh, 1, SEEK_CUR);
-			$pps->Type    = $type;
-			$pps->Name    = $name;
+			$pps->Type = $type;
+			$pps->Name = $name;
 			$pps->PrevPps = $this->_readInt4($fh);
 			$pps->NextPps = $this->_readInt4($fh);
-			$pps->DirPps  = $this->_readInt4($fh);
+			$pps->DirPps = $this->_readInt4($fh);
 			fseek($fh, 20, SEEK_CUR);
 			$pps->Time1st = self::OLE2LocalDate(fread($fh, 8));
 			$pps->Time2nd = self::OLE2LocalDate(fread($fh, 8));

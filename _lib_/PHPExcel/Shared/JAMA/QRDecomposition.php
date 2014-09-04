@@ -53,8 +53,8 @@ class QRDecomposition {
 		if($A instanceof Matrix) {
 			// Initialize.
 			$this->QR = $A->getArrayCopy();
-			$this->m  = $A->getRowDimension();
-			$this->n  = $A->getColumnDimension();
+			$this->m = $A->getRowDimension();
+			$this->n = $A->getColumnDimension();
 			// Main loop.
 			for ($k = 0; $k < $this->n; ++$k) {
 				// Compute 2-norm of k-th column without under/overflow.
@@ -194,7 +194,7 @@ class QRDecomposition {
 			if ($this->isFullRank()) {
 				// Copy right hand side
 				$nx = $B->getColumnDimension();
-				$X  = $B->getArrayCopy();
+				$X = $B->getArrayCopy();
 				// Compute Y = transpose(Q)*B
 				for ($k = 0; $k < $this->n; ++$k) {
 					for ($j = 0; $j < $nx; ++$j) {

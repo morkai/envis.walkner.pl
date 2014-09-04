@@ -125,10 +125,10 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter
 		$this->_BIFF_version	= 0x0600;
 		$this->_tempDir			= '';
 		
-		$this->_str_total       = 0;
-		$this->_str_unique      = 0;
-		$this->_str_table       = array();
-		$this->_parser          = new PHPExcel_Writer_Excel5_Parser($this->_BIFF_version);
+		$this->_str_total = 0;
+		$this->_str_unique = 0;
+		$this->_str_table = array();
+		$this->_parser = new PHPExcel_Writer_Excel5_Parser($this->_BIFF_version);
 		
 	}
 
@@ -158,7 +158,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter
 		// Initialise worksheet writers
 		$countSheets = count($this->_phpExcel->getAllSheets());
 		for ($i = 0; $i < $countSheets; ++$i) {
-			$phpSheet  = $this->_phpExcel->getSheet($i);
+			$phpSheet = $this->_phpExcel->getSheet($i);
 			
 			$writerWorksheet = new PHPExcel_Writer_Excel5_Worksheet($this->_BIFF_version,
 									   $this->_str_total, $this->_str_unique,

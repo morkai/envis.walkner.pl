@@ -134,16 +134,16 @@ class PHPExcel_Shared_OLE_PPS
 	*/
 	public function __construct($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
 	{
-		$this->No      = $No;
-		$this->Name    = $name;
-		$this->Type    = $type;
+		$this->No = $No;
+		$this->Name = $name;
+		$this->Type = $type;
 		$this->PrevPps = $prev;
 		$this->NextPps = $next;
-		$this->DirPps  = $dir;
+		$this->DirPps = $dir;
 		$this->Time1st = $time_1st;
 		$this->Time2nd = $time_2nd;
-		$this->_data      = $data;
-		$this->children   = $children;
+		$this->_data = $data;
+		$this->children = $children;
 		if ($data != '') {
 			$this->Size = strlen($data);
 		} else {

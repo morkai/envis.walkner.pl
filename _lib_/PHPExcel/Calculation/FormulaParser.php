@@ -69,18 +69,18 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Calculation/FormulaToken.php';
  */
 class PHPExcel_Calculation_FormulaParser {
 	/* Character constants */
-	const QUOTE_DOUBLE  = '"';
-	const QUOTE_SINGLE  = '\'';
+	const QUOTE_DOUBLE = '"';
+	const QUOTE_SINGLE = '\'';
 	const BRACKET_CLOSE = ']';
-	const BRACKET_OPEN  = '[';
-	const BRACE_OPEN    = '{';
-	const BRACE_CLOSE   = '}';
-	const PAREN_OPEN    = '(';
-	const PAREN_CLOSE   = ')';
-	const SEMICOLON     = ';';
-	const WHITESPACE    = ' ';
-	const COMMA         = ',';
-	const ERROR_START   = '#';
+	const BRACKET_OPEN = '[';
+	const BRACE_OPEN = '{';
+	const BRACE_CLOSE = '}';
+	const PAREN_OPEN = '(';
+	const PAREN_CLOSE = ')';
+	const SEMICOLON = ';';
+	const WHITESPACE = ' ';
+	const COMMA = ',';
+	const ERROR_START = '#';
 
 	const OPERATORS_SN 			= "+-";
 	const OPERATORS_INFIX 		= "+-*/^&=><";

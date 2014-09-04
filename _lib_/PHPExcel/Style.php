@@ -262,24 +262,24 @@ class PHPExcel_Style implements PHPExcel_IComparable
      * <code>
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->applyFromArray(
      * 		array(
-     * 			'font'    => array(
-     * 				'name'      => 'Arial',
-     * 				'bold'      => true,
-     * 				'italic'    => false,
+     * 			'font' => array(
+     * 				'name' => 'Arial',
+     * 				'bold' => true,
+     * 				'italic' => false,
      * 				'underline' => PHPExcel_Style_Font::UNDERLINE_DOUBLE,
-     * 				'strike'    => false,
-     * 				'color'     => array(
+     * 				'strike' => false,
+     * 				'color' => array(
      * 					'rgb' => '808080'
      * 				)
      * 			),
      * 			'borders' => array(
-     * 				'bottom'     => array(
+     * 				'bottom' => array(
      * 					'style' => PHPExcel_Style_Border::BORDER_DASHDOT,
      * 					'color' => array(
      * 						'rgb' => '808080'
      * 					)
      * 				),
-     * 				'top'     => array(
+     * 				'top' => array(
      * 					'style' => PHPExcel_Style_Border::BORDER_DASHDOT,
      * 					'color' => array(
      * 						'rgb' => '808080'

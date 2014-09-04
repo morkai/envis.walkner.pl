@@ -61,8 +61,8 @@ class LUDecomposition {
 		if ($A instanceof Matrix) {
 			// Use a "left-looking", dot-product, Crout/Doolittle algorithm.
 			$this->LU = $A->getArrayCopy();
-			$this->m  = $A->getRowDimension();
-			$this->n  = $A->getColumnDimension();
+			$this->m = $A->getRowDimension();
+			$this->n = $A->getColumnDimension();
 			for ($i = 0; $i < $this->m; ++$i) {
 				$this->piv[$i] = $i;
 			}
@@ -223,7 +223,7 @@ class LUDecomposition {
 			if ($this->isNonsingular()) {
 				// Copy right hand side with pivoting
 				$nx = $B->getColumnDimension();
-				$X  = $B->getMatrix($this->piv, 0, $nx-1);
+				$X = $B->getMatrix($this->piv, 0, $nx-1);
 				// Solve L*Y = B(piv,:)
 				for ($k = 0; $k < $this->n; ++$k) {
 					for ($i = $k+1; $i < $this->n; ++$i) {

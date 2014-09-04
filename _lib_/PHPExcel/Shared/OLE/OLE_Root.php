@@ -93,7 +93,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 	public function save($filename)
 	{
 		// Initial Setting for saving
-		$this->_BIG_BLOCK_SIZE  = pow(2,
+		$this->_BIG_BLOCK_SIZE = pow(2,
 					  ((isset($this->_BIG_BLOCK_SIZE))? $this->_adjust2($this->_BIG_BLOCK_SIZE)  : 9));
 		$this->_SMALL_BLOCK_SIZE= pow(2,
 					  ((isset($this->_SMALL_BLOCK_SIZE))?  $this->_adjust2($this->_SMALL_BLOCK_SIZE): 6));

@@ -24,7 +24,7 @@ function tile(&$X, $rowWise, $colWise){
   $xArray = $X->getArray();
   print_r($xArray);
 
-  $countRow    = 0;
+  $countRow = 0;
   $countColumn = 0;
 
   $m = $X->getRowDimension();

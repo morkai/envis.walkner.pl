@@ -3821,8 +3821,8 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 		case 0x13: $name = 'tUminus';	$size = 1;	$data = '-';	break;
 		case 0x14: $name = 'tPercent';	$size = 1;	$data = '%';	break;
 		case 0x15: // parenthesis
-			$name  = 'tParen';
-			$size  = 1;
+			$name = 'tParen';
+			$size = 1;
 			$data = null;
 			break;
 		case 0x16: // missing argument

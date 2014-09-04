@@ -461,14 +461,14 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 		// Start styles
 		if ($generateSurroundingHTML) {
 			// html { }
-			$css['html']['font-family']      = 'Calibri, Arial, Helvetica, sans-serif';
-			$css['html']['font-size']        = '11pt';
+			$css['html']['font-family'] = 'Calibri, Arial, Helvetica, sans-serif';
+			$css['html']['font-size'] = '11pt';
 			$css['html']['background-color'] = 'white';
 		}
 
 
 		// table { }
-		$css['table']['border-collapse']  = 'collapse';
+		$css['table']['border-collapse'] = 'collapse';
 		$css['table']['page-break-after'] = 'always';
 
 		// .gridlines td { }
@@ -545,7 +545,7 @@ class PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
 			$pt_height = $rowDimension->getRowHeight();
 			$css['table.sheet' . $sheetIndex . ' tr']['height'] = $pt_height . 'pt';
 			if ($rowDimension->getVisible() === false) {
-				$css['table.sheet' . $sheetIndex . ' tr']['display']    = 'none';
+				$css['table.sheet' . $sheetIndex . ' tr']['display'] = 'none';
 				$css['table.sheet' . $sheetIndex . ' tr']['visibility'] = 'hidden';
 			}
 

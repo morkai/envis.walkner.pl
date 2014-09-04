@@ -1026,14 +1026,14 @@ class PHPExcel_Reader_Excel2007 implements PHPExcel_Reader_IReader
 									$shape->registerXPathNamespace('v', 'urn:schemas-microsoft-com:vml');
 
 									if (isset($shape['style'])) {
-    									$style        = (string)$shape['style'];
-    									$fillColor    = strtoupper( substr( (string)$shape['fillcolor'], 1 ) );
-    									$column       = null;
-    									$row          = null;
+    									$style = (string)$shape['style'];
+    									$fillColor = strtoupper( substr( (string)$shape['fillcolor'], 1 ) );
+    									$column = null;
+    									$row = null;
 
-    									$clientData   = $shape->xpath('.//x:ClientData');
+    									$clientData = $shape->xpath('.//x:ClientData');
     									if (is_array($clientData)) {
-        									$clientData   = $clientData[0];
+        									$clientData = $clientData[0];
 
         									if ( isset($clientData['ObjectType']) && (string)$clientData['ObjectType'] == 'Note' ) {
         									    $temp = $clientData->xpath('.//x:Row');

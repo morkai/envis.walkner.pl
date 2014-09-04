@@ -105,9 +105,9 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	public function __construct()
 	{
-		$this->_data       = '';
-		$this->_datasize   = 0;
-		$this->_limit      = 2080;
+		$this->_data = '';
+		$this->_datasize = 0;
+		$this->_limit = 2080;
 	}
 
 	/**
@@ -121,7 +121,7 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 		if (!isset(self::$_byte_order)) {
 			// Check if "pack" gives the required IEEE 64bit float
 			$teststr = pack("d", 1.2345);
-			$number  = pack("C8", 0x8D, 0x97, 0x6E, 0x12, 0x83, 0xC0, 0xF3, 0x3F);
+			$number = pack("C8", 0x8D, 0x97, 0x6E, 0x12, 0x83, 0xC0, 0xF3, 0x3F);
 			if ($number == $teststr) {
 				$byte_order = 0;    // Little Endian
 			} elseif ($number == strrev($teststr)){
@@ -148,7 +148,7 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 		if (strlen($data) - 4 > $this->_limit) {
 			$data = $this->_addContinue($data);
 		}
-		$this->_data      = $this->_data.$data;
+		$this->_data = $this->_data.$data;
 		$this->_datasize += strlen($data);
 	}
 
@@ -178,28 +178,28 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	function _storeBof($type)
 	{
-		$record  = 0x0809;        // Record identifier
+		$record = 0x0809;        // Record identifier
 
 		// According to the SDK $build and $year should be set to zero.
 		// However, this throws a warning in Excel 5. So, use magic numbers.
 		if ($this->_BIFF_version == 0x0500) {
-			$length  = 0x0008;
+			$length = 0x0008;
 			$unknown = '';
-			$build   = 0x096C;
-			$year    = 0x07C9;
+			$build = 0x096C;
+			$year = 0x07C9;
 		} elseif ($this->_BIFF_version == 0x0600) {
-			$length  = 0x0010;
+			$length = 0x0010;
 
 			// by inspection of real files, MS Office Excel 2007 writes the following 
 			$unknown = pack("VV", 0x000100D1, 0x00000406);
 
-			$build   = 0x0DBB;
-			$year    = 0x07CC;
+			$build = 0x0DBB;
+			$year = 0x07CC;
 		}
 		$version = $this->_BIFF_version;
 
-		$header  = pack("vv",   $record, $length);
-		$data    = pack("vvvv", $version, $type, $build, $year);
+		$header = pack("vv",   $record, $length);
+		$data = pack("vvvv", $version, $type, $build, $year);
 		$this->_append($header . $data . $unknown);
 	}
 
@@ -210,9 +210,9 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	function _storeEof()
 	{
-		$record    = 0x000A;   // Record identifier
-		$length    = 0x0000;   // Number of bytes to follow
-		$header    = pack("vv", $record, $length);
+		$record = 0x000A;   // Record identifier
+		$length = 0x0000;   // Number of bytes to follow
+		$header = pack("vv", $record, $length);
 		$this->_append($header);
 	}
 
@@ -223,9 +223,9 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	public function writeEof()
 	{
-		$record    = 0x000A;   // Record identifier
-		$length    = 0x0000;   // Number of bytes to follow
-		$header    = pack("vv", $record, $length);
+		$record = 0x000A;   // Record identifier
+		$length = 0x0000;   // Number of bytes to follow
+		$header = pack("vv", $record, $length);
 		return $this->writeData($header);
 	}
 
@@ -243,7 +243,7 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	function _addContinue($data)
 	{
-		$limit  = $this->_limit;
+		$limit = $this->_limit;
 		$record = 0x003C;         // Record identifier
 
 		// The first 2080/8224 bytes remain intact. However, we have to change
@@ -260,7 +260,7 @@ class PHPExcel_Writer_Excel5_BIFFwriter
 		}
 
 		// Retrieve the last chunk of data
-		$header  = pack("vv", $record, strlen($data) - $i);
+		$header = pack("vv", $record, strlen($data) - $i);
 		$tmp    .= $header;
 		$tmp    .= substr($data, $i, strlen($data) - $i);
 

@@ -224,9 +224,9 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->getAlignment()->applyFromArray(
      * 		array(
      * 			'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-     * 			'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER,
-     * 			'rotation'   => 0,
-     * 			'wrap'       => true
+     * 			'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+     * 			'rotation' => 0,
+     * 			'wrap' => true
      * 		)
      * );
      * </code>

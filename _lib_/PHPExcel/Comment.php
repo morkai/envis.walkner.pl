@@ -117,9 +117,9 @@ class PHPExcel_Comment implements PHPExcel_IComparable
     public function __construct()
     {
     	// Initialise variables
-    	$this->_author		  = 'Author';
-    	$this->_text		  = new PHPExcel_RichText();
-    	$this->_fillColor     = new PHPExcel_Style_Color('FFFFFFE1');
+    	$this->_author		 = 'Author';
+    	$this->_text		 = new PHPExcel_RichText();
+    	$this->_fillColor = new PHPExcel_Style_Color('FFFFFFE1');
     }
     
     /**

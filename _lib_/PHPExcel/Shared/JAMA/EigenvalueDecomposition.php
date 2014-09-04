@@ -189,7 +189,7 @@ class EigenvalueDecomposition {
 		$this->e[$this->n-1] = 0.0;
 		$f = 0.0;
 		$tst1 = 0.0;
-		$eps  = pow(2.0,-52.0);
+		$eps = pow(2.0,-52.0);
 
 		for ($l = 0; $l < $this->n; ++$l) {
 			// Find small subdiagonal element
@@ -230,9 +230,9 @@ class EigenvalueDecomposition {
 						$c3 = $c2;
 						$c2 = $c;
 						$s2 = $s;
-						$g  = $c * $this->e[$i];
-						$h  = $c * $p;
-						$r  = hypo($p, $this->e[$i]);
+						$g = $c * $this->e[$i];
+						$h = $c * $p;
+						$r = hypo($p, $this->e[$i]);
 						$this->e[$i+1] = $s * $r;
 						$s = $this->e[$i] / $r;
 						$c = $p / $r;
@@ -289,7 +289,7 @@ class EigenvalueDecomposition {
 	 *	@access private
 	 */
 	private function orthes () {
-		$low  = 0;
+		$low = 0;
 		$high = $this->n-1;
 
 		for ($m = $low+1; $m <= $high-1; ++$m) {
@@ -398,7 +398,7 @@ class EigenvalueDecomposition {
 	private function hqr2 () {
 		//  Initialize
 		$nn = $this->n;
-		$n  = $nn - 1;
+		$n = $nn - 1;
 		$low = 0;
 		$high = $nn - 1;
 		$eps = pow(2.0, -52.0);
@@ -693,7 +693,7 @@ class EigenvalueDecomposition {
 				} else {
 					$this->cdiv(0.0, -$this->H[$n-1][$n], $this->H[$n-1][$n-1] - $p, $q);
 					$this->H[$n-1][$n-1] = $this->cdivr;
-					$this->H[$n-1][$n]   = $this->cdivi;
+					$this->H[$n-1][$n] = $this->cdivi;
 				}
 				$this->H[$n][$n-1] = 0.0;
 				$this->H[$n][$n] = 1.0;
@@ -715,7 +715,7 @@ class EigenvalueDecomposition {
 						if ($this->e[$i] == 0) {
 							$this->cdiv(-$ra, -$sa, $w, $q);
 							$this->H[$i][$n-1] = $this->cdivr;
-							$this->H[$i][$n]   = $this->cdivi;
+							$this->H[$i][$n] = $this->cdivi;
 						} else {
 							// Solve complex equations
 							$x = $this->H[$i][$i+1];
@@ -727,14 +727,14 @@ class EigenvalueDecomposition {
 							}
 							$this->cdiv($x * $r - $z * $ra + $q * $sa, $x * $s - $z * $sa - $q * $ra, $vr, $vi);
 							$this->H[$i][$n-1] = $this->cdivr;
-							$this->H[$i][$n]   = $this->cdivi;
+							$this->H[$i][$n] = $this->cdivi;
 							if (abs($x) > (abs($z) + abs($q))) {
 								$this->H[$i+1][$n-1] = (-$ra - $w * $this->H[$i][$n-1] + $q * $this->H[$i][$n]) / $x;
 								$this->H[$i+1][$n] = (-$sa - $w * $this->H[$i][$n] - $q * $this->H[$i][$n-1]) / $x;
 							} else {
 								$this->cdiv(-$r - $y * $this->H[$i][$n-1], -$s - $y * $this->H[$i][$n], $z, $q);
 								$this->H[$i+1][$n-1] = $this->cdivr;
-								$this->H[$i+1][$n]   = $this->cdivi;
+								$this->H[$i+1][$n] = $this->cdivi;
 							}
 						}
 						// Overflow control
@@ -742,7 +742,7 @@ class EigenvalueDecomposition {
 						if (($eps * $t) * $t > 1) {
 							for ($j = $i; $j <= $n; ++$j) {
 								$this->H[$j][$n-1] = $this->H[$j][$n-1] / $t;
-								$this->H[$j][$n]   = $this->H[$j][$n] / $t;
+								$this->H[$j][$n] = $this->H[$j][$n] / $t;
 							}
 						}
 					} // end else

@@ -65,7 +65,7 @@ return $text . "\n";
 }
 var $document_gamut = array(
 "stripLinkDefinitions" => 20,
-"runBasicBlockGamut"   => 30,
+"runBasicBlockGamut" => 30,
 );
 function stripLinkDefinitions($text) {
 $less_than_tab = $this->tab_width - 1;
@@ -197,7 +197,7 @@ return $text;
 }
 function _hashHTMLBlocks_callback($matches) {
 $text = $matches[1];
-$key  = $this->hashBlock($text);
+$key = $this->hashBlock($text);
 return "\n\n$key\n\n";
 }
 function hashPart($text, $boundary = 'X') {
@@ -211,11 +211,11 @@ function hashBlock($text) {
 return $this->hashPart($text, 'B');
 }
 var $block_gamut = array(
-"doHeaders"         => 10,
+"doHeaders" => 10,
 "doHorizontalRules" => 20,
-"doLists"           => 40,
-"doCodeBlocks"      => 50,
-"doBlockQuotes"     => 60,
+"doLists" => 40,
+"doCodeBlocks" => 50,
+"doBlockQuotes" => 60,
 );
 function runBlockGamut($text) {
 $text = $this->hashHTMLBlocks($text);
@@ -244,13 +244,13 @@ $			# End of line.
 $text);
 }
 var $span_gamut = array(
-"parseSpan"           => -30,
-"doImages"            =>  10,
-"doAnchors"           =>  20,
-"doAutoLinks"         =>  30,
+"parseSpan" => -30,
+"doImages" =>  10,
+"doAnchors" =>  20,
+"doAutoLinks" =>  30,
 "encodeAmpsAndAngles" =>  40,
-"doItalicsAndBold"    =>  50,
-"doHardBreaks"        =>  60,
+"doItalicsAndBold" =>  50,
+"doHardBreaks" =>  60,
 );
 function runSpanGamut($text) {
 foreach ($this->span_gamut as $method => $priority) {
@@ -317,8 +317,8 @@ return $text;
 }
 function _doAnchors_reference_callback($matches) {
 $whole_match =  $matches[1];
-$link_text   =  $matches[2];
-$link_id     =& $matches[3];
+$link_text =  $matches[2];
+$link_id =& $matches[3];
 if ($link_id == "") {
 $link_id = $link_text;
 }
@@ -399,8 +399,8 @@ return $text;
 }
 function _doImages_reference_callback($matches) {
 $whole_match = $matches[1];
-$alt_text    = $matches[2];
-$link_id     = strtolower($matches[3]);
+$alt_text = $matches[2];
+$link_id = strtolower($matches[3]);
 if ($link_id == "") {
 $link_id = strtolower($alt_text);
 }
@@ -464,8 +464,8 @@ return "\n" . $this->hashBlock($block) . "\n\n";
 }
 function doLists($text) {
 $less_than_tab = $this->tab_width - 1;
-$marker_ul_re  = '[*+-]';
-$marker_ol_re  = '\d+[.]';
+$marker_ul_re = '[*+-]';
+$marker_ol_re = '\d+[.]';
 $marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 $markers_relist = array(
 $marker_ul_re => $marker_ol_re,
@@ -516,8 +516,8 @@ array(&$this, '_doLists_callback'), $text);
 return $text;
 }
 function _doLists_callback($matches) {
-$marker_ul_re  = '[*+-]';
-$marker_ol_re  = '\d+[.]';
+$marker_ul_re = '[*+-]';
+$marker_ol_re = '\d+[.]';
 $marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 $list = $matches[1];
 $list_type = preg_match("/$marker_ul_re/", $matches[4]) ? "ul" : "ol";
@@ -537,7 +537,7 @@ $list_str = preg_replace_callback('{
 ('.$marker_any_re.'				# list marker and space = $3
 (?:[ ]+|(?=\n))	# space only required if item is not empty
 )
-((?s:.*?))						# list item text   = $4
+((?s:.*?))						# list item text = $4
 (?:(\n+(?=\n))|\n)				# tailing blank line = $5
 (?= \n* (\z | \2 ('.$marker_any_re.') (?:[ ]+|(?=\n))))
 }xm',
@@ -591,17 +591,17 @@ $code = htmlspecialchars(trim($code), ENT_NOQUOTES);
 return $this->hashPart("<code>$code</code>");
 }
 var $em_relist = array(
-''  => '(?:(?<!\*)\*(?!\*)|(?<!_)_(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*(?!\*)|(?<!_)_(?!_))(?=\S|$)(?![.,:;]\s)',
 '*' => '(?<=\S|^)(?<!\*)\*(?!\*)',
 '_' => '(?<=\S|^)(?<!_)_(?!_)',
 );
 var $strong_relist = array(
-''   => '(?:(?<!\*)\*\*(?!\*)|(?<!_)__(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*\*(?!\*)|(?<!_)__(?!_))(?=\S|$)(?![.,:;]\s)',
 '**' => '(?<=\S|^)(?<!\*)\*\*(?!\*)',
 '__' => '(?<=\S|^)(?<!_)__(?!_)',
 );
 var $em_strong_relist = array(
-''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<!_)___(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*\*\*(?!\*)|(?<!_)___(?!_))(?=\S|$)(?![.,:;]\s)',
 '***' => '(?<=\S|^)(?<!\*)\*\*\*(?!\*)',
 '___' => '(?<=\S|^)(?<!_)___(?!_)',
 );
@@ -931,18 +931,18 @@ function MarkdownExtra_Parser() {
 $this->escape_chars .= ':|';
 $this->document_gamut += array(
 "doFencedCodeBlocks" => 5,
-"stripFootnotes"     => 15,
+"stripFootnotes" => 15,
 "stripAbbreviations" => 25,
-"appendFootnotes"    => 50,
+"appendFootnotes" => 50,
 );
 $this->block_gamut += array(
 "doFencedCodeBlocks" => 5,
-"doTables"           => 15,
-"doDefLists"         => 45,
+"doTables" => 15,
+"doDefLists" => 45,
 );
 $this->span_gamut += array(
-"doFootnotes"        => 5,
-"doAbbreviations"    => 70,
+"doFootnotes" => 5,
+"doAbbreviations" => 70,
 );
 parent::Markdown_Parser();
 }
@@ -1047,7 +1047,7 @@ if (count($parts) < 3) {
 $text = "";
 break;
 }
-$tag  = $parts[1]; # Tag to handle.
+$tag = $parts[1]; # Tag to handle.
 $text = $parts[2]; # Remaining text after current tag.
 $tag_re = preg_quote($tag); # For use in a regular expression.
 if ($tag{0} == "`") {
@@ -1160,8 +1160,8 @@ if (count($parts) < 3) {
 return array($original_text{0}, substr($original_text, 1));
 }
 $block_text .= $parts[0]; # Text before current tag.
-$tag         = $parts[1]; # Tag to handle.
-$text        = $parts[2]; # Remaining text after current tag.
+$tag = $parts[1]; # Tag to handle.
+$text = $parts[2]; # Remaining text after current tag.
 if (preg_match('{^</?(?:'.$this->auto_close_tags_re.')\b}', $tag) ||
 $tag{1} == '!' || $tag{1} == '?')
 {
@@ -1239,13 +1239,13 @@ function _doHeaders_callback_setext($matches) {
 if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 return $matches[0];
 $level = $matches[3]{0} == '=' ? 1 : 2;
-$attr  = $this->_doHeaders_attr($id =& $matches[2]);
+$attr = $this->_doHeaders_attr($id =& $matches[2]);
 $block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 return "\n" . $this->hashBlock($block) . "\n\n";
 }
 function _doHeaders_callback_atx($matches) {
 $level = strlen($matches[1]);
-$attr  = $this->_doHeaders_attr($id =& $matches[3]);
+$attr = $this->_doHeaders_attr($id =& $matches[3]);
 $block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 return "\n" . $this->hashBlock($block) . "\n\n";
 }
@@ -1458,17 +1458,17 @@ return str_repeat("<br$this->empty_element_suffix",
 strlen($matches[0]));
 }
 var $em_relist = array(
-''  => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?=\S|$)(?![.,:;]\s)',
 '*' => '(?<=\S|^)(?<!\*)\*(?!\*)',
 '_' => '(?<=\S|^)(?<!_)_(?![a-zA-Z0-9_])',
 );
 var $strong_relist = array(
-''   => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?=\S|$)(?![.,:;]\s)',
 '**' => '(?<=\S|^)(?<!\*)\*\*(?!\*)',
 '__' => '(?<=\S|^)(?<!_)__(?![a-zA-Z0-9_])',
 );
 var $em_strong_relist = array(
-''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?=\S|$)(?![.,:;]\s)',
+'' => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?=\S|$)(?![.,:;]\s)',
 '***' => '(?<=\S|^)(?<!\*)\*\*\*(?!\*)',
 '___' => '(?<=\S|^)(?<!_)___(?![a-zA-Z0-9_])',
 );

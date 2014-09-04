@@ -255,7 +255,7 @@ class PHPExcel_Worksheet_HeaderFooterDrawing extends PHPExcel_Worksheet_Drawing 
 		if ($this->_resizeProportional && !($width == 0 || $height == 0)) {
 			if (($xratio * $this->_height) < $height) {
 				$this->_height = ceil($xratio * $this->_height);
-				$this->_width  = $width;
+				$this->_width = $width;
 			} else {
 				$this->_width	= ceil($yratio * $this->_width);
 				$this->_height	= $height;
