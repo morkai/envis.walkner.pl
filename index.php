@@ -41,7 +41,7 @@ $canAddFactory = is_allowed_to('factory/add');
       <div class="block-body">
         <dl>
         <? foreach ($logs as $log): ?>
-          <dt><?= $log->time ?> <span class="logger"><?= $log->logger ?></span></dt>
+          <dt><?= date('Y-m-d H:i:s', strtotime($log->time . ' GMT')) ?> <span class="logger"><?= $log->logger ?></span></dt>
           <dd><?= escape($log->message) ?></dd>
         <? endforeach ?>
         </dl>

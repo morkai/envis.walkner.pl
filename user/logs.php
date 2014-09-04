@@ -78,7 +78,7 @@ $hasAnyLogs = $totalItems > 0;
           <tbody id="logs">
           <? foreach ($logs as $log): ?>
             <tr>
-              <td><?= $log->time ?></td>
+              <td><?= date('Y-m-d H:i:s', strtotime($log->time . ' GMT')) ?></td>
               <? if ($canViewOthers): ?>
               <td><?= $log->logger ?></td>
               <? endif ?>
