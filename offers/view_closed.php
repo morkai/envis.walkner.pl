@@ -2,20 +2,23 @@
 
 summarize_offer($offer);
 
+$relatedIssues = array();
+
 if (!empty($offer->issue))
 {
-  $relatedIssues = array($offer->issue);
+  $relatedIssues[] = $offer->issue;
+}
 
-  foreach ($offer->items as $item)
+foreach ($offer->items as $item)
+{
+  if (!empty($item->issue))
   {
-    if (empty($item->issue))
-    {
-      continue;
-    }
-
     $relatedIssues[] = $item->issue;
   }
+}
 
+if (!empty($relatedIssues))
+{
   $offer->relatedIssues = fetch_all("SELECT i.id, i.subject, i.status, i.percent, i.orderNumber, i.orderInvoice FROM issues i WHERE i.id IN(" . implode(',', $relatedIssues) . ") ORDER BY id");
 }
 
