@@ -84,9 +84,7 @@ if (is('post'))
 
     if (!empty($mail['to']))
     {
-      $attachment = Swift_Attachment::fromPath($offerPdfFile)
-        ->setFilename(str_replace(array('/', '\\'), '-', $offer->number) . '.pdf');
-
+      $attachment = create_email_attachment($offerPdfFile, str_replace(array('/', '\\'), '-', $offer->number) . '.pdf');
       $message = create_email($mail['to'], $mail['subject'], $mail['text'])->attach($attachment);
 
       send_email_message($message);

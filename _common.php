@@ -824,6 +824,13 @@ function label($for, $text, $required = false)
   return $label . '</label>';
 }
 
+function create_email_attachment($fromPath, $filename)
+{
+  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
+
+  return Swift_Attachment::fromPath($fromPath)->setFilename($filename);
+}
+
 function create_email($receivers, $subject, $message, $replyTo = null)
 {
   require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
