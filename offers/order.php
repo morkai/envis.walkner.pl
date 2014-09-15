@@ -29,9 +29,11 @@ no_access_if_not(is_allowed_to('offers/close') && !empty($offer->closedAt));
 $offer->items = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
 
 $referer = get_referer("offers/view.php?id={$offer->id}");
+$noMain = true;
 
 if (!empty($_POST['order']))
 {
+  $noMain = !empty($_POST['noMain']);
   $idToItemMap = array();
 
   foreach ($offer->items as $item)
@@ -149,11 +151,14 @@ MARKDOWN;
   {
     $conn->beginTransaction();
 
-    exec_insert('issues', $mainIssue);
+    if (!$noMain)
+    {
+      exec_insert('issues', $mainIssue);
 
-    $mainIssue['id'] = $conn->lastInsertId();
+      $mainIssue['id'] = $conn->lastInsertId();
 
-    exec_update('offers', array('issue' => $mainIssue['id']), "id={$offer->id}");
+      exec_update('offers', array('issue' => $mainIssue['id']), "id={$offer->id}");
+    }
 
     foreach ($itemIssues as $id => $itemIssue)
     {
@@ -164,17 +169,27 @@ MARKDOWN;
       exec_update('offer_items', array('issue' => $itemIssues[$id]['id']), "id={$id}");
     }
 
-    $linkStmt = prepare_stmt('INSERT INTO issue_relations SET issue1=?, issue2=?');
-
-    foreach ($itemIssues as $itemIssue)
+    if (!$noMain)
     {
-      $linkStmt->execute(array($mainIssue['id'], $itemIssue['id']));
-      $linkStmt->execute(array($itemIssue['id'], $mainIssue['id']));
+      $linkStmt = prepare_stmt('INSERT INTO issue_relations SET issue1=?, issue2=?');
+
+      foreach ($itemIssues as $itemIssue)
+      {
+        $linkStmt->execute(array($mainIssue['id'], $itemIssue['id']));
+        $linkStmt->execute(array($itemIssue['id'], $mainIssue['id']));
+      }
     }
 
     $conn->commit();
 
-    go_to("service/view.php?id={$mainIssue['id']}");
+    if ($noMain)
+    {
+      go_to("offers/view.php?id={$offer->id}");
+    }
+    else
+    {
+      go_to("service/view.php?id={$mainIssue['id']}");
+    }
   }
   catch (PDOException $x)
   {
@@ -230,7 +245,10 @@ escape_vars($offer->title);
             <?= label('offerTitle', 'Oferta') ?>
             <p id=offerTitle><?= $offer->title ?></p>
           <li>
-            <?= label('orderTitle', 'Temat zamówienia*') ?>
+            <input id=orderNoMain name="noMain" type="checkbox" value="1" <?= checked_if($noMain) ?>>
+            <?= label('orderNoMain', 'Nie generuj zamówienia głównego') ?>
+          <li>
+            <?= label('orderTitle', 'Temat zamówienia głównego*') ?>
             <input id=orderTitle name="order[title]" type="text" value="<?= $offer->title ?>" autofocus>
           <li>
             <?= label('orderNumber', 'Numer zamówienia') ?>
@@ -278,6 +296,20 @@ escape_vars($offer->title);
 <script>
 $(function()
 {
+  $('#orderNoMain').change(function(e)
+  {
+    $('#orderTitle').prop('disabled', e.target.checked);
+
+    if (e.target.checked)
+    {
+      $('#orderNumber').focus();
+    }
+    else
+    {
+      $('#orderTitle').focus();
+    }
+  }).change();
+
   $('#toggleItems').click(function()
   {
     var state = this.checked;
