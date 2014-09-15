@@ -468,6 +468,7 @@ CREATE TABLE `offers` (
   `intro` text COLLATE utf8_polish_ci NOT NULL,
   `outro` text COLLATE utf8_polish_ci NOT NULL,
   `sentTo` varchar(255) COLLATE utf8_polish_ci NOT NULL DEFAULT '',
+  `cancelled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `number` (`number`),
   KEY `issue` (`issue`)

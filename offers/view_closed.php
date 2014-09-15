@@ -87,8 +87,12 @@ if (!empty($relatedIssues))
         <h1 class="block-name">Zamówienie</h1>
       </div>
       <div class="block-body">
+        <? if ($offer->cancelled): ?>
+        <p>Oferta anulowana.</p>
+        <? else: ?>
         <? if (empty($offer->relatedIssues)): ?>
-        <p>Zamówienie nie zostało jeszcze stworzone. <a href="<?= url_for("offers/order.php?offer={$offer->id}") ?>">Stwórz zgłoszenie związane z tą ofertą</a>.</p>
+        <p>Zamówienie nie zostało jeszcze stworzone. <a href="<?= url_for("offers/order.php?offer={$offer->id}") ?>">Stwórz zgłoszenie związane z tą ofertą</a>...</p>
+        <p>...lub <a href="<?= url_for("offers/cancel.php?id={$offer->id}") ?>">oznacz ofertę jako nieaktualną</a>!</p>
         <? else: ?>
         <table id=relatedIssues>
           <thead>
@@ -110,6 +114,7 @@ if (!empty($relatedIssues))
               <td><?= dash_if_empty($relatedIssue->percent) ?>
             <? endforeach ?>
         </table>
+        <? endif ?>
         <? endif ?>
       </div>
     </div>

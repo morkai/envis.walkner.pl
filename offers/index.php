@@ -21,6 +21,7 @@ SELECT
   o.createdAt,
   o.closedAt,
   o.issue,
+  o.cancelled,
   i.status
 FROM offers o
 LEFT JOIN issues i
@@ -48,6 +49,14 @@ $canManageTemplates = is_allowed_to('offers/templates');
   <li><a href="<?= url_for('offers/templates') ?>">Zarządzaj szablonami</a>
   <? endif ?>
 </ul>
+<? append_slot() ?>
+
+<? begin_slot('head') ?>
+<style>
+.is-cancelled {
+  text-decoration: line-through;
+}
+</style>
 <? append_slot() ?>
 
 <? begin_slot('js') ?>
@@ -84,7 +93,7 @@ $(function()
       </tfoot>
       <tbody id="offersList">
         <? foreach ($offers as $offer): ?>
-        <tr>
+        <tr class="<?= $offer->cancelled ? 'is-cancelled' : '' ?>">
           <td><?= $offer->number ?>
           <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
           <td><?= $offer->createdAt ?>
@@ -100,7 +109,7 @@ $(function()
           <td class="actions">
             <ul>
               <li><?= fff('Pokaż', 'page_white', "offers/view.php?id={$offer->id}") ?>
-              <? if ($canClose && !$offer->closedAt): ?>
+              <? if ($canClose && !$offer->closedAt && !$offer->cancelled): ?>
               <li><?= fff('Wyślij', 'page_white_go', "offers/close.php?id={$offer->id}") ?>
               <? endif ?>
               <? if ($canAdd): ?>
