@@ -2,14 +2,18 @@
 
 include_once __DIR__ . '/../_common.php';
 
-$statuses = array(0 => 'Nowe',
-                  1 => 'Zaakceptowane',
-                  2 => 'Rozpoczęte',
-                  6 => 'Przekazane',
-                  7 => 'Dokumenty',
-                  3 => 'Odrzucone',
-                  4 => 'Rozwiązane',
-                  5 => 'Wznowione',);
+$statuses = array(
+  0 => 'Nowe',
+  1 => 'Zaakceptowane',
+  2 => 'Rozpoczęte',
+  6 => 'Przekazane',
+  7 => 'Dokumenty',
+  8 => 'Zapłata (klient)',
+  9 => 'Zapłata (dostawca)',
+  3 => 'Odrzucone',
+  4 => 'Rozwiązane',
+  5 => 'Wznowione',
+);
 
 function is_resolved_issue_status($status)
 {
@@ -131,7 +135,7 @@ SQL;
     $subscribers[] = (object)array(
       'id' => 1,
       'name' => ENVIS_SUB_NAME,
-      'email' => ENBIS_SUB_EMAIL
+      'email' => ENVIS_SUB_EMAIL
     );
   }
 
