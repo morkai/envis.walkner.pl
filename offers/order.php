@@ -151,14 +151,17 @@ MARKDOWN;
   {
     $conn->beginTransaction();
 
+    $bindings = array('updatedAt' => time());
+
     if (!$noMain)
     {
       exec_insert('issues', $mainIssue);
 
       $mainIssue['id'] = $conn->lastInsertId();
-
-      exec_update('offers', array('issue' => $mainIssue['id']), "id={$offer->id}");
+      $bindings['issue'] = $mainIssue['id'];
     }
+
+    exec_update('offers', $bindings, "id={$offer->id}");
 
     foreach ($itemIssues as $id => $itemIssue)
     {

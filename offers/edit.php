@@ -24,7 +24,7 @@ try
   $conn->beginTransaction();
 
   $fields = array('title', 'supplier', 'supplierContact', 'client', 'clientContact', 'intro', 'outro');
-  $bindings = array();
+  $bindings = array('updatedAt' => time());
 
   foreach ($fields as $field)
   {

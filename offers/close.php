@@ -33,7 +33,10 @@ if (is('post'))
   {
     $conn->beginTransaction();
 
-    $bindings = array('closedAt' => date('Y-m-d'));
+    $bindings = array(
+      'updatedAt' => time(),
+      'closedAt' => date('Y-m-d')
+    );
 
     if (!empty($mail['to']))
     {

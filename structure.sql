@@ -459,6 +459,7 @@ CREATE TABLE `offers` (
   `issue` int(10) unsigned DEFAULT NULL,
   `number` varchar(50) COLLATE utf8_polish_ci NOT NULL,
   `createdAt` date NOT NULL,
+  `updatedAt` int(10) unsigned NOT NULL,
   `closedAt` date DEFAULT NULL,
   `title` varchar(200) COLLATE utf8_polish_ci NOT NULL,
   `client` text COLLATE utf8_polish_ci NOT NULL,

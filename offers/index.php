@@ -7,7 +7,7 @@ no_access_if_not_allowed('offers*');
 include_once '../_lib_/PagedData.php';
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
-$perPage = 15;
+$perPage = 23;
 
 $offers = new PagedData($page, $perPage);
 
@@ -26,7 +26,7 @@ SELECT
 FROM offers o
 LEFT JOIN issues i
   ON i.id=o.issue
-ORDER BY id DESC
+ORDER BY o.updatedAt DESC
 SQL;
 
 $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $offers->getOffset(), $offers->getPerPage()));

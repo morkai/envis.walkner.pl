@@ -42,6 +42,8 @@ if (is('post'))
       $offer['number'] = fetch_next_offer_number();
     }
 
+    $offer['updatedAt'] = time();
+
     exec_insert('offers', $offer);
 
     $offer['id'] = $conn->lastInsertId();
