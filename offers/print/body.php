@@ -32,7 +32,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       font-size: .75em;
       font-family: Arial, sans-serif;
       line-height: 1;
-      margin: 1em;
+      margin: 0.5em 0 0 0;
     }
     h1, h2, h3 {
       font-weight: normal;

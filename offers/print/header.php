@@ -26,7 +26,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     body {
       font-family: Arial, sans-serif;
       font-size: .75em;
-      margin: 1em;
+      margin: 0;
       padding: 0;
     }
     h1 {

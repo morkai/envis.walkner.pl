@@ -69,7 +69,7 @@ if (is('post'))
     }
     else
     {
-      $cmd = sprintf('wkhtmltopdf -B 23mm -R 0 -L 0 -T 23mm --header-spacing 7 --header-html "%s" --footer-html "%s" "%s" "%s"',
+      $cmd = sprintf('wkhtmltopdf -B 25mm -R 10mm -L 10mm -T 32mm --header-spacing 7 --header-html "%s" --footer-html "%s" "%s" "%s"',
                url_for("/offers/print/header.php?id={$offer->id}&lang={$lang}", true),
                url_for("/offers/print/footer.php?id={$offer->id}&lang={$lang}", true),
                url_for("/offers/print/body.php?id={$offer->id}&lang={$lang}", true),

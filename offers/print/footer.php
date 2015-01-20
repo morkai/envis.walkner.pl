@@ -12,7 +12,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       font-family: Arial, sans-serif;
       font-size: .8em;
       line-height: 1.4;
-      margin: 1em;
+      margin: 0;
       padding: 0;
     }
     hr {

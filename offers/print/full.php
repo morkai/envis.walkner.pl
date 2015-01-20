@@ -8,7 +8,7 @@
       font-size: .75em;
       font-family: Arial, sans-serif;
       line-height: 1;
-      margin: 1em;
+      margin: 0;
     }
     h1, h2, h3 {
       font-weight: normal;
