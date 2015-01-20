@@ -376,10 +376,10 @@ if (!$editMode && is_allowed_to('documentation*'))
     });
     $('#setBg-image').uploadify({
       'scriptAccess': 'always',
-      'uploader'   : '<?= url_for_media('uploadify/uploadify.swf', true) ?>',
-      'script'     : 'http://<?= ENVIS_DOMAIN . url_for('_files_/uploadify.php') ?>',
-      'checkScript': 'http://<?= ENVIS_DOMAIN . url_for('_files_/check.php') ?>',
-      'cancelImg'  : '<?= url_for_media('jquery-plugins/uploadify/2.0.3/cancel.png') ?>',
+      'uploader': '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
+      'script': '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
+      'checkScript': '<?= url_for_media("uploadify/2.1.4/check.php", true) ?>',
+      'cancelImg': '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
       'auto'       : true,
       'folder'     : '<?= ENVIS_UPLOADS_DIR ?>/vis-machine-bg',
       'fileDesc'   : 'Obrazek (png, jpg, gif)',
@@ -562,10 +562,10 @@ if (!$editMode && is_allowed_to('documentation*'))
     });
     $('#setImg-image').uploadify({
       'scriptAccess': 'always',
-      'uploader'   : '<?= url_for_media('uploadify/uploadify.swf', true) ?>',
-      'script'     : 'http://<?= ENVIS_DOMAIN . url_for('_files_/uploadify.php') ?>',
-      'checkScript': 'http://<?= ENVIS_DOMAIN . url_for('_files_/check.php') ?>',
-      'cancelImg'  : '<?= url_for_media('jquery-plugins/uploadify/2.0.3/cancel.png') ?>',
+      'uploader': '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
+      'script': '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
+      'checkScript': '<?= url_for_media("uploadify/2.1.4/check.php", true) ?>',
+      'cancelImg': '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
       'auto'       : true,
       'folder'     : '<?= ENVIS_UPLOADS_DIR ?>/vis-device',
       'fileDesc'   : 'Obrazek (png, jpg, gif)',
