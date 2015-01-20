@@ -31,7 +31,7 @@ if (is('post'))
   {
     $conn->beginTransaction();
 
-    $ignoreFields = array('id', 'issue', 'closedAt', 'title', 'sentTo');
+    $ignoreFields = array('id', 'issue', 'closedAt', 'title', 'sentTo', 'cancelled');
 
     foreach ($offer as $field => $value)
     {
