@@ -54,7 +54,8 @@ if (isset($_POST['user']))
 
   if (empty($errors))
   {
-    $allowedFactories = $allowedMachines = array();
+    $allowedFactories = array();
+    $allowedMachines = array();
 
     if (!empty($usr['allowed']) && !$usr['super'])
     {
@@ -69,7 +70,7 @@ if (isset($_POST['user']))
         }
         else
         {
-          $allowedMachines[$parts[0]] = true;
+          $allowedFactories[(int)$parts[0]] = true;
         }
       }
     }
@@ -123,8 +124,7 @@ else
 
   if (($usr['role'] != 'super') && !empty($user->allowedFactories))
   {
-    $usr['allowed'] = array_keys(unserialize($user->allowedFactories));
-
+    $allowedFactories = unserialize($user->allowedFactories);
     $allowedMachines = unserialize($user->allowedMachines);
   }
 }
@@ -159,7 +159,7 @@ class Factory
 
     $code = '<option class="factory" value="' . $value . '"';
 
-    if (in_array($value, $selected))
+    if (!empty($selected[$value]))
     {
       $code .= ' selected="selected"';
     }
@@ -193,7 +193,7 @@ class Machine
 
     $code = '<option class="machine-' . $factory . '" value="' . $value . '"';
 
-    if (in_array($value, $selected))
+    if (!empty($selected[$value]))
     {
       $code .= ' selected="selected"';
     }
@@ -203,20 +203,11 @@ class Machine
     return $code;
   }
 }
-$query = <<<SQL
-SELECT
-  e.id, e.name, e.machine, m.factory, m.name AS machineName, f.name AS factoryName
-FROM engines e
-INNER JOIN machines m ON m.id=e.machine
-INNER JOIN factories f ON f.id=m.factory
-ORDER BY factoryName, machineName, e.name
-SQL;
 
 $query = <<<SQL
 SELECT m.id AS machine, m.name AS machineName, m.factory, f.name AS factoryName
 FROM machines m
-INNER JOIN factories f
-  ON f.id=m.factory
+INNER JOIN factories f ON f.id=m.factory
 ORDER BY f.name ASC, m.name ASC
 SQL;
 
@@ -233,6 +224,11 @@ foreach (fetch_all($query) as $row)
     $machine = null;
 
     $factories[$row->factory] = $factory;
+
+    if (isset($allowedFactories[$factory->id]))
+    {
+      $usr['allowed'][$factory->id] = true;
+    }
   }
 
   if (!$machine || ($machine->id != $row->machine))
@@ -243,7 +239,7 @@ foreach (fetch_all($query) as $row)
 
     if (isset($allowedMachines[$machine->id]))
     {
-      $usr['allowed'][$factory->id . '|' . $machine->id] = $machine->name;
+      $usr['allowed'][$factory->id . '|' . $machine->id] = true;
     }
   }
 }

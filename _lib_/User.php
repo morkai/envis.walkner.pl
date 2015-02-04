@@ -134,7 +134,7 @@ class User
 	 */
 	public function getAllowedFactoryIds()
 	{
-		$ids = array(0);
+		$ids = array(-1);
 
 		foreach ($this->allowedFactories as $id => $allowed)
 		{
@@ -160,7 +160,7 @@ class User
 	 */
 	public function getAllowedMachineIds()
 	{
-		$ids = array(0);
+		$ids = array(-1);
 
 		foreach ($this->allowedMachines as $id => $allowed)
 		{

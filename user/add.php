@@ -60,7 +60,7 @@ if (isset($_POST['user']))
         }
         else
         {
-          $allowedMachines[$parts[0]] = true;
+          $allowedFactories[(int)$parts[0]] = true;
         }
       }
     }
@@ -113,7 +113,6 @@ else
   );
 }
 
-
 $roles = array('super' => 'Super administrator');
 $roles += fetch_array('SELECT id AS `key`, name AS `value` FROM roles ORDER BY name ASC');
 
@@ -143,7 +142,7 @@ class Factory
 
     $code = '<option class="factory" value="' . $value . '"';
 
-    if (in_array($value, $selected))
+    if (!empty($selected[$value]))
     {
       $code .= ' selected="selected"';
     }
@@ -177,7 +176,7 @@ class Machine
 
     $code = '<option class="machine-' . $factory . '" value="' . $value . '"';
 
-    if (in_array($value, $selected))
+    if (!empty($selected[$value]))
     {
       $code .= ' selected="selected"';
     }
@@ -217,6 +216,11 @@ foreach (fetch_all($query) as $row)
     $machine = null;
 
     $factories[$row->factory] = $factory;
+
+    if (isset($allowedFactories[$factory->id]))
+    {
+      $usr['allowed'][$factory->id] = true;
+    }
   }
 
   if (!$machine || ($machine->id != $row->machine))
@@ -227,7 +231,7 @@ foreach (fetch_all($query) as $row)
 
     if (isset($allowedMachines[$machine->id]))
     {
-      $usr['allowed'][$factory->id . '|' . $machine->id] = $machine->name;
+      $usr['allowed'][$factory->id . '|' . $machine->id] = true;
     }
   }
 }
