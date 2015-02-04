@@ -8,7 +8,7 @@ $where = 'WHERE 1=1';
 
 if (!$_SESSION['user']->isSuper())
 {
-  $where = ' AND doc.machine IN(null,' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
+  $where .= ' AND doc.machine IN(' . list_quoted($_SESSION['user']->getAllowedMachineIds()) . ')';
 }
 
 $product = !empty($_GET['product']) && is_numeric($_GET['product']) ? $_GET['product'] : 0;
