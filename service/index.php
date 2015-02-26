@@ -684,7 +684,7 @@ $(function()
         <input type="hidden" name="relate" value="<?= $related->id ?>">
         <? endif ?>
         <?= fff('OCB?', 'help', '/service/#queryHelp', 'toggleQueryHelp') ?>
-        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>">
+        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
         <div id="queryHelp">
           <p>
             <code>{FIELD}={VALUE}</code>
