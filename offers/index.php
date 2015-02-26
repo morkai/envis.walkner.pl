@@ -11,7 +11,7 @@ $perPage = 23;
 
 $offers = new PagedData($page, $perPage);
 
-$totalItems = fetch_one('SELECT COUNT(*) AS `count` FROM offers')->count;
+$totalOffers = fetch_one('SELECT COUNT(*) AS `count` FROM offers')->count;
 
 $query = <<<SQL
 SELECT
@@ -22,7 +22,8 @@ SELECT
   o.closedAt,
   o.issue,
   o.cancelled,
-  i.status
+  i.status,
+  i.orderNumber
 FROM offers o
 LEFT JOIN issues i
   ON i.id=o.issue
@@ -31,7 +32,33 @@ SQL;
 
 $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $offers->getOffset(), $offers->getPerPage()));
 
-$offers->fill($totalItems, $items);
+$offers->fill($totalOffers, $items);
+
+$offerIds = array();
+
+foreach ($items as $item)
+{
+  $offerIds[] = $item->id;
+}
+
+$offerIds = join(',', $offerIds);
+
+$sql = <<<SQL
+SELECT o.offer, o.issue, i.status, i.orderNumber
+FROM offer_items o
+INNER JOIN issues i ON i.id=o.issue
+WHERE o.offer IN({$offerIds})
+GROUP BY o.offer
+SQL;
+
+$issueList = fetch_all($sql);
+$issueMap = array();
+
+foreach ($issueList as $issue)
+{
+  $issue->status = $statuses[$issue->status];
+  $issueMap[$issue->offer] = $issue;
+}
 
 $canAdd = is_allowed_to('offers/add');
 $canDelete = is_allowed_to('offers/delete');
@@ -53,6 +80,9 @@ $canManageTemplates = is_allowed_to('offers/templates');
 
 <? begin_slot('head') ?>
 <style>
+#offersList a {
+  text-decoration: none;
+}
 .is-cancelled {
   text-decoration: line-through;
 }
@@ -83,7 +113,7 @@ $(function()
           <th>Tytuł
           <th>Data stworzenia
           <th>Data wysłania
-          <!-- <th>Status zgłoszenia //-->
+          <th>Zamówienie
           <th>Akcje
       </thead>
       <tfoot>
@@ -98,14 +128,18 @@ $(function()
           <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
           <td><?= $offer->createdAt ?>
           <td><?= $offer->closedAt ? $offer->closedAt : '-' ?>
-          <!--
-          <td <? if ($offer->issue): ?>class="clickable" title="Pokaż zgłoszenie"<? endif ?>>
+          <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="clickable" title="Pokaż zgłoszenie"<? endif ?>>
             <? if ($offer->issue): ?>
-            <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>"><?= $statuses[$offer->status] ?></a>
+            <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>">
+              <?= $offer->orderNumber ?> (<?= strtolower($statuses[$offer->status]) ?>)
+            </a>
+            <? elseif (!empty($issueMap[$offer->id])): ?>
+            <a href="<?= url_for("service/view.php?id={$issueMap[$offer->id]->issue}") ?>">
+              <?= $issueMap[$offer->id]->orderNumber ?> (<?= strtolower($issueMap[$offer->id]->status) ?>)
+            </a>
             <? else: ?>
             -
             <? endif ?>
-          //-->
           <td class="actions">
             <ul>
               <li><?= fff('Pokaż', 'page_white', "offers/view.php?id={$offer->id}") ?>
