@@ -509,7 +509,7 @@ $views = fetch_array("SELECT view AS `key`, name AS `value` FROM grid_views WHER
 
 $v = empty($_GET['v']) ? null : $_GET['v'];
 
-$view = http_build_query(array('v' => $v));
+$view = http_build_query(array('v' => $v, 'q' => empty($_GET['q']) ? null : $_GET['q']));
 $currentView = is_valid_view_id($v) ? $v : null;
 
 unset($v);
