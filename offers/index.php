@@ -7,11 +7,44 @@ no_access_if_not_allowed('offers*');
 include_once '../_lib_/PagedData.php';
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
+$q = empty($_GET['q']) ? null : $_GET['q'];
 $perPage = 23;
+
+$where = '';
+
+if ($q !== null)
+{
+  $where .= 'WHERE';
+
+  if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $q))
+  {
+    $where .= " o.createdAt='{$q}' OR o.closedAt='{$q}'";
+  }
+  else
+  {
+    $qq = get_conn()->quote("%{$q}%");
+
+    if (preg_match('/^SEK[0-9]/i', $q))
+    {
+      $where .= " o.number LIKE {$qq}";
+    }
+    else
+    {
+      $where .= " o.number LIKE {$qq} OR o.title LIKE {$qq}";
+    }
+  }
+}
 
 $offers = new PagedData($page, $perPage);
 
-$totalOffers = fetch_one('SELECT COUNT(*) AS `count` FROM offers')->count;
+$query = <<<SQL
+SELECT COUNT(*) AS `count`
+FROM offers o
+LEFT JOIN issues i ON i.id=o.issue
+{$where}
+SQL;
+
+$totalOffers = fetch_one($query)->count;
 
 $query = <<<SQL
 SELECT
@@ -27,6 +60,7 @@ SELECT
 FROM offers o
 LEFT JOIN issues i
   ON i.id=o.issue
+{$where}
 ORDER BY o.updatedAt DESC
 SQL;
 
@@ -43,7 +77,7 @@ foreach ($items as $item)
 
 $offerIds = join(',', $offerIds);
 
-$sql = <<<SQL
+$query = <<<SQL
 SELECT o.offer, o.issue, i.status, i.orderNumber
 FROM offer_items o
 INNER JOIN issues i ON i.id=o.issue
@@ -51,7 +85,7 @@ WHERE o.offer IN({$offerIds})
 GROUP BY o.offer
 SQL;
 
-$issueList = fetch_all($sql);
+$issueList = empty($offerIds) ? array() : fetch_all($query);
 $issueMap = array();
 
 foreach ($issueList as $issue)
@@ -64,6 +98,7 @@ $canAdd = is_allowed_to('offers/add');
 $canDelete = is_allowed_to('offers/delete');
 $canClose = is_allowed_to('offers/close');
 $canManageTemplates = is_allowed_to('offers/templates');
+$href = url_for("offers/") . "?" . http_build_query(array('q' => $q));
 
 ?>
 
@@ -86,6 +121,9 @@ $canManageTemplates = is_allowed_to('offers/templates');
 .is-cancelled {
   text-decoration: line-through;
 }
+#query input {
+  width: 200px;
+}
 </style>
 <? append_slot() ?>
 
@@ -102,7 +140,14 @@ $(function()
 
 <div class="block">
   <ul class="block-header">
-    <h1 class="block-name">Oferty</h1>
+    <li>
+      <h1 class="block-name">Oferty</h1>
+    </li>
+    <li>
+      <form id="query" action="<?= url_for("/offers/") ?>">
+        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
+      </form>
+    </li>
   </ul>
   <div class="block-body">
     <? if (!$offers->isEmpty()): ?>
@@ -119,7 +164,7 @@ $(function()
       <tfoot>
         <tr>
           <td colspan="99" class="table-options">
-            <?= $offers->render(url_for("offers/?")) ?>
+            <?= $offers->render($href) ?>
       </tfoot>
       <tbody id="offersList">
         <? foreach ($offers as $offer): ?>
