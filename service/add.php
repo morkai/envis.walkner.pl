@@ -449,7 +449,7 @@ $(function()
         <ol class="form-fields">
           <li>
             <?= label('newIssueSubject', 'Temat', true) ?>
-            <input id="newIssueSubject" name="newIssue[subject]" type="text" maxlength="100" autofocus value="<?= $newIssue['subject'] ?>">
+            <input id="newIssueSubject" name="newIssue[subject]" type="text" maxlength="200" autofocus value="<?= $newIssue['subject'] ?>">
           <li>
             <?= label('newIssueDescription', 'Opis') ?>
             <textarea id="newIssueDescription" class="markdown resizable" name="newIssue[description]" rows="5"><?= $newIssue['description'] ?></textarea>
@@ -510,7 +510,7 @@ $(function()
                       <ol>
                         <li>
                           <label for="newIssueOrderNumber">Numer zamówienia</label>
-                          <input id="newIssueOrderNumber" name="newIssue[orderNumber]" type="text" maxlength="30" value="<?= $newIssue['orderNumber'] ?>">
+                          <input id="newIssueOrderNumber" name="newIssue[orderNumber]" type="text" maxlength="200" value="<?= $newIssue['orderNumber'] ?>">
                         <li>
                           <label for="newIssueOrderDate">Data zamówienia</label>
                           <input id="newIssueOrderDate" name="newIssue[orderDate]" type="text" value="<?= $newIssue['orderDate'] ?>" class="date" placeholder="YYYY-MM-DD" maxlength="10">
@@ -519,7 +519,7 @@ $(function()
                       <ol>
                         <li>
                           <label for="newIssueOrderInvoice">Numer faktury <strong>i pozycja</strong></label>
-                          <input id="newIssueOrderInvoice" name="newIssue[orderInvoice]" type="text" maxlength="30" value="<?= $newIssue['orderInvoice'] ?>">
+                          <input id="newIssueOrderInvoice" name="newIssue[orderInvoice]" type="text" maxlength="200" value="<?= $newIssue['orderInvoice'] ?>">
                         <li>
                           <label for="newIssueOrderInvoiceDate">Data faktury</label>
                           <input id="newIssueOrderInvoiceDate" name="newIssue[orderInvoiceDate]" type="text" value="<?= $newIssue['orderInvoiceDate'] ?>" class="date" placeholder="YYYY-MM-DD" maxlength="10">

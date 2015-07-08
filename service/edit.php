@@ -471,7 +471,7 @@ $(function()
         <ol class="form-fields">
           <li>
             <?= label('issueSubject', 'Temat*') ?>
-            <input id="issueSubject" name="issue[subject]" type="text" maxlength="100" autofocus value="<?= $issue['subject'] ?>">
+            <input id="issueSubject" name="issue[subject]" type="text" maxlength="200" autofocus value="<?= $issue['subject'] ?>">
           <li>
             <?= label('issueDescription', 'Opis') ?>
             <textarea id="issueDescription" class="markdown resizable" name="issue[description]" rows="5"><?= $issue['description'] ?></textarea>
@@ -530,7 +530,7 @@ $(function()
                       <ol>
                         <li>
                           <label for="issueOrderNumber">Numer zamówienia</label>
-                          <input id="issueOrderNumber" name="issue[orderNumber]" type="text" maxlength="30" value="<?= $issue['orderNumber'] ?>">
+                          <input id="issueOrderNumber" name="issue[orderNumber]" type="text" maxlength="200" value="<?= $issue['orderNumber'] ?>">
                         <li>
                           <label for="issueOrderDate">Data zamówienia</label>
                           <input id="issueOrderDate" name="issue[orderDate]" type="text" value="<?= $issue['orderDate'] ?>" class="date" placeholder="YYYY-MM-DD" maxlength="10">
@@ -539,7 +539,7 @@ $(function()
                       <ol>
                         <li>
                           <label for="issueOrderInvoice">Numer faktury <strong>i pozycja</strong></label>
-                          <input id="issueOrderInvoice" name="issue[orderInvoice]" type="text" maxlength="30" value="<?= $issue['orderInvoice'] ?>">
+                          <input id="issueOrderInvoice" name="issue[orderInvoice]" type="text" maxlength="200" value="<?= $issue['orderInvoice'] ?>">
                         <li>
                           <label for="issueOrderInvoiceDate">Data faktury</label>
                           <input id="issueOrderInvoiceDate" name="issue[orderInvoiceDate]" type="text" value="<?= $issue['orderInvoiceDate'] ?>" class="date" placeholder="YYYY-MM-DD" maxlength="10">
