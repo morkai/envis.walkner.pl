@@ -234,7 +234,7 @@ $(function()
         multiline = false;
         multiple = false;
 
-        html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']"><option value="equals">równa się<option value="contains">zawiera<option value="starts">zaczyna się od<option value="ends">kończy się na</select>';
+        html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']"><option value="equals">równa się<option value="notEquals">nie równa się<option value="contains">zawiera<option value="starts">zaczyna się od<option value="ends">kończy się na</select>';
         html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="text" value="">';
         break;
 
@@ -263,7 +263,7 @@ $(function()
         break;
 
       case 'percent':
-        html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']"><option value="lt">mniejszy niż<option value="gt">większy niż<option value="eq">równy</select>';
+        html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']"><option value="lt">mniejszy niż<option value="gt">większy niż<option value="eq">równy<option value="ne">nie równy</select>';
         html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="number" min="0" max="100" value="100">';
         break;
 

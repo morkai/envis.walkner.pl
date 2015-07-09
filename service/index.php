@@ -127,8 +127,6 @@ SQL;
       $bindingKey = ':' . $column . '_' . $k;
       $bindingValue = empty($options['f']['v'][$k]) ? 0 : $options['f']['v'][$k];
 
-      if (empty($bindingValue)) continue;
-
       switch ($column)
       {
         case 'subject':
@@ -137,6 +135,16 @@ SQL;
         case 'creator':
         case 'orderNumber':
         case 'orderInvoice':
+          if (empty($bindingValue))
+          {
+            $bindingValue = '';
+
+            if ($options['f']['i'][$k] !== 'equals' && $options['f']['i'][$k] !== 'notEquals')
+            {
+              break;
+            }
+          }
+
           if     ($column == 'owner')    $column = 'o.name';
           elseif ($column === 'creator') $column = 'c.name';
           else                           $column = 'i.' . $column;
@@ -149,6 +157,10 @@ SQL;
           {
             case 'equals':
               $condition = "{$column} = {$bindingKey}";
+              break;
+
+            case 'notEquals':
+              $condition = "{$column} <> {$bindingKey}";
               break;
 
             case 'starts':
@@ -205,17 +217,23 @@ SQL;
           {
             case 'lt': $cmp = '<'; break;
             case 'gt': $cmp = '>'; break;
+            case 'ne': $cmp = '<>'; break;
             default:   $cmp = '='; break;
           }
 
           $conditions[] = "i.percent {$cmp} {$bindingKey}";
-          $bindings[$bindingKey] = (float)$bindingValue;
+          $bindings[$bindingKey] = empty($bindingValue) || !is_numeric($bindingValue) ? 0 : (float)$bindingValue;
           break;
 
         case 'createdAt':
         case 'expectedFinishAt':
         case 'orderDate':
         case 'orderInvoiceDate':
+          if (empty($bindingValue))
+          {
+            break;
+          }
+
           settype($bindingValue, 'array');
 
           if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $bindingValue[0]))
@@ -454,7 +472,7 @@ function construct_issues_grid_row(array $columns, $issue)
       break;
 
     default:
-      $row[] = isset($issue->$column) ? e($issue->$column) : '-';
+      $row[] = !empty($issue->$column) ? e($issue->$column) : '-';
       break;
   }
 
