@@ -275,9 +275,9 @@ $(function()
         date = true;
 
         html += '<li><select class="info" name="v[f][i][' + viewFilterCount + ']" onchange="onFilterDateChanged(this)"><option value="from">od<option value="to">do<option value="between">pomiędzy</select>';
-        html += '<li><input class="value" name="v[f][v][' + viewFilterCount + '][]" type="date" onfocus="onFilterDateFocused(this)" placeholder="YYYY-MM-DD">';
+        html += '<li><input class="value" name="v[f][v][' + viewFilterCount + '][]" type="text" onfocus="onFilterDateFocused(this)" placeholder="YYYY-MM-DD">';
 
-        if (cf.info === 'between')
+        if (cf && cf.info === 'between')
         {
           setInfo = function($info) { $info.val(cf.info).change(); };
           setValue = function($value)
@@ -332,7 +332,7 @@ function onFilterDateChanged(el)
 {
   if (el.value == 'between')
   {
-    $(el.parentNode).next().after('<li>a<li><input class="value" name="' + el.name.replace('[i]', '[v]') + '[]" type="date" onfocus="onFilterDateFocused(this)" placeholder="YYYY-MM-DD">');
+    $(el.parentNode).next().after('<li>a<li><input class="value" name="' + el.name.replace('[i]', '[v]') + '[]" type="text" onfocus="onFilterDateFocused(this)" placeholder="YYYY-MM-DD">');
   }
   else
   {
