@@ -185,7 +185,7 @@ $canAddDevice = is_allowed_to('machine/device/add');
 
 <? begin_slot('js') ?>
 <? if ($canAssign): ?>
-<script src="<?= url_for_media('jquery-ui/1.8.11/development-bundle/ui/i18n/jquery.ui.datepicker-pl.js') ?>"></script>
+<script src="<?= url_for_media('jquery-ui/1.8.11/js/jquery.ui.datepicker-pl.js') ?>"></script>
 <? endif ?>
 <? if ($canAddDevice): ?>
 <script src="<?= url_for_media('jquery-plugins/simplemodal/1.3/jquery.simplemodal.min.js') ?>"></script>

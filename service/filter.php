@@ -146,7 +146,7 @@ $referer = get_referer('service/');
 <? append_slot() ?>
 
 <? begin_slot('js') ?>
-<script src="<?= url_for_media('jquery-ui/1.8.11/development-bundle/ui/i18n/jquery.ui.datepicker-pl.js') ?>"></script>
+<script src="<?= url_for_media('jquery-ui/1.8.11/js/jquery.ui.datepicker-pl.js') ?>"></script>
 <script>
 $(function()
 {
