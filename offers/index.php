@@ -56,7 +56,8 @@ SELECT
   o.issue,
   o.cancelled,
   i.status,
-  i.orderNumber
+  i.orderNumber,
+  i.orderInvoice
 FROM offers o
 LEFT JOIN issues i
   ON i.id=o.issue
@@ -78,7 +79,7 @@ foreach ($items as $item)
 $offerIds = join(',', $offerIds);
 
 $query = <<<SQL
-SELECT o.offer, o.issue, i.status, i.orderNumber
+SELECT o.offer, o.issue, i.status, i.orderNumber, i.orderInvoice
 FROM offer_items o
 INNER JOIN issues i ON i.id=o.issue
 WHERE o.offer IN({$offerIds})
@@ -156,9 +157,9 @@ $(function()
         <tr>
           <th>Numer
           <th>Tytuł
-          <th>Data stworzenia
           <th>Data wysłania
           <th>Zamówienie
+          <th>Faktura
           <th>Akcje
       </thead>
       <tfoot>
@@ -171,7 +172,6 @@ $(function()
         <tr class="<?= $offer->cancelled ? 'is-cancelled' : '' ?>">
           <td><?= $offer->number ?>
           <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
-          <td><?= $offer->createdAt ?>
           <td><?= $offer->closedAt ? $offer->closedAt : '-' ?>
           <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="clickable" title="Pokaż zgłoszenie"<? endif ?>>
             <? if ($offer->issue): ?>
@@ -185,6 +185,15 @@ $(function()
             <? else: ?>
             -
             <? endif ?>
+          <td>
+            <? if ($offer->issue): ?>
+              <?= dash_if_empty($offer->orderInvoice) ?>
+            <? elseif (!empty($issueMap[$offer->id])): ?>
+              <?= dash_if_empty($issueMap[$offer->id]->orderInvoice) ?>
+            <? else: ?>
+              -
+            <? endif ?>
+          </td>
           <td class="actions">
             <ul>
               <li><?= fff('Pokaż', 'page_white', "offers/view.php?id={$offer->id}") ?>
