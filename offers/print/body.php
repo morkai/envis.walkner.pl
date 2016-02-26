@@ -33,6 +33,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       font-family: Arial, sans-serif;
       line-height: 1;
       margin: 0.5em 0 0 0;
+      text-rendering: optimizeLegibility;
     }
     h1, h2, h3 {
       font-weight: normal;
@@ -80,8 +81,13 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     }
     th, tbody td {
       border: 1px solid #000;
-      padding: .25em;
+      padding: .25em .5em;
       text-align: center;
+      width: 1px;
+      white-space: nowrap;
+    }
+    tbody td {
+      text-align: right;
     }
     tfoot td {
       padding: .25em;
@@ -111,9 +117,6 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     }
     #items h3 {
       margin-bottom: .25em;
-    }
-    .item-position {
-      text-align: right;
     }
     .item-description {
       text-align: left;
@@ -165,7 +168,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       <thead>
         <tr>
           <th><?= $en ? 'No' : 'Lp.' ?></th>
-          <th><?= $en ? 'Description' : 'Opis' ?></th>
+          <th class="item-description"><?= $en ? 'Description' : 'Opis' ?></th>
           <th><?= $en ? 'Quantity' : 'Ilość' ?></th>
           <th><?= $en ? 'Price netto' : 'Cena netto' ?></th>
           <th><?= $en ? 'Per' : 'Za' ?></th>
@@ -177,7 +180,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
           <td colspan="6">
             <p>
               <? foreach ($offer->summary as $currency => $money): ?>
-              <?= $money ?> <?= $currency ?><br>
+              <?= $money ?><br>
               <? endforeach ?>
             </p>
             <p><?= $en ? 'Total' : 'W sumie' ?> (netto):</p>
@@ -187,11 +190,11 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       <tbody>
         <? foreach ($offer->items as $item): ?>
         <tr>
-          <td class="item-position"><?= $item->position ?>.</td>
+          <td><?= $item->position ?>.</td>
           <td class="item-description"><?= $item->description ?></td>
-          <td><?= $item->quantity ?> <?= $item->unit ?></td>
-          <td><?= $item->price ?> <?= $item->currency ?></td>
-          <td><?= $item->per ?></td>
+          <td><?= $item->quantityFmt ?> <?= $item->unit ?></td>
+          <td><?= $item->priceFmt ?></td>
+          <td><?= $item->perFmt ?></td>
           <td><?= $item->vat ?></td>
         </tr>
         <? endforeach ?>

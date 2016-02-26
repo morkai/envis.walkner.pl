@@ -60,17 +60,12 @@ function summarize_offer($offer)
     $offer->summary[$item->currency] += $item->quantity * $item->price / $item->per;
   }
 
-  $offer->summary = array_map(function($money)
+  $fmt = new NumberFormatter('pl_PL', NumberFormatter::CURRENCY);
+
+  foreach ($offer->summary as $currency => $money)
   {
-    $parts = explode('.', (string)$money);
-
-    if (empty($parts[1]))
-    {
-      $parts[1] = '';
-    }
-
-    return $parts[0] . '.' . $parts[1] . str_repeat('0', 2 - strlen($parts[1]));
-  }, $offer->summary);
+    $offer->summary[$currency] = $fmt->formatCurrency($money, $currency);
+  }
 }
 
 function fetch_offer_templates()
@@ -126,10 +121,15 @@ function fetch_and_prepare_offer_for_printing($id)
     $offer->$field = nl2br(e($offer->$field));
   }
 
+  $qtyFmt = new NumberFormatter('pl_PL', NumberFormatter::DECIMAL);
+  $curFmt = new NumberFormatter('pl_PL', NumberFormatter::CURRENCY);
+
   foreach ($offer->items as $item)
   {
     $item->description = nl2br(e($item->description));
-    $item->quantity = (string)(float)$item->quantity;
+    $item->priceFmt = $curFmt->formatCurrency((float)$item->price, $item->currency);
+    $item->quantityFmt = $qtyFmt->format((float)$item->quantity);
+    $item->perFmt = $qtyFmt->format((float)$item->per);
     $item->unit = e($item->unit);
   }
 
