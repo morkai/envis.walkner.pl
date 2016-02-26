@@ -1134,5 +1134,15 @@ function get_file_type_from_name($name)
 {
   $type = strtoupper(substr(strrchr($name, '.'), 1));
 
-  return empty($type) ? '?' : $type;
+  if (preg_match('/^[A-Z0-9]{1,5}$/', $type))
+  {
+    return $type;
+  }
+
+  if (preg_match('/^[a-zA-Z]+:\/\//', $name))
+  {
+    return 'URL';
+  }
+
+  return '?';
 }
