@@ -210,7 +210,7 @@ function exec_stmt($query, array $bindings = array())
 /**
  * @param  string $query
  * @param  array $bindings
- * @return array
+ * @return object
  */
 function fetch_one($query, array $bindings = array())
 {

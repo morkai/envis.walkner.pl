@@ -88,7 +88,7 @@ if (!empty($relatedIssues))
       </div>
       <div class="block-body">
         <? if ($offer->cancelled): ?>
-        <p>Oferta anulowana.</p>
+        <p>Oferta anulowana. <a href="<?= url_for("offers/cancel.php?id={$offer->id}") ?>">Przywróć ofertę</a>.</p>
         <? else: ?>
         <? if (empty($offer->relatedIssues)): ?>
         <p>Zamówienie nie zostało jeszcze stworzone. <a href="<?= url_for("offers/order.php?offer={$offer->id}") ?>">Stwórz zgłoszenie związane z tą ofertą</a>...</p>
