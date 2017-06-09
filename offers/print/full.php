@@ -57,7 +57,7 @@
     th, tbody td {
       border: 1px solid #000;
       padding: .25em;
-      text-align: center;
+      text-align: left;
       width: 1px;
       white-space: nowrap;
     }
@@ -145,6 +145,11 @@
       clear: both;
       visibility: hidden;
     }
+    .is-min {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -186,14 +191,14 @@
     <h3><?= $en ? 'Specification' : 'Specyfikacja' ?></h3>
     <table>
       <thead>
-        <tr>
-          <th><?= $en ? 'No' : 'Lp.' ?></th>
-          <th class="item-description"><?= $en ? 'Description' : 'Opis' ?></th>
-          <th><?= $en ? 'Quantity' : 'Ilość' ?></th>
-          <th><?= $en ? 'Price netto' : 'Cena netto' ?></th>
-          <th><?= $en ? 'Per' : 'Za' ?></th>
-          <th>% VAT</th>
-        </tr>
+      <tr>
+        <th><?= $en ? 'No' : 'Lp.' ?></th>
+        <th class="item-description"><?= $en ? 'Description' : 'Opis' ?></th>
+        <th><?= $en ? 'Quantity' : 'Ilość' ?></th>
+        <th>% VAT</th>
+        <th><?= $en ? 'Price<br>netto' : 'Cena<br>netto' ?></th>
+        <th><?= $en ? 'Value<br>netto' : 'Wartość<br>netto' ?></th>
+      </tr>
       </thead>
       <tfoot>
         <tr>
@@ -210,12 +215,12 @@
       <tbody>
         <? foreach ($offer->items as $item): ?>
         <tr>
-          <td><?= $item->position ?>.</td>
+          <td class="is-min"><?= $item->position ?>.</td>
           <td class="item-description"><?= $item->description ?></td>
-          <td><?= $item->quantityFmt ?> <?= $item->unit ?></td>
-          <td><?= $item->priceFmt ?></td>
-          <td><?= $item->perFmt ?></td>
-          <td><?= $item->vat ?></td>
+          <td class="is-min"><?= $item->quantityFmt ?> <?= $item->unit ?></td>
+          <td class="is-min"><?= $item->vat ?></td>
+          <td class="is-min"><?= $item->priceFmt ?> /<?= $item->perFmt ?>&nbsp;<?= $item->unit ?></td>
+          <td class="is-min"><?= $item->valueFmt ?></td>
         </tr>
         <? endforeach ?>
       </tbody>

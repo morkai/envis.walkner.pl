@@ -37,6 +37,8 @@ $canClose = is_allowed_to('offers/close') && !$offer->closed;
   <? endif ?>
   <? if ($offer->closed): ?>
   <li><a href="<?= url_for("offers/export.php?id={$offer->id}&format=pdf") ?>">Eksportuj do PDF</a>
+  <? else: ?>
+  <li><a href="<?= url_for("offers/__pdf__.php?id={$offer->id}") ?>">Eksportuj do PDF</a>
   <? endif ?>
   <li><a href="<?= url_for("offers/export.php?id={$offer->id}&format=html") ?>">Eksportuj do HTML</a>
   <? if ($canDelete): ?>

@@ -17,7 +17,7 @@ preg_match('/([a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+\.[a-zA-Z]{2,10})/s', $offer->clien
 $referer = get_referer("offers/view.phpg?id={$offer->id}");
 $errors = array();
 $mail = array_merge(array(
-  'subject' => strpos(strtolower($offer->title), 'oferta') === false ? ('Oferta: ' . $offer->title) : $offer->title,
+  'subject' => strpos(strtolower($offer->title), 'oferta') === false ? ('Oferta Walkner: ' . $offer->title) : $offer->title,
   'to' => empty($matches[1]) ? '' : $matches[1],
   'text' => ''
 ), empty($_POST['mail']) ? array() : $_POST['mail']);

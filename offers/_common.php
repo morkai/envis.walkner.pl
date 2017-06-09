@@ -3,10 +3,10 @@
 include_once __DIR__ . '/../service/_common.php';
 
 $defaultOfferSupplier = <<<TXT
-Walkner elektronika przemysłowa Zbigniew Walukiewicz
+Walkner elektronika przemysłowa Zbigniew Walukiewicz (48004308)
 Nowa Wieś Kętrzyńska 7
-11-400 Kętrzyn, POLAND
-NIP: 742-100-54-87
+11-400 Nowa Wieś Kętrzyńska, POLAND
+NIP: 7421005487
 REGON: 510329685
 TXT;
 
@@ -130,6 +130,7 @@ function fetch_and_prepare_offer_for_printing($id)
     $item->priceFmt = $curFmt->formatCurrency((float)$item->price, $item->currency);
     $item->quantityFmt = $qtyFmt->format((float)$item->quantity);
     $item->perFmt = $qtyFmt->format((float)$item->per);
+    $item->valueFmt = $curFmt->formatCurrency((float)$item->price * (float)$item->quantity, $item->currency);
     $item->unit = e($item->unit);
   }
 
