@@ -175,15 +175,15 @@ $(function()
       }
     });
   }
-  
+
   $.fn.makeClickable = function()
   {
-    $('td.clickable a', this).click(function() { return false; });
-    
+    $('td.clickable a', this).mouseup(function() { return false; });
+
     this.delegate('td.clickable', 'mouseup', function(e)
     {
       var href = $(this).find('a').attr('href');
-      
+
       if (!$(this).find('a')[0])
       {
         return false;
