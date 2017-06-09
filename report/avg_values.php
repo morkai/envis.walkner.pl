@@ -178,7 +178,7 @@ else
 ?>
 <? if ($showGraph): ?>
 <? begin_slot('js') ?>
-<script src="http://www.google.com/jsapi?key=<?= ENVIS_GOOGLE_KEY ?>"></script>
+<script src="https://www.google.com/jsapi?key=<?= ENVIS_GOOGLE_KEY ?>"></script>
 <script>
   google.load('visualization', '1', {packages: ['linechart']});
 

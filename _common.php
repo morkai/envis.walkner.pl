@@ -1,5 +1,12 @@
 <?php
 
+if ($_SERVER['REQUEST_SCHEME'] !== 'https')
+{
+  header('HTTP/1.1 301 Moved Permanently');
+  header("Location: https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}");
+  exit;
+}
+
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'utf-8');
 

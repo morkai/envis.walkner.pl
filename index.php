@@ -79,7 +79,7 @@ $canAddFactory = is_allowed_to('factory/add');
 
 <div id="factory"></div>
 <? begin_slot('js') ?>
-<script src="http://www.google.com/jsapi?key=<?= ENVIS_GOOGLE_KEY ?>"></script>
+<script src="https://www.google.com/jsapi?key=<?= ENVIS_GOOGLE_KEY ?>"></script>
 <script src="<?= url_for_media('jquery-plugins/simplemodal/1.3/jquery.simplemodal.min.js') ?>"></script>
 <script>
   google.load("maps", "2.x");

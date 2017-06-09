@@ -8,14 +8,7 @@ function url_for($href, $abs = false)
 
   if ($abs)
   {
-    $url = 'http';
-
-    if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] !== 'off'))
-    {
-      $url .= 's';
-    }
-
-    $url .= '://' . ENVIS_DOMAIN;
+    $url = $_SERVER['REQUEST_SCHEME'] . '://' . ENVIS_DOMAIN;
   }
 
   return $url . '/' . ltrim((strpos($href, ENVIS_BASE_URL) === 0 ? '' : ENVIS_BASE_URL) . ltrim($href, '/'), '/');

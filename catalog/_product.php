@@ -70,7 +70,7 @@
             <td><?= $product->public ? 'Tak' : 'Nie' ?>
           <tr>
             <th>QR Code:
-            <td><img src="http://chart.apis.google.com/chart?chs=110x110&cht=qr&choe=UTF-8&chld=L|0&chl=<?= urlencode("http://walkner.pl/p/{$product->nr}") ?>" width="110" height="110" alt="QR Code">
+            <td><img src="https://chart.googleapis.com/chart?chs=110x110&cht=qr&choe=UTF-8&chld=L|0&chl=<?= urlencode("https://walkner.pl/p/{$product->nr}") ?>" width="110" height="110" alt="QR Code">
         </table>
       </div>
     </div>

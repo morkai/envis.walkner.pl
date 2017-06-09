@@ -298,8 +298,8 @@ if (class_exists('ZipArchive', false))
     {
       'scriptAccess': 'always',
       'uploader'   : '<?= url_for_media('uploadify/uploadify.swf', true) ?>',
-      'script'     : 'http://<?= ENVIS_DOMAIN . url_for('_files_/uploadify_multi.php') ?>',
-      'checkScript': 'http://<?= ENVIS_DOMAIN . url_for('_files_/check.php') ?>',
+      'script'     : '<?= url_for('_files_/uploadify_multi.php', true) ?>',
+      'checkScript': '<?= url_for('_files_/check.php', true) ?>',
       'cancelImg'  : '<?= url_for_media('jquery-plugins/uploadify/2.0.3/cancel.png') ?>',
       'auto'       : true,
       'folder'     : '<?= ENVIS_UPLOADS_DIR ?>/imported',
