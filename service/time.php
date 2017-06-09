@@ -51,7 +51,7 @@ SELECT
 FROM issue_assignees a
 INNER JOIN users u
   ON u.id=a.assignee
-WHERE a.issue=:issue AND a.assignee <> :user
+WHERE a.issue=:issue
 SQL;
 
   $assignees = fetch_all($query, array(':issue' => $issue->id, ':user' => $user));
@@ -71,7 +71,12 @@ INNER JOIN users u
 WHERE i.id=:issue
 SQL;
 
-    $assignees[] = fetch_one($query, array(':issue' => $issue->id));
+    $assignee = fetch_one($query, array(':issue' => $issue->id));
+
+    if ($assignee)
+    {
+      $assignees[] = $assignee;
+    }
   }
 }
 
