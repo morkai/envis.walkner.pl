@@ -138,3 +138,23 @@ function fetch_and_prepare_offer_for_printing($id)
 
   return $offer;
 }
+
+function create_offer_search_value($offer, $items = array())
+{
+  $search = <<<TEXT
+{$offer['number']}
+{$offer['createdAt']}
+{$offer['title']}
+{$offer['client']}
+{$offer['clientContact']}
+{$offer['intro']}
+{$offer['outro']}
+TEXT;
+
+  foreach ($items as $item)
+  {
+    $search .= "\n${item['description']}";
+  }
+
+  return $search;
+}

@@ -7,12 +7,12 @@ no_access_if_not_allowed('offers*');
 include_once '../_lib_/PagedData.php';
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
-$q = empty($_GET['q']) ? null : $_GET['q'];
+$q = empty($_GET['q']) ? '' : trim(preg_replace('/\s+/', ' ', $_GET['q']));
 $perPage = 23;
 
 $where = '';
 
-if ($q !== null)
+if ($q !== '')
 {
   $where .= 'WHERE';
 
@@ -20,17 +20,29 @@ if ($q !== null)
   {
     $where .= " o.createdAt='{$q}' OR o.closedAt='{$q}'";
   }
+  else if (preg_match('/^SEK[0-9]/i', $q))
+  {
+    $where .= " o.number LIKE " . get_conn()->quote("%{$q}%");
+  }
   else
   {
-    $qq = get_conn()->quote("%{$q}%");
+    $words = array_filter(explode(' ', $q), function($word) { return strlen($word) >= 3; });
 
-    if (preg_match('/^SEK[0-9]/i', $q))
+    if (empty($words))
     {
-      $where .= " o.number LIKE {$qq}";
+      $where = '';
     }
     else
     {
-      $where .= " o.number LIKE {$qq} OR o.title LIKE {$qq}";
+      $words = implode(
+        ' ',
+        array_map(
+          function($word) { return (preg_match('/^[A-Za-z0-9]/', $word) ? '+' : '') . $word; },
+          $words
+        )
+      );
+
+      $where .= " MATCH(o.search) AGAINST(" . get_conn()->quote($words) . " IN BOOLEAN MODE)";
     }
   }
 }
@@ -40,7 +52,6 @@ $offers = new PagedData($page, $perPage);
 $query = <<<SQL
 SELECT COUNT(*) AS `count`
 FROM offers o
-LEFT JOIN issues i ON i.id=o.issue
 {$where}
 SQL;
 
@@ -62,7 +73,7 @@ FROM offers o
 LEFT JOIN issues i
   ON i.id=o.issue
 {$where}
-ORDER BY o.updatedAt DESC
+ORDER BY o.createdAt DESC
 SQL;
 
 $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $offers->getOffset(), $offers->getPerPage()));
@@ -155,12 +166,12 @@ $(function()
     <table>
       <thead>
         <tr>
-          <th>Numer
+          <th class="min">Numer
           <th>Tytuł
-          <th>Data wysłania
-          <th>Zamówienie
-          <th>Faktura
-          <th>Akcje
+          <th class="min">Data wysłania
+          <th class="min">Zamówienie
+          <th class="min">Faktura
+          <th class="min">Akcje
       </thead>
       <tfoot>
         <tr>
@@ -170,10 +181,10 @@ $(function()
       <tbody id="offersList">
         <? foreach ($offers as $offer): ?>
         <tr class="<?= $offer->cancelled ? 'is-cancelled' : '' ?>">
-          <td><?= $offer->number ?>
+          <td class="min"><?= $offer->number ?>
           <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
-          <td><?= $offer->closedAt ? $offer->closedAt : '-' ?>
-          <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="clickable" title="Pokaż zgłoszenie"<? endif ?>>
+          <td class="min"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
+          <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="min clickable" title="Pokaż zgłoszenie"<? endif ?>>
             <? if ($offer->issue): ?>
             <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>">
               <?= $offer->orderNumber ?> (<?= strtolower($statuses[$offer->status]) ?>)
@@ -185,7 +196,7 @@ $(function()
             <? else: ?>
             -
             <? endif ?>
-          <td>
+          <td class="min">
             <? if ($offer->issue): ?>
               <?= dash_if_empty($offer->orderInvoice) ?>
             <? elseif (!empty($issueMap[$offer->id])): ?>
@@ -194,7 +205,7 @@ $(function()
               -
             <? endif ?>
           </td>
-          <td class="actions">
+          <td class="min actions">
             <ul>
               <li><?= fff('Pokaż', 'page_white', "offers/view.php?id={$offer->id}") ?>
               <? if ($canClose && !$offer->closedAt && !$offer->cancelled): ?>

@@ -43,6 +43,7 @@ if (is('post'))
     }
 
     $offer['updatedAt'] = time();
+    $offer['search'] = create_offer_search_value($offer);
 
     exec_insert('offers', $offer);
 

@@ -10,11 +10,14 @@ $referer = get_referer("offers/view.php?id={$_GET['id']}");
 
 if (!is('post') || empty($_POST['offer'])) go_to($referer);
 
-$oldOffer = fetch_one('SELECT id, number, closedAt FROM offers WHERE id=? LIMIT 1', array(1 => $_GET['id']));
+$oldOffer = fetch_one('SELECT id, createdAt, number, closedAt FROM offers WHERE id=? LIMIT 1', array(1 => $_GET['id']));
 
 if (empty($oldOffer) || !empty($oldOffer->closedAt)) not_found();
 
-$offer = $_POST['offer'];
+$offer = array_merge($_POST['offer'], array(
+  'number' => $oldOffer->number,
+  'createdAt' => $oldOffer->createdAt
+));
 $items = empty($_POST['item']) ? array() : $_POST['item'];
 
 $conn = get_conn();
@@ -33,6 +36,8 @@ try
       $bindings[$field] = $offer[$field];
     }
   }
+
+  $bindings['search'] = create_offer_search_value($offer, $items);
 
   exec_update('offers', $bindings, "id={$oldOffer->id}");
   exec_stmt('DELETE FROM offer_items WHERE offer=?', array(1 => $oldOffer->id));
