@@ -55,6 +55,13 @@ $templates = fetch_offer_templates();
       update: recount
     });
 
+    $('body').on('keydown', 'input', function(e)
+    {
+      if (e.keyCode === 13)
+      {
+        e.preventDefault();
+      }
+    });
     $('body').on('change', function() { dirty = true; });
     $('body').on('input', function() { dirty = true; });
 
@@ -62,8 +69,15 @@ $templates = fetch_offer_templates();
     {
       newItemDefaults[this.id] = this.value;
     });
+    $('#newItem').on('keyup', 'input', function(e)
+    {
+      if (e.keyCode === 13)
+      {
+        $('#addNewItem').click();
+      }
+    });
 
-    $('#addNewItem').click(function()
+    $('#addNewItem').on('click', function()
     {
       dirty = true;
 
@@ -81,8 +95,14 @@ $templates = fetch_offer_templates();
 
       fields.forEach(function(field)
       {
-        html = html.replace('{' + field + '}',
-                            document.getElementById('item-' + field).value);
+        var value = document.getElementById('item-' + field).value;
+
+        html = html.replace('{' + field + '}', value);
+
+        if (field === 'currency')
+        {
+          newItemDefaults['item-currency'] = value;
+        }
       });
 
       $(html).hide().insertBefore($('#newItem')).fadeIn();
@@ -93,6 +113,8 @@ $templates = fetch_offer_templates();
       }
 
       $('#item-description').focus();
+
+      validateCurrency();
     });
 
     $('.removeItem').live('click', function()
@@ -103,6 +125,7 @@ $templates = fetch_offer_templates();
       {
         $(this).remove();
         recount();
+        validateCurrency();
       });
     });
 
@@ -125,6 +148,8 @@ $templates = fetch_offer_templates();
       this.value = $.trim(this.value).replace(/[^a-z]/ig, '')
                                      .toUpperCase()
                                      .substr(0, 3);
+
+      validateCurrency();
     });
 
     $('.item-price input').live('blur', function()
@@ -194,6 +219,24 @@ $templates = fetch_offer_templates();
       });
 
       dirty = true;
+    }
+
+    function validateCurrency()
+    {
+      var $currency = $('.item-currency > input');
+      var firstCurrency = $currency[0].value;
+
+      $currency.each(function(i)
+      {
+        if (i > 0 && this.value !== firstCurrency)
+        {
+          this.setCustomValidity('Waluta w całej ofercie musi być jednakowa.');
+        }
+        else
+        {
+          this.setCustomValidity('');
+        }
+      });
     }
   });
 </script>
