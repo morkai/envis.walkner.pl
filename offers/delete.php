@@ -11,6 +11,8 @@ $offer = fetch_one('SELECT id, title, issue, closedAt FROM offers WHERE id=?', a
 
 not_found_if(empty($offer));
 
+$items = fetch_all('SELECT issue FROM offer_items WHERE offer=? AND issue IS NOT NULL', array(1 => $offer->id));
+
 if (count($_POST))
 {
   $conn = get_conn();
@@ -26,7 +28,23 @@ if (count($_POST))
     if (file_exists($pdfFile)) unlink($pdfFile);
 
     exec_stmt('DELETE FROM offers WHERE id=?', array(1 => $offer->id));
-    // @todo close related issue
+
+    $issues = array();
+
+    if ($offer->issue)
+    {
+      $issues[] = $offer->issue;
+    }
+
+    foreach ($items as $item)
+    {
+      $issues[] = $item->issue;
+    }
+
+    if (!empty($issues))
+    {
+      exec_stmt('UPDATE issues SET status=3 WHERE id IN(' . implode(', ', $issues) . ')');
+    }
 
     log_info('Usunięto ofertę <%s>.', $offer->title);
 
