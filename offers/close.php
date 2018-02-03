@@ -10,8 +10,6 @@ $offer = fetch_one('SELECT id, number, title, clientContact, closedAt FROM offer
 
 not_found_if(empty($offer));
 
-bad_request_if(!empty($offer->closedAt));
-
 preg_match('/([a-zA-Z0-9-_.]+@[a-zA-Z0-9-_.]+\.[a-zA-Z]{2,10})/s', $offer->clientContact, $matches);
 
 $referer = get_referer("offers/view.phpg?id={$offer->id}");
@@ -34,9 +32,13 @@ if (is('post'))
     $conn->beginTransaction();
 
     $bindings = array(
-      'updatedAt' => time(),
-      'closedAt' => date('Y-m-d')
+      'updatedAt' => time()
     );
+
+    if (empty($offer->closedAt))
+    {
+      $bindings['closedAt'] = date('Y-m-d');
+    }
 
     if (!empty($mail['to']))
     {
@@ -46,6 +48,7 @@ if (is('post'))
     exec_update('offers', $bindings, "id={$offer->id}");
 
     $_GET['format'] = 'html';
+    $_GET['force'] = '1';
 
     ob_start();
     include_once __DIR__ . '/export.php';
@@ -138,14 +141,16 @@ li.form-choice ol.form-fields {
     <form method="post" action="<?= url_for("offers/close.php?id={$offer->id}") ?>">
       <input name="referer" type="hidden" value="<?= $referer ?>">
       <? display_errors($errors) ?>
+      <? if (!$offer->closedAt): ?>
       <p>Jeżeli chcesz wysłać i zamknąć ofertę <strong><?= $offer->number ?></strong> wypełnij poniższe pola.
          Do danego adresata zostanie wysłana wiadomość o podanej treści i kopia oferty w formacie PDF jako załącznik.</p>
       <p>W przypadku, gdy chcesz jedynie zamknąć ofertę na zmiany, pozostaw pole <em>Adresat</em> puste.</p>
+      <? endif ?>
       <fieldset>
         <ol class="form-fields">
           <li>
             <?= label('mailTo', 'Adresat') ?>
-            <input id="mailTo" name="mail[to]" type="text" value="<?= e($mail['to']) ?>">
+            <input id="mailTo" name="mail[to]" type="text" value="<?= e($mail['to']) ?>" <?= $offer->closedAt ? 'required' : '' ?>>
           <li>
             <?= label('mailSubject', 'Temat') ?>
             <input id="mailSubject" name="mail[subject]" type="text" value="<?= e($mail['subject']) ?>">

@@ -167,11 +167,12 @@ $(function()
       <thead>
         <tr>
           <th class="min">Numer
+          <th class="min">Data
+          <th class="min">Status
+          <th class="min">PO
+          <th class="min">FV
           <th>Tytuł
-          <th class="min">Data wysłania
-          <th class="min">Zamówienie
-          <th class="min">Faktura
-          <th class="min">Akcje
+          <!-- <th class="min">Akcje //-->
       </thead>
       <tfoot>
         <tr>
@@ -182,16 +183,23 @@ $(function()
         <? foreach ($offers as $offer): ?>
         <tr class="<?= $offer->cancelled ? 'is-cancelled' : '' ?>">
           <td class="min"><?= $offer->number ?>
-          <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
           <td class="min"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
+          <td class="min">
+            <? if ($offer->issue): ?>
+              <?= $statuses[$offer->status] ?>
+            <? elseif (!empty($issueMap[$offer->id])): ?>
+              <?= $issueMap[$offer->id]->status ?>
+            <? else: ?>
+            -
+            <? endif ?>
           <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="min clickable" title="Pokaż zgłoszenie"<? endif ?>>
             <? if ($offer->issue): ?>
             <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>">
-              <?= $offer->orderNumber ?> (<?= strtolower($statuses[$offer->status]) ?>)
+              <?= $offer->orderNumber ?>
             </a>
             <? elseif (!empty($issueMap[$offer->id])): ?>
             <a href="<?= url_for("service/view.php?id={$issueMap[$offer->id]->issue}") ?>">
-              <?= $issueMap[$offer->id]->orderNumber ?> (<?= strtolower($issueMap[$offer->id]->status) ?>)
+              <?= $issueMap[$offer->id]->orderNumber ?>
             </a>
             <? else: ?>
             -
@@ -205,6 +213,8 @@ $(function()
               -
             <? endif ?>
           </td>
+          <td class="clickable"><a href="<?= url_for("offers/view.php?id={$offer->id}") ?>"><?= $offer->title ?></a>
+          <!--
           <td class="min actions">
             <ul>
               <li><?= fff('Pokaż', 'page_white', "offers/view.php?id={$offer->id}") ?>
@@ -222,6 +232,7 @@ $(function()
               <li><?= fff('Usuń', 'page_white_delete', 'offers/delete.php?id=' . $offer->id) ?>
               <? endif ?>
             </ul>
+          //-->
         <? endforeach ?>
       </tbody>
     </table>

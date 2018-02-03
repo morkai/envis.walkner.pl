@@ -6,6 +6,7 @@ define('ENVIS_IMPORT_EMAIL_SERVICE', 'service@envis.walkner.pl');
 define('ENVIS_IMPORT_EMAIL_PRODUCTS', 'products@envis.walkner.pl');
 
 $fd = fopen('php://stdin', 'r');
+
 $email = '';
 
 while (!feof($fd))

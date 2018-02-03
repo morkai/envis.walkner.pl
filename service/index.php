@@ -360,7 +360,6 @@ function fetch_issues_grid($queries, PagedData $issues)
   return $issues;
 }
 
-
 function construct_issues_grid_row(array $columns, $issue)
 {
   global $types, $kinds, $priorities, $statuses;
@@ -371,15 +370,15 @@ function construct_issues_grid_row(array $columns, $issue)
   foreach ($columns as $column) switch ($column)
   {
     case 'type':
-      $row[] = isset($types[$issue->type]) ? $types[$issue->type] : '-';
+      $row[] = array(isset($types[$issue->type]) ? $types[$issue->type] : '-', 'class' => 'min');
       break;
 
     case 'kind':
-      $row[] = isset($kinds[$issue->kind]) ? $kinds[$issue->kind] : '-';
+      $row[] = array(isset($kinds[$issue->kind]) ? $kinds[$issue->kind] : '-', 'class' => 'min');
       break;
 
     case 'priority':
-      $row[] = isset($priorities[$issue->priority]) ? $priorities[$issue->priority] : '-';
+      $row[] = array(isset($priorities[$issue->priority]) ? $priorities[$issue->priority] : '-', 'class' => 'min');
       break;
 
     case 'subject':
@@ -387,7 +386,7 @@ function construct_issues_grid_row(array $columns, $issue)
       break;
 
     case 'status':
-      $td = array($statuses[$issue->status]);
+      $td = array($statuses[$issue->status], 'class' => '');
 
       if (is_resolved_issue_status($issue->status))
       {
@@ -432,6 +431,8 @@ function construct_issues_grid_row(array $columns, $issue)
         }
       }
 
+      $td['class'] .= ' min';
+
       $row[] = $td;
       break;
 
@@ -439,25 +440,26 @@ function construct_issues_grid_row(array $columns, $issue)
       if ($issue->allTasks)
       {
         $row[] = array(number_format($issue->percent) . '%',
-                       'title' => "Ukończono {$issue->completedTasks} z {$issue->allTasks} zadań.",);
+                       'title' => "Ukończono {$issue->completedTasks} z {$issue->allTasks} zadań.",
+                       'class' => 'min');
       }
       else
       {
-        $row[] = '-';
+        $row[] = array('-', 'min');
       }
       break;
 
     case 'owner':
-      $row[] = $issue->owner ? $issue->ownerName : '-';
+      $row[] = array($issue->owner ? $issue->ownerName : '-', 'class' => 'min');
       break;
 
     case 'creator':
-      $row[] = $issue->creator ? $issue->creatorName : '-';
+      $row[] = array($issue->creator ? $issue->creatorName : '-', 'class' => 'min');
       break;
 
     case 'createdAt':
     case 'updatedAt':
-      $row[] = date('Y-m-d, H:i', $issue->$column);
+      $row[] = array(date('Y-m-d, H:i', $issue->$column), 'class' => 'min');
       break;
 
     case 'relatedProduct':
@@ -467,12 +469,12 @@ function construct_issues_grid_row(array $columns, $issue)
       }
       else
       {
-        $row[] = '-';
+        $row[] = array('-', 'class' => 'min');
       }
       break;
 
     default:
-      $row[] = !empty($issue->$column) ? e($issue->$column) : '-';
+      $row[] = array(!empty($issue->$column) ? e($issue->$column) : '-', 'class' => 'min');
       break;
   }
 
@@ -559,7 +561,7 @@ unset($v);
   }
   #issues td
   {
-    padding: 0.5em 0.25em;
+    padding: 0.5em;
   }
   #issues td.subject
   {

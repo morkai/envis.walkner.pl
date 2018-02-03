@@ -7,24 +7,25 @@ $templates = fetch_offer_templates();
 <? begin_slot('head') ?>
 <style>
   .number { text-align: right; }
-  #items { margin-top: 1em; }
+  #items { margin-top: 0.5em; }
   #items th { border-bottom: 1px solid #246; }
   #items > tbody > tr:first-child > td { border-top-width: 1px; }
   #items td, #items th { font-size: 1em; padding: .5em .25em }
   #items tbody tr:last-child td { border-bottom: 0; }
   .item-position { width: 1%; cursor: n-resize; }
   #newItem .item-position { cursor: default; }
-  .item-description textarea { height: 3.5em; }
-  .item-quantity { width: 6%; }
-  .item-unit { width: 5%; }
-  .item-currency { width: 5%; }
-  .item-price { width: 10%; }
-  .item-per { width: 5%; }
-  .item-vat { width: 5%; }
-  .item-actions { width: 5%; }
+  .item-description textarea { height: auto; vertical-align: middle; }
+  .item-quantity { width: 75px; }
+  .item-unit { width: 60px; }
+  .item-currency { width: 50px; }
+  .item-price { width: 75px; }
+  .item-per { width: 50px; }
+  .item-vat { width: 50px; }
+  .item-actions { width: 1%; }
   .item-actions input { width: 100%; }
   .ui-sortable-helper { opacity: .8; }
   .templates { width: 100%; }
+  ol.form-fields #items label:first-child { margin-bottom: 0; }
 </style>
 <? append_slot() ?>
 
@@ -37,20 +38,14 @@ $templates = fetch_offer_templates();
         $items = $('#items'),
         dirty = false;
 
-    $(window).unload(function(e)
+    $(window).on('beforeunload', function(e)
     {
-      if (dirty)
+      if (!dirty)
       {
-        if (confirm('Opuszczasz stronę oferty bez zapisania dokonanych w niej zmian.\nCzy chcesz zapisać zmiany?'))
-        {
-          $.ajax({
-            url: '<?= url_for("offers/edit.php?id={$offer->id}") ?>',
-            data: $('#offer').serialize(),
-            type: 'POST',
-            async: false
-          });
-        }
+        return;
       }
+
+      return 'Opuszczasz stronę oferty bez zapisania dokonanych w niej zmian.';
     });
 
     $items.find('tbody').sortable({
@@ -60,7 +55,8 @@ $templates = fetch_offer_templates();
       update: recount
     });
 
-    $('input, textarea').change(function() { dirty = true; });
+    $('body').on('change', function() { dirty = true; });
+    $('body').on('input', function() { dirty = true; });
 
     $('#newItem').find('input, textarea').each(function()
     {
@@ -79,8 +75,9 @@ $templates = fetch_offer_templates();
                     'per',
                     'vat'],
           count = $items.find('.item').length,
-          html = newItemTpl.replace(/\{i\}/g, count)
-                             .replace(/\{position\}/g, count + 1);
+          html = newItemTpl
+            .replace(/\{i\}/g, count)
+            .replace(/\{position\}/g, count + 1);
 
       fields.forEach(function(field)
       {
@@ -100,6 +97,8 @@ $templates = fetch_offer_templates();
 
     $('.removeItem').live('click', function()
     {
+      dirty = true;
+
       $(this).closest('tr').fadeOut(function()
       {
         $(this).remove();
@@ -157,22 +156,27 @@ $templates = fetch_offer_templates();
     {
       var tpl = JSON.parse($(this[this.selectedIndex]).attr('data-template'));
 
-      $('#offerClient').val(tpl.clientName);
-      $('#offerClientContact').val(tpl.clientContact);
+      $('#offerClient')
+        .val(tpl.clientName.replace(/[\t ]+/g, ' ').replace(/(\r\n|\r|\n)+/g, '\n'))
+        .autoResize({extraSpace: 22});
+
+      $('#offerClientContact')
+        .val(tpl.clientContact.replace(/[\t ]+/g, ' ').replace(/(\r\n|\r|\n)+/g, '\n'))
+        .autoResize({extraSpace: 22});
     });
 
     $('#templatesIntro').change(function()
     {
       var tpl = JSON.parse($(this[this.selectedIndex]).attr('data-template'));
 
-      $('#offerIntro').val(tpl.intro);
+      $('#offerIntro').val(tpl.intro).autoResize({extraSpace: 22});
     });
 
     $('#templatesOutro').change(function()
     {
       var tpl = JSON.parse($(this[this.selectedIndex]).attr('data-template'));
 
-      $('#offerOutro').val(tpl.outro);
+      $('#offerOutro').val(tpl.outro).autoResize({extraSpace: 22});
     });
 
     $('#offer').submit(function() { dirty = false; });
@@ -188,6 +192,8 @@ $templates = fetch_offer_templates();
 
         ++pos;
       });
+
+      dirty = true;
     }
   });
 </script>
@@ -259,13 +265,13 @@ $templates = fetch_offer_templates();
                   <?= $item->position ?>.
                   <input name="item[<?= $i ?>][position]" type="hidden" value="<?= $item->position ?>">
                 <td class="item-description"><textarea name="item[<?= $i ?>][description]"><?= e($item->description) ?></textarea>
-                <td class="item-quantity" style="width: 5%"><input name="item[<?= $i ?>][quantity]" type="text" value="<?= (float)$item->quantity ?>" class="number" maxlength="10">
-                <td class="item-unit" style="width: 5%"><input name="item[<?= $i ?>][unit]" type="text" value="<?= e($item->unit) ?>" maxlength="10">
-                <td class="item-currency" style="width: 5%"><input name="item[<?= $i ?>][currency]" type="text" value="<?= $item->currency ?>" maxlength="3">
-                <td class="item-price" style="width: 10%"><input name="item[<?= $i ?>][price]" type="text" value="<?= $item->price ?>" class="number">
-                <td class="item-per" style="width: 5%"><input name="item[<?= $i ?>][per]" type="text" value="<?= $item->per ?>" class="number">
-                <td class="item-vat" style="width: 5%"><input name="item[<?= $i ?>][vat]" type="text" value="<?= $item->vat ?>" class="number" maxlength="2">
-                <td class="item-actions" style="width: 5%"><input class="removeItem" type="button" value=" x " title="Usuń przedmiot">
+                <td class="item-quantity"><input name="item[<?= $i ?>][quantity]" type="text" value="<?= (float)$item->quantity ?>" class="number" maxlength="10">
+                <td class="item-unit"><input name="item[<?= $i ?>][unit]" type="text" value="<?= e($item->unit) ?>" maxlength="10">
+                <td class="item-currency"><input name="item[<?= $i ?>][currency]" type="text" value="<?= $item->currency ?>" maxlength="3">
+                <td class="item-price"><input name="item[<?= $i ?>][price]" type="text" value="<?= $item->price ?>" class="number">
+                <td class="item-per"><input name="item[<?= $i ?>][per]" type="text" value="<?= $item->per ?>" class="number">
+                <td class="item-vat"><input name="item[<?= $i ?>][vat]" type="text" value="<?= $item->vat ?>" class="number" maxlength="2">
+                <td class="item-actions"><input class="removeItem" type="button" value=" x " title="Usuń przedmiot">
               <? endforeach ?>
               <tr id="newItem">
                 <td class="item-position">

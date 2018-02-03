@@ -1,10 +1,10 @@
 <?php
 
 $_menu = array(
-  '' => array('Dashboard',    ''),
+  '' => array('Pulpit',    ''),
   //'report' => array('Raporty',      'report*'),
-  'service' => array('Serwis',       'service*'),
   'offers' => array('Oferty',       'offers*'),
+  'service' => array('Serwis',       'service*'),
   'factory' => array('Fabryki',      'factory*'),
   //'counter' => array('Liczniki',     'counter*'),
   'documentation' => array('Dokumentacje', 'documentation*'),

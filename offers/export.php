@@ -12,7 +12,7 @@ $format = isset($_GET['format']) && isset($allowedFormats[$_GET['format']]) ? $_
 
 $offerFile = make_offer_file($_GET['id'], $format);
 
-if (file_exists($offerFile) && !isset($_GET['force']))
+if (file_exists($offerFile) && (!isset($_GET['force']) || $_GET['force'] !== '1'))
 {
   header(sprintf('Content-Type: %s', $allowedFormats[$format]));
   header(sprintf('Content-Length: %s', filesize($offerFile)));

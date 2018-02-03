@@ -48,23 +48,35 @@ function make_offer_file($id, $format)
 
 function summarize_offer($offer)
 {
-  $offer->summary = array();
+  $summary = array();
 
   foreach ($offer->items as $item)
   {
-    if (!isset($offer->summary[$item->currency]))
+    if (!isset($summary[$item->currency]))
     {
-      $offer->summary[$item->currency] = 0;
+      $summary[$item->currency] = 0;
     }
 
-    $offer->summary[$item->currency] += $item->quantity * $item->price / $item->per;
+    $summary[$item->currency] += $item->quantity * $item->price / $item->per;
   }
 
   $fmt = new NumberFormatter('pl_PL', NumberFormatter::CURRENCY);
+  $offer->summary = array();
 
-  foreach ($offer->summary as $currency => $money)
+  foreach ($summary as $currency => $money)
   {
-    $offer->summary[$currency] = $fmt->formatCurrency($money, $currency);
+    $offer->summary[] = array(
+      'newLine' => true,
+      'currency' => $currency,
+      'money' => $fmt->formatCurrency($money, $currency)
+    );
+  }
+
+  $lastI = count($offer->summary) - 1;
+
+  if ($lastI !== -1)
+  {
+    $offer->summary[$lastI]['newLine'] = false;
   }
 }
 
@@ -106,6 +118,14 @@ function fetch_and_prepare_offer_for_printing($id)
 
   $offer->items = fetch_all('SELECT position, description, quantity, unit, price, currency, per, vat FROM offer_items WHERE offer=?', array(1 => $offer->id));
 
+  prepare_offer($offer);
+  summarize_offer($offer);
+
+  return $offer;
+}
+
+function prepare_offer($offer)
+{
   if (empty($offer->closedAt))
   {
     $offer->closedAt = '-';
@@ -133,10 +153,6 @@ function fetch_and_prepare_offer_for_printing($id)
     $item->valueFmt = $curFmt->formatCurrency((float)$item->price * (float)$item->quantity, $item->currency);
     $item->unit = e($item->unit);
   }
-
-  summarize_offer($offer);
-
-  return $offer;
 }
 
 function create_offer_search_value($offer, $items = array())

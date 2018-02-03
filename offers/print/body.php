@@ -64,6 +64,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     }
     legend {
       font-size: 1.5em;
+      background: #fff;
     }
     p {
       margin: .5em 0;
@@ -181,8 +182,8 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
         <tr>
           <td colspan="6">
             <p>
-              <? foreach ($offer->summary as $currency => $money): ?>
-              <?= $money ?><br>
+              <? foreach ($offer->summary as $summary): ?>
+              <?= $summary['money'] ?><br>
               <? endforeach ?>
             </p>
             <p><?= $en ? 'Total' : 'W sumie' ?> (netto):</p>

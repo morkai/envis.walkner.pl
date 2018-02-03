@@ -38,13 +38,13 @@ $columnNames = array(
   'kind' => 'Rodzaj',
   'creator' => 'Zgłaszający',
   'owner' => 'Właściciel',
-  'createdAt' => 'Czas zgłoszenia',
-  'updatedAt' => 'Czas ostatniej zmiany',
+  'createdAt' => 'Czas utworzenia',
+  'updatedAt' => 'Czas zmiany',
   'expectedFinishAt' => 'Przew. data zak.',
-  'orderNumber' => 'Numer zamówienia',
-  'orderDate' => 'Data zamówienia',
-  'orderInvoice' => 'Numer faktury',
-  'orderInvoiceDate' => 'Data faktury',
+  'orderNumber' => 'Numer PO',
+  'orderDate' => 'Data PO',
+  'orderInvoice' => 'Numer FV',
+  'orderInvoiceDate' => 'Data FV',
   'relatedProduct' => 'Powiązany produkt'
 );
 

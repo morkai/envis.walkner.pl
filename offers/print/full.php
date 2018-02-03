@@ -204,8 +204,8 @@
         <tr>
           <td colspan="6">
             <p>
-              <? foreach ($offer->summary as $currency => $money): ?>
-              <?= $money ?><br>
+              <? foreach ($offer->summary as $summary): ?>
+              <?= $summary['money'] ?><br>
               <? endforeach ?>
             </p>
             <p><?= $en ? 'Total' : 'W sumie' ?> (netto):</p>

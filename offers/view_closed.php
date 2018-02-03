@@ -1,5 +1,6 @@
 <?php
 
+prepare_offer($offer);
 summarize_offer($offer);
 
 $relatedIssues = array();
@@ -28,13 +29,11 @@ if (!empty($relatedIssues))
 <style>
   #items th
   {
-    padding-left: .5em;
-    padding-right: .5em;
-    text-align: center;
+    text-align: left;
   }
   #items td
   {
-    text-align: center;
+    text-align: right;
   }
   #items .l
   {
@@ -44,6 +43,7 @@ if (!empty($relatedIssues))
   {
     float: right;
     margin-left: 1em;
+    margin-bottom: 0;
   }
 </style>
 <? append_slot() ?>
@@ -128,11 +128,11 @@ if (!empty($relatedIssues))
   <div class="block-body">
     <div class="yui-g">
       <div class="yui-u first">
-        <p><?= nl2br(e($offer->client)) ?></p>
+        <p><?= $offer->client ?></p>
       </div>
       <div class="yui-u">
         <h2>Kontakt:</h2>
-        <p><?= nl2br(e($offer->clientContact)) ?></p>
+        <p><?= $offer->clientContact ?></p>
       </div>
     </div>
   </div>
@@ -157,23 +157,19 @@ if (!empty($relatedIssues))
       <tfoot>
         <tr>
           <td colspan="8">
-            <p>
-              <? foreach ($offer->summary as $currency => $money): ?>
-              <?= $money ?> <?= $currency ?><br>
-              <? endforeach ?>
-            </p>
+            <p><? foreach ($offer->summary as $summary): ?><?= $summary['money'] ?><?= $summary['newLine'] ? '<br>' : '' ?><? endforeach ?></p>
             <p>W sumie (netto):</p>
       <tbody>
         <? foreach ($offer->items as $item): ?>
         <tr>
-          <td class="l"><?= $item->position ?>.
-          <td class="l""><?= nl2br($item->description) ?>
-          <td><?= (float)$item->quantity ?>
-          <td><?= e($item->unit) ?>
-          <td><?= $item->currency ?>
-          <td><?= $item->price ?>
-          <td><?= $item->per ?>
-          <td><?= $item->vat ?>
+          <td class="min"><?= $item->position ?>.
+          <td class="l"><?= nl2br($item->description) ?>
+          <td class="min"><?= (float)$item->quantity ?>
+          <td class="min"><?= e($item->unit) ?>
+          <td class="min"><?= $item->currency ?>
+          <td class="min"><?= $item->priceFmt ?>
+          <td class="min"><?= $item->per ?>
+          <td class="min"><?= $item->vat ?>
         <? endforeach ?>
     </table>
   </div>
