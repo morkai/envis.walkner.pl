@@ -94,7 +94,12 @@ MARKDOWN;
     'kind' => 3,
     'type' => 4,
     'orderNumber' => $order['number'],
-    'orderDate' => date('Y-m-d')
+    'orderDate' => date('Y-m-d'),
+    'quantity' => 1,
+    'unit' => 'szt.',
+    'price' => 0,
+    'per' => 1,
+    'vat' => 23
   );
 
   $itemIssues = array();
@@ -142,6 +147,9 @@ MARKDOWN;
       'per' => $item['per'],
       'vat' => $item['vat']
     );
+
+    $mainIssue['currency'] = $item['currency'];
+    $mainIssue['price'] += (float)$item['price'];
   }
 
   $conn = get_conn();

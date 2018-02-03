@@ -236,7 +236,7 @@ escape_vars($issue->subject);
             <td><?= round($issue->quantity) ?> <?= $issue->unit ?>
           <tr>
             <th>Cena
-            <td><?= $issue->price ?> <?= $issue->currency ?> za <?= $issue->per ?> (<?= $issue->vat ?>% VAT)
+            <td><?= $issue->price ?> <?= $issue->currency ?> za <?= $issue->per ?> (bez <?= $issue->vat ?>% VAT)
           <? endif ?>
           <? if (!empty($issue->relatedProduct)): ?>
           <tr>

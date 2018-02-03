@@ -48,22 +48,28 @@ function make_offer_file($id, $format)
 
 function summarize_offer($offer)
 {
-  $summary = array();
+  $firstCurrency = null;
+  $currencyToMoney = array();
 
   foreach ($offer->items as $item)
   {
-    if (!isset($summary[$item->currency]))
+    if ($firstCurrency === null)
     {
-      $summary[$item->currency] = 0;
+      $firstCurrency = $item->currency;
     }
 
-    $summary[$item->currency] += $item->quantity * $item->price / $item->per;
+    if (!isset($currencyToMoney[$item->currency]))
+    {
+      $currencyToMoney[$item->currency] = 0;
+    }
+
+    $currencyToMoney[$item->currency] += $item->quantity * $item->price / $item->per;
   }
 
   $fmt = new NumberFormatter('pl_PL', NumberFormatter::CURRENCY);
   $offer->summary = array();
 
-  foreach ($summary as $currency => $money)
+  foreach ($currencyToMoney as $currency => $money)
   {
     $offer->summary[] = array(
       'newLine' => true,
@@ -78,6 +84,9 @@ function summarize_offer($offer)
   {
     $offer->summary[$lastI]['newLine'] = false;
   }
+
+  $offer->totalPrice = $currencyToMoney[$firstCurrency];
+  $offer->totalCurrency = $firstCurrency;
 }
 
 function fetch_offer_templates()

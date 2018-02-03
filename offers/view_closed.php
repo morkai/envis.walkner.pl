@@ -20,7 +20,22 @@ foreach ($offer->items as $item)
 
 if (!empty($relatedIssues))
 {
-  $offer->relatedIssues = fetch_all("SELECT i.id, i.subject, i.status, i.percent, i.orderNumber, i.orderInvoice FROM issues i WHERE i.id IN(" . implode(',', $relatedIssues) . ") ORDER BY id");
+  $offer->relatedIssues = fetch_all("SELECT i.id, i.subject, i.status, i.percent, i.orderNumber, i.orderInvoice FROM issues i WHERE i.id IN(" . implode(',', $relatedIssues) . ")");
+
+  usort($offer->relatedIssues, function($a, $b) use($offer)
+  {
+    if ($a->id === $offer->issue)
+    {
+      return -1;
+    }
+
+    if ($b->id === $offer->issue)
+    {
+      return 1;
+    }
+
+    return $a->id - $b->id;
+  });
 }
 
 ?>
@@ -98,20 +113,18 @@ if (!empty($relatedIssues))
           <thead>
             <tr>
               <th>ID
-              <th>Temat
-              <th>Numer zamówienia
-              <th>Numer faktury
+              <th>PO
+              <th>FV
               <th>Status
-              <th>% wykonania
+              <th>Temat
           <tbody>
             <? foreach ($offer->relatedIssues as $relatedIssue): ?>
             <tr>
-              <td><?= $relatedIssue->id ?>
+              <td class="min"><?= $relatedIssue->id ?>
+              <td class="min"><?= dash_if_empty($relatedIssue->orderNumber) ?>
+              <td class="min"><?= dash_if_empty($relatedIssue->orderInvoice) ?>
+              <td class="min"><?= $statuses[$relatedIssue->status] ?>
               <td class="clickable"><a href="<?= url_for("service/view.php?id={$relatedIssue->id}") ?>"><?= $relatedIssue->subject ?></a>
-              <td><?= dash_if_empty($relatedIssue->orderNumber) ?>
-              <td><?= dash_if_empty($relatedIssue->orderInvoice) ?>
-              <td><?= $statuses[$relatedIssue->status] ?>
-              <td><?= dash_if_empty($relatedIssue->percent) ?>
             <? endforeach ?>
         </table>
         <? endif ?>
