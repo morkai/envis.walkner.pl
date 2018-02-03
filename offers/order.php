@@ -29,11 +29,10 @@ no_access_if_not(is_allowed_to('offers/close') && !empty($offer->closedAt));
 $offer->items = fetch_all('SELECT * FROM offer_items WHERE offer=? ORDER BY position ASC', array(1 => $offer->id));
 
 $referer = get_referer("offers/view.php?id={$offer->id}");
-$noMain = true;
+$createMain = true;
 
 if (!empty($_POST['order']))
 {
-  $noMain = !empty($_POST['noMain']);
   $idToItemMap = array();
 
   foreach ($offer->items as $item)
@@ -153,7 +152,7 @@ MARKDOWN;
 
     $bindings = array('updatedAt' => time());
 
-    if (!$noMain)
+    if ($createMain)
     {
       exec_insert('issues', $mainIssue);
 
@@ -172,7 +171,7 @@ MARKDOWN;
       exec_update('offer_items', array('issue' => $itemIssues[$id]['id']), "id={$id}");
     }
 
-    if (!$noMain)
+    if ($createMain)
     {
       $linkStmt = prepare_stmt('INSERT INTO issue_relations SET issue1=?, issue2=?');
 
@@ -185,14 +184,7 @@ MARKDOWN;
 
     $conn->commit();
 
-    if ($noMain)
-    {
-      go_to("offers/view.php?id={$offer->id}");
-    }
-    else
-    {
-      go_to("service/view.php?id={$mainIssue['id']}");
-    }
+    go_to("offers/view.php?id={$offer->id}");
   }
   catch (PDOException $x)
   {
@@ -241,15 +233,13 @@ escape_vars($offer->title);
   <div class="block-body">
     <form class="form" action="<?= url_for("offers/order.php?offer={$offer->id}") ?>" method=post autocomplete=off>
       <input type="hidden" name="referer" value="<?= $referer ?>">
+      <input type="hidden" name="createMain" value="1">
       <fieldset>
         <legend>Zamówienie dla oferty</legend>
         <ol class="form-fields">
           <li>
             <?= label('offerTitle', 'Oferta') ?>
             <p id=offerTitle><?= $offer->title ?></p>
-          <li>
-            <input id=orderNoMain name="noMain" type="checkbox" value="1" <?= checked_if($noMain) ?>>
-            <?= label('orderNoMain', 'Nie generuj zamówienia głównego') ?>
           <li>
             <?= label('orderTitle', 'Temat zamówienia głównego*') ?>
             <input id=orderTitle name="order[title]" type="text" value="<?= $offer->title ?>" autofocus>
@@ -299,20 +289,6 @@ escape_vars($offer->title);
 <script>
 $(function()
 {
-  $('#orderNoMain').change(function(e)
-  {
-    $('#orderTitle').prop('disabled', e.target.checked);
-
-    if (e.target.checked)
-    {
-      $('#orderNumber').focus();
-    }
-    else
-    {
-      $('#orderTitle').focus();
-    }
-  }).change();
-
   $('#toggleItems').click(function()
   {
     var state = this.checked;
