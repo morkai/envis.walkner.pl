@@ -6,43 +6,90 @@ no_access_if_not_allowed('offers*');
 
 include_once '../_lib_/PagedData.php';
 
+$filters = array(
+  'all' => 'Wszystkie',
+  'unsent' => 'Niewysłane',
+  'no-order' => 'Brak zamówienia',
+  'no-po' => 'Brak PO',
+  'no-invoice' => 'Brak FV',
+  'started' => 'Rozpoczęte',
+  'finished' => 'Zakończone'
+);
+
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
 $q = empty($_GET['q']) ? '' : trim(preg_replace('/\s+/', ' ', $_GET['q']));
+$f = empty($_GET['f']) || empty($filters[$_GET['f']]) ? 'all' : $_GET['f'];
 $perPage = 23;
 
 $where = '';
 
-if ($q !== '')
+if ($q !== '' || $f !== 'all')
 {
-  $where .= 'WHERE';
+  $where .= 'WHERE 1=1';
 
-  if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $q))
+  switch ($f)
   {
-    $where .= " o.createdAt='{$q}' OR o.closedAt='{$q}'";
-  }
-  else if (preg_match('/^SEK[0-9]/i', $q))
-  {
-    $where .= " o.number LIKE " . get_conn()->quote("%{$q}%");
-  }
-  else
-  {
-    $words = array_filter(explode(' ', $q), function($word) { return strlen($word) >= 3; });
+    case 'unsent':
+      $where .= ' AND o.closedAt IS NULL';
+      break;
 
-    if (empty($words))
+    case 'no-order':
+      $where .= " AND o.closedAt IS NOT NULL AND (o.issue IS NULL OR i.orderNumber='' OR i.orderNumber IS NULL)";
+      break;
+
+    case 'no-po':
+      $where .= " AND o.issue IS NOT NULL AND (i.orderNumber='' OR i.orderNumber IS NULL)";
+      break;
+
+    case 'no-invoice':
+      $where .= " AND o.issue IS NOT NULL AND (i.orderInvoice='' OR i.orderInvoice IS NULL)";
+      break;
+
+    case 'started':
+      $where .= " AND o.issue IS NOT NULL AND i.status IN(0, 1, 2, 5, 6, 7, 8, 9)";
+      break;
+
+    case 'finished':
+      $where .= " AND o.issue IS NOT NULL AND i.status IN(3, 4)";
+      break;
+  }
+
+  if ($q !== '')
+  {
+    $where .= ' AND ';
+
+    if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $q))
     {
-      $where = '';
+      $where .= " (o.createdAt='{$q}' OR o.closedAt='{$q}')";
+    }
+    else if (preg_match('/^SEK[0-9]/i', $q))
+    {
+      $where .= " o.number LIKE " . get_conn()->quote("%{$q}%");
+    }
+    else if (preg_match('/^([0-9]{6}|[0-9]{10})$/', $q))
+    {
+      $where .= " i.orderNumber LIKE " . get_conn()->quote("%{$q}%");
     }
     else
     {
-      $words = implode(
-        ' ',
-        array_map(
-          function($word) { return (preg_match('/^[A-Za-z0-9]/', $word) ? '+' : '') . $word; },
-          $words
-        )
-      );
+      $words = array_filter(explode(' ', $q), function($word) { return strlen($word) >= 3; });
 
-      $where .= " MATCH(o.search) AGAINST(" . get_conn()->quote($words) . " IN BOOLEAN MODE)";
+      if (empty($words))
+      {
+        $where = '';
+      }
+      else
+      {
+        $words = implode(
+          ' ',
+          array_map(
+            function($word) { return (preg_match('/^[A-Za-z0-9]/', $word) ? '+' : '') . $word; },
+            $words
+          )
+        );
+
+        $where .= " MATCH(o.search) AGAINST(" . get_conn()->quote($words) . " IN BOOLEAN MODE)";
+      }
     }
   }
 }
@@ -52,6 +99,8 @@ $offers = new PagedData($page, $perPage);
 $query = <<<SQL
 SELECT COUNT(*) AS `count`
 FROM offers o
+LEFT JOIN issues i
+  ON i.id=o.issue
 {$where}
 SQL;
 
@@ -110,7 +159,8 @@ $canAdd = is_allowed_to('offers/add');
 $canDelete = is_allowed_to('offers/delete');
 $canClose = is_allowed_to('offers/close');
 $canManageTemplates = is_allowed_to('offers/templates');
-$href = url_for("offers/") . "?" . http_build_query(array('q' => $q));
+$canEditIssues = is_allowed_to('service/edit');
+$href = url_for("offers/") . "?" . http_build_query(array('f' => $f, 'q' => $q));
 
 ?>
 
@@ -130,8 +180,18 @@ $href = url_for("offers/") . "?" . http_build_query(array('q' => $q));
 #offersList a {
   text-decoration: none;
 }
+#offersList img {
+  vertical-align: middle;
+}
 .is-cancelled {
   text-decoration: line-through;
+}
+#query {
+  display: flex;
+}
+#query select {
+  font-size: 1em;
+  margin-right: 1em;
 }
 #query input {
   width: 200px;
@@ -144,6 +204,11 @@ $href = url_for("offers/") . "?" . http_build_query(array('q' => $q));
 $(function()
 {
   $('#offersList').makeClickable();
+
+  $('#filter').on('change', function()
+  {
+    $('#query').submit();
+  });
 });
 </script>
 <? append_slot() ?>
@@ -157,6 +222,11 @@ $(function()
     </li>
     <li>
       <form id="query" action="<?= url_for("/offers/") ?>">
+        <select id="filter" name="f">
+          <? foreach ($filters as $k => $v): ?>
+          <option value="<?= $k ?>" <?= $k === $f ? 'selected' : '' ?>><?= $v ?></option>
+          <? endforeach ?>
+        </select>
         <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
       </form>
     </li>
@@ -186,29 +256,36 @@ $(function()
           <td class="min"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
           <td class="min">
             <? if ($offer->issue): ?>
-              <?= $statuses[$offer->status] ?>
-            <? elseif (!empty($issueMap[$offer->id])): ?>
-              <?= $issueMap[$offer->id]->status ?>
+            <?= $statuses[$offer->status] ?>
+            <? elseif ($offer->closedAt): ?>
+            <i>Brak zamówienia</i>
             <? else: ?>
-            -
+            <i>Niewysłane</i>
             <? endif ?>
-          <td <? if ($offer->issue || !empty($issueMap[$offer->id])): ?>class="min clickable" title="Pokaż zgłoszenie"<? endif ?>>
+          <td class="min">
             <? if ($offer->issue): ?>
-            <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>">
-              <?= $offer->orderNumber ?>
-            </a>
-            <? elseif (!empty($issueMap[$offer->id])): ?>
-            <a href="<?= url_for("service/view.php?id={$issueMap[$offer->id]->issue}") ?>">
-              <?= $issueMap[$offer->id]->orderNumber ?>
-            </a>
+              <? if ($offer->orderNumber): ?>
+                <?= fff('Edytuj zamówienie', 'pencil', "service/edit.php?id={$offer->issue}") ?>
+                <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>"><?= $offer->orderNumber ?></a>
+              <? elseif ($canEditIssues): ?>
+                <?= fff_link('ustaw', 'pencil', "service/edit.php?id={$offer->issue}") ?>
+              <? else: ?>
+                -
+              <? endif ?>
+            <? elseif ($offer->closedAt): ?>
+              <? if ($canEditIssues): ?>
+                <?= fff_link('stwórz', 'add', "offers/order.php?offer={$offer->id}") ?>
+              <? else: ?>
+                -
+              <? endif ?>
+            <? elseif ($canClose): ?>
+              <?= fff_link('wyślij', 'email', "offers/close.php?id={$offer->id}") ?>
             <? else: ?>
             -
             <? endif ?>
           <td class="min">
             <? if ($offer->issue): ?>
               <?= dash_if_empty($offer->orderInvoice) ?>
-            <? elseif (!empty($issueMap[$offer->id])): ?>
-              <?= dash_if_empty($issueMap[$offer->id]->orderInvoice) ?>
             <? else: ?>
               -
             <? endif ?>

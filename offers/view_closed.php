@@ -218,11 +218,11 @@ if (!empty($relatedIssues))
   <div class="block-body">
     <div class="yui-g">
       <div class="yui-u first">
-        <p><?= nl2br(e($offer->supplier)) ?></p>
+        <p><?= $offer->supplier ?></p>
       </div>
       <div class="yui-u">
         <h2>Kontakt:</h2>
-        <p><?= nl2br(e($offer->supplierContact)) ?></p>
+        <p><?= $offer->supplierContact ?></p>
       </div>
     </div>
   </div>

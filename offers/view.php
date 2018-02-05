@@ -23,13 +23,15 @@ $offer->closed = !empty($offer->closedAt);
 $canAdd = is_allowed_to('offers/add');
 $canDelete = is_allowed_to('offers/delete');
 $canEdit = is_allowed_to('offers/edit');
-$canClose = is_allowed_to('offers/close') && !$offer->closed;
+$canClose = is_allowed_to('offers/close');
 
 ?>
 
 <? begin_slot('submenu') ?>
 <ul id="submenu">
+  <? if ($canClose): ?>
   <li><a href="<?= url_for("offers/close.php?id={$offer->id}") ?>">Wyślij ofertę</a>
+  <? endif ?>
   <? if ($canAdd): ?>
   <li><a href="<?= url_for("offers/copy.php?id={$offer->id}") ?>">Kopiuj ofertę</a>
   <? endif ?>

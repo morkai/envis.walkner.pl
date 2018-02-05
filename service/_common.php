@@ -531,3 +531,13 @@ function is_issue_docs_viewer($user, $issue)
 
   return true;
 }
+
+function prepare_issue_value($value)
+{
+  if (!is_string($value))
+  {
+    return $value;
+  }
+
+  return str_replace("\r\n", "\n", trim($value));
+}

@@ -261,7 +261,7 @@ escape_vars($offer->title);
             <table id=items>
               <thead>
                 <tr>
-                  <th><input id=toggleItems type=checkbox>
+                  <th><input id=toggleItems type=checkbox checked>
                   <th>Temat zamówienia
                   <th>Ilość
                   <th>Jednostka
@@ -272,7 +272,7 @@ escape_vars($offer->title);
               <tbody>
                 <? foreach ($offer->items as $i => $item): ?>
                 <tr>
-                  <td class="item-position"><input class=item-toggle name="order[items][<?= $i ?>][id]" type="checkbox" value="<?= $item->id ?>">
+                  <td class="item-position"><input class=item-toggle name="order[items][<?= $i ?>][id]" type="checkbox" value="<?= $item->id ?>" checked>
                   <td class="item-description"><input name="order[items][<?= $i ?>][description]" type=text value="<?= e($item->description) ?>">
                   <td class="item-quantity" style="width: 5%"><input name="order[items][<?= $i ?>][quantity]" type="text" value="<?= (float)$item->quantity ?>" class="number" maxlength="10">
                   <td class="item-unit" style="width: 5%"><input name="order[items][<?= $i ?>][unit]" type="text" value="<?= e($item->unit) ?>" maxlength="10">

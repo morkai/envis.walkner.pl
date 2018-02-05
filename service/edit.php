@@ -94,7 +94,10 @@ if (!empty($_POST['issue']))
 
   foreach ($issue as $field => $newValue)
   {
-    if ($newValue !== $oldIssue[$field])
+    $oldValue = prepare_issue_value($oldIssue[$field]);
+    $newValue = prepare_issue_value($newValue);
+
+    if ($newValue !== $oldValue)
     {
       if ($field === 'tasks') continue;
 
@@ -117,7 +120,7 @@ if (!empty($_POST['issue']))
       }
 
       $changes[] = array('field' => $field,
-                         'old' => $oldIssue[$field],
+                         'old' => $oldValue,
                          'new' => $newValue);
     }
   }
@@ -187,6 +190,19 @@ if (!empty($_POST['issue']))
 
   unset($issue['tasks']);
 
+  $offer = fetch_one('SELECT id FROM offers WHERE issue=? LIMIT 1', array(1 => $oldIssue['id']));
+  $relatedIssues = array();
+
+  if (!empty($offer))
+  {
+    $offerItems = fetch_all('SELECT issue FROM offer_items WHERE offer=? AND issue IS NOT NULL', array(1 => $offer->id));
+
+    foreach ($offerItems as $offerItem)
+    {
+      $relatedIssues[] = $offerItem->issue;
+    }
+  }
+
   $conn = get_conn();
 
   try
@@ -204,6 +220,17 @@ if (!empty($_POST['issue']))
     }
 
     exec_update('issues', $issue, 'id=' . $oldIssue['id']);
+
+    if (!empty($relatedIssues))
+    {
+      exec_update('issues', array(
+        'orderNumber' => $issue['orderNumber'],
+        'orderDate' => $issue['orderDate'],
+        'orderInvoice' => $issue['orderInvoice'],
+        'orderInvoiceDate' => $issue['orderInvoiceDate'],
+        'status' => $issue['status'],
+      ), 'id IN(' . implode(', ', $relatedIssues) . ')');
+    }
 
     update_issue_completion_percent($oldIssue['id']);
 
