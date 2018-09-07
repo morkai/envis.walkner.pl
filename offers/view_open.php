@@ -77,6 +77,11 @@ $templates = fetch_offer_templates();
       }
     });
 
+    $('#item-description').on('blur', function()
+    {
+      this.setCustomValidity(this.value.trim().length > 0 ? 'Zapomniałeś dodać pozycję?' : '');
+    });
+
     $('#addNewItem').on('click', function()
     {
       dirty = true;
@@ -95,7 +100,7 @@ $templates = fetch_offer_templates();
 
       fields.forEach(function(field)
       {
-        var value = document.getElementById('item-' + field).value;
+        var value = document.getElementById('item-' + field).value.trim();
 
         html = html.replace('{' + field + '}', value);
 
