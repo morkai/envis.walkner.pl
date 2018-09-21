@@ -2,7 +2,7 @@
   <p class="contact">
     Tel.: 603-930-725<br>
     E-mail: walkner@walkner.pl<br>
-    WWW: http://walkner.pl/
+    WWW: https://walkner.pl/
   </p>
   <p class="address">
     Walkner elektronika przemysłowa Zbigniew Walukiewicz<br>
