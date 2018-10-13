@@ -65,10 +65,42 @@ if (!empty($relatedIssues))
 
 <? begin_slot('js') ?>
 <script>
-  $(function()
+$(() =>
+{
+  $('#relatedIssues').makeClickable();
+
+  $('#invoiceClipboard').on('click', () =>
   {
-    $('#relatedIssues').makeClickable();
+    copyToClipboard(clipboardData =>
+    {
+      const lines = [`Oferta: <?= $offer->number ?>`];
+
+      <? if (!empty($offer->relatedIssues) && !empty($offer->relatedIssues[0]->orderNumber)): ?>
+      lines.push(`PO: <?= $offer->relatedIssues[0]->orderNumber ?>`);
+      <? endif ?>
+
+      clipboardData.setData('text/plain', lines.join('\n'));
+    });
+
+    return false;
   });
+
+  $('#invoiceMailClipboard').on('click', () =>
+  {
+    copyToClipboard(clipboardData =>
+    {
+      const lines = [``, ``, `<?= e($offer->title) ?>`, `Oferta: <?= $offer->number ?> (https://walkner.pl/r/offer/<?= $offer->id ?>)`];
+
+      <? if (!empty($offer->relatedIssues) && !empty($offer->relatedIssues[0]->orderNumber)): ?>
+      lines.push(`PO: <?= $offer->relatedIssues[0]->orderNumber ?> (https://walkner.pl/r/order/<?= $offer->relatedIssues[0]->id ?>)`);
+      <? endif ?>
+
+      clipboardData.setData('text/plain', lines.join('\n'));
+    });
+
+    return false;
+  });
+});
 </script>
 <? append_slot() ?>
 

@@ -1,5 +1,27 @@
 <? header('Content-Type: text/javascript; charset=UTF-8') ?>
 <? include __DIR__ . '/../_common_url.php' ?>
+var CLIPBOARD_CALLBACK = null;
+
+$(document).on('copy', function(e)
+{
+  if (CLIPBOARD_CALLBACK === null)
+  {
+    return;
+  }
+
+  e.preventDefault();
+
+  CLIPBOARD_CALLBACK(e.originalEvent.clipboardData);
+  CLIPBOARD_CALLBACK = null;
+});
+
+function copyToClipboard(setData)
+{
+  CLIPBOARD_CALLBACK = setData;
+
+  document.execCommand('copy');
+}
+
 function render(template, data)
 {
 	var el = null;

@@ -36,13 +36,17 @@ $canClose = is_allowed_to('offers/close');
   <li><a href="<?= url_for("offers/copy.php?id={$offer->id}") ?>">Kopiuj ofertę</a>
   <? endif ?>
   <? if ($offer->closed): ?>
-    <li><a href="<?= url_for("offers/export.php?id={$offer->id}&format=pdf") ?>">Eksportuj do PDF</a>
+  <li><a href="<?= url_for("offers/export.php?id={$offer->id}&format=pdf") ?>">Eksportuj do PDF</a>
   <? else: ?>
-    <li><a href="<?= url_for("offers/__pdf__.php?id={$offer->id}") ?>">Eksportuj do PDF</a>
+  <li><a href="<?= url_for("offers/__pdf__.php?id={$offer->id}") ?>">Eksportuj do PDF</a>
   <? endif ?>
   <li><a href="<?= url_for("offers/export.php?id={$offer->id}&format=html") ?>">Eksportuj do HTML</a>
   <? if ($canDelete): ?>
   <li><a href="<?= url_for("offers/delete.php?id={$offer->id}") ?>">Usuń ofertę</a>
+  <? endif ?>
+  <? if ($offer->closed): ?>
+  <li><a id="invoiceClipboard" href="javascript:void(0)">Info do faktury</a>
+  <li><a id="invoiceMailClipboard" href="javascript:void(0)">Info do maila</a>
   <? endif ?>
 </ul>
 <? append_slot() ?>
