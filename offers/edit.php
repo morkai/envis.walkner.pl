@@ -42,10 +42,9 @@ try
   exec_update('offers', $bindings, "id={$oldOffer->id}");
   exec_stmt('DELETE FROM offer_items WHERE offer=?', array(1 => $oldOffer->id));
 
-  foreach ($items as $k => $item)
+  foreach ($items as $item)
   {
     $item['offer'] = $oldOffer->id;
-    $item['position'] = $k + 1;
 
     exec_insert('offer_items', $item);
   }
