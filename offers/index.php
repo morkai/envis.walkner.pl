@@ -30,19 +30,19 @@ if ($q !== '' || $f !== 'all')
   switch ($f)
   {
     case 'unsent':
-      $where .= ' AND o.closedAt IS NULL';
+      $where .= ' AND o.cancelled=0 AND o.closedAt IS NULL';
       break;
 
     case 'no-order':
-      $where .= " AND o.closedAt IS NOT NULL AND (o.issue IS NULL OR i.orderNumber='' OR i.orderNumber IS NULL)";
+      $where .= " AND o.cancelled=0 AND o.closedAt IS NOT NULL AND (o.issue IS NULL OR ((i.orderNumber='' OR i.orderNumber IS NULL) AND i.status<>3))";
       break;
 
     case 'no-po':
-      $where .= " AND o.issue IS NOT NULL AND (i.orderNumber='' OR i.orderNumber IS NULL)";
+      $where .= " AND o.issue IS NOT NULL AND (i.orderNumber='' OR i.orderNumber IS NULL) AND i.status<>3";
       break;
 
     case 'no-invoice':
-      $where .= " AND o.issue IS NOT NULL AND (i.orderInvoice='' OR i.orderInvoice IS NULL)";
+      $where .= " AND o.issue IS NOT NULL AND (i.orderInvoice='' OR i.orderInvoice IS NULL) AND i.status<>3";
       break;
 
     case 'started':
@@ -191,7 +191,7 @@ $href = url_for("offers/") . "?" . http_build_query(array('f' => $f, 'q' => $q))
 }
 #query select {
   font-size: 1em;
-  margin-right: 1em;
+  margin-left: 1em;
 }
 #query input {
   width: 200px;
@@ -222,12 +222,12 @@ $(function()
     </li>
     <li>
       <form id="query" action="<?= url_for("/offers/") ?>">
+        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
         <select id="filter" name="f">
           <? foreach ($filters as $k => $v): ?>
           <option value="<?= $k ?>" <?= $k === $f ? 'selected' : '' ?>><?= $v ?></option>
           <? endforeach ?>
         </select>
-        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
       </form>
     </li>
   </ul>
