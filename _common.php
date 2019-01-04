@@ -1,6 +1,8 @@
 <?php
 
-if (!isset($fromImport) && $_SERVER['REQUEST_SCHEME'] !== 'https')
+if (!isset($fromImport)
+  && $_SERVER['REQUEST_SCHEME'] !== 'https'
+  && strpos($_SERVER['REQUEST_URI'], '/offers/print/') === false)
 {
   header('HTTP/1.1 301 Moved Permanently');
   header("Location: https://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}");

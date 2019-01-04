@@ -85,7 +85,7 @@ function summarize_offer($offer)
     $offer->summary[$lastI]['newLine'] = false;
   }
 
-  $offer->totalPrice = $currencyToMoney[$firstCurrency];
+  $offer->totalPrice = empty($currencyToMoney[$firstCurrency]) ? 0 : $currencyToMoney[$firstCurrency];
   $offer->totalCurrency = $firstCurrency;
 }
 
