@@ -90,12 +90,6 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     </div>
   </div>
   <div id="contact">
-    <? if (!$en): ?>
-      <div class="property">
-        <p class="name">Telefon stac.:</p>
-        <p class="value">+48 (89) 752 27 78</p>
-      </div>
-    <? endif ?>
     <div class="property">
       <p class="name"><?= $en ? 'Mobile phone' : 'Telefon kom.' ?>:</p>
       <p class="value">+48 603 930 725</p>
@@ -106,7 +100,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     </div>
     <div class="property">
       <p class="name"><?= $en ? 'Website' : 'Strona WWW' ?>:</p>
-      <p class="value">http://walkner.pl/</p>
+      <p class="value">https://walkner.pl/</p>
     </div>
   </div>
   <div id="page">

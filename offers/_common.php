@@ -160,7 +160,7 @@ function prepare_offer($offer)
     $item->quantityFmt = $qtyFmt->format((float)$item->quantity);
     $item->perFmt = $qtyFmt->format((float)$item->per);
     $item->valueFmt = $curFmt->formatCurrency((float)$item->price * (float)$item->quantity, $item->currency);
-    $item->unit = e($item->unit);
+    $item->unit = e($item->unit === 'szt.' ? 'PCE' : $item->unit);
   }
 }
 

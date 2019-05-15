@@ -10,12 +10,17 @@ not_found_if(empty($offer));
 
 $offerPdfFile = make_offer_file($offer->id, 'pdf') . '.pdf';
 $lang = !empty($_GET['lang']) && $_GET['lang'] === 'en' ? 'en' : 'pl';
+$scheme = $_SERVER['REQUEST_SCHEME'];
+
+$_SERVER['REQUEST_SCHEME'] = 'http';
 
 $cmd = sprintf('wkhtmltopdf -B 25mm -R 10mm -L 10mm -T 32mm --header-spacing 7 --header-html "%s" --footer-html "%s" "%s" "%s"',
   url_for("/offers/print/header.php?id={$offer->id}&lang={$lang}", true),
   url_for("/offers/print/footer.php?id={$offer->id}&lang={$lang}", true),
   url_for("/offers/print/body.php?id={$offer->id}&lang={$lang}", true),
   $offerPdfFile);
+
+$_SERVER['REQUEST_SCHEME'] = $scheme;
 
 $errors[] = $cmd;
 
