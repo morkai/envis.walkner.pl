@@ -114,7 +114,7 @@ $(function()
   </style>
 </head>
 <body>
-<h1>Deklaracja zgodności WE <img id=ce src="<?= url_for_media('img/CE.png', true) ?>" alt="CE" height=40></h1>
+<h1><?= e($declaration['header']) ?> <img id=ce src="<?= url_for_media('img/CE.png', true) ?>" alt="CE" height=40></h1>
 <div class=property>
   <p class=name>Numer deklaracji:</p>
   <p class=value><?= e($declaration['number']) ?></p>
@@ -137,7 +137,7 @@ $(function()
 </div>
 <div class=property>
   <p class=name>Adres:</p>
-  <p class=value>Nowa Wieś Kętrzyńska 7<br>11-400 Kętrzyn<br>Poland</p>
+  <p class=value>Nowa Wieś Kętrzyńska 7<br>11-400 Nowa Wieś Kętrzyńska<br>Polska</p>
 </div>
 <div class=property>
   <p class=name>Deklaruje, że:</p>
@@ -156,7 +156,7 @@ $(function()
 </div>
 <div id=blanks>
   <p id=date class=blank>
-    <span class="blank-value">Kętrzyn, <?= e($declaration['date']) ?></span>
+    <span class="blank-value">Nowa Wieś Kętrzyńska, <?= e($declaration['date']) ?></span>
     <span class="blank-description">(miejsce i data wydania)</span>
   </p>
   <p id=name class=blank>

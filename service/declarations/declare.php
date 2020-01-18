@@ -134,8 +134,11 @@ $(function()
         <? display_errors($errors) ?>
         <ol class="form-fields">
           <li>
+            <?= label('declarationHeader', 'Nagłówek deklaracji') ?>
+            <input id="declarationHeader" name="declaration[header]" type="text" maxlength="200" autofocus value="Deklaracja zgodności WE">
+          <li>
             <?= label('declarationSubject', 'Temat deklaracji') ?>
-            <input id="declarationSubject" name="declaration[subject]" type="text" maxlength="200" autofocus value="<?= e($issue->subject) ?>">
+            <input id="declarationSubject" name="declaration[subject]" type="text" maxlength="200" value="<?= e($issue->subject) ?>">
           <li>
             <?= label('declarationNumber', 'Numer deklaracji') ?>
             <input id="declarationNumber" name="declaration[number]" type="text" maxlength="30" value="<?= e($issue->number) ?>">
