@@ -100,6 +100,7 @@
     .item-description {
       text-align: left;
       width: auto;
+      white-space: normal;
     }
     #items tfoot td {
       text-align: right;

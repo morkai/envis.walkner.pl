@@ -118,6 +118,7 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
     }
     .item-description {
       text-align: left;
+      white-space: normal;
     }
     #items tfoot td {
       text-align: right;
