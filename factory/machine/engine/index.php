@@ -6,8 +6,17 @@ bad_request_if(empty($_GET['machine']) || empty($_GET['id']));
 
 no_access_if_not_allowed('machine*');
 
+$deviceQuery = <<<SQL
+SELECT e.id, e.`name`, e.machine, m.name AS machineName, m.factory, f.name AS factoryName, u.name AS ownerName
+FROM `engines` e
+INNER JOIN machines m ON m.id=e.machine
+INNER JOIN factories f ON f.id=m.factory
+LEFT JOIN users u ON u.id=e.owner
+WHERE e.`id`=? AND e.machine=?
+SQL;
+
 $device = fetch_one(
-  'SELECT e.id, e.`name`, e.machine, m.name AS machineName, m.factory, f.name AS factoryName FROM `engines` e INNER JOIN machines m ON m.id=e.machine INNER JOIN factories f ON f.id=m.factory WHERE e.`id`=? AND e.machine=?',
+  $deviceQuery,
   array(1 => $_GET['id'], $_GET['machine'])
 );
 
@@ -36,7 +45,7 @@ catch (PDOException $x)
 
 $hasAnyValues = !empty($values);
 
-escape_vars($device->name, $device->factoryName, $device->machineName);
+escape_vars($device->name, $device->factoryName, $device->machineName, $device->ownerName);
 
 $canEdit = is_allowed_to('machine/device/edit');
 $canDelete = is_allowed_to('machine/device/delete');
@@ -73,6 +82,8 @@ $canViewVis = is_allowed_to('vis/device');
           <dd><a href="<?= url_for('factory/view.php?id=' . $device->factory) ?>"><?= $device->factoryName ?></a></dd>
           <dt>Maszyna</dt>
           <dd><a href="<?= url_for('factory/machine/?id=' . $device->machine) ?>"><?= $device->machineName ?></a></dd>
+          <dt>Domyślny właściciel</dt>
+          <dd><?= $device->ownerName ?: '-' ?></dd>
         </dl>
       </div>
     </div>

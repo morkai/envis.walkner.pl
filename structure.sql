@@ -5,87 +5,71 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `cases`;
-CREATE TABLE IF NOT EXISTS `cases` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `cases` (
+  `id` int(10) UNSIGNED NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `createdBy` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `createdBy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `factory` tinyint(3) UNSIGNED DEFAULT NULL,
   `machine` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `device` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `supporter` tinyint(3) UNSIGNED DEFAULT NULL,
-  `editingTime` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `editingTime` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `cost` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `subject` varchar(128) COLLATE utf8_polish_ci NOT NULL DEFAULT '',
   `problem` text COLLATE utf8_polish_ci NOT NULL,
   `diagnosis` text CHARACTER SET utf8 NOT NULL,
   `solution` text CHARACTER SET utf8 NOT NULL,
-  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `kind` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `priority` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `supporter` (`supporter`),
-  KEY `createdBy` (`createdBy`),
-  KEY `factory` (`factory`),
-  KEY `machine` (`machine`),
-  KEY `device` (`device`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `kind` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `type` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `priority` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `case_categories`;
-CREATE TABLE IF NOT EXISTS `case_categories` (
-  `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `case_categories` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `parent` tinyint(3) UNSIGNED DEFAULT NULL,
-  `name` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `parent` (`parent`)
+  `name` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_card_pages`;
-CREATE TABLE IF NOT EXISTS `catalog_card_pages` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_card_pages` (
+  `id` int(10) UNSIGNED NOT NULL,
   `product` int(10) UNSIGNED NOT NULL,
   `position` tinyint(3) UNSIGNED NOT NULL,
   `layout` varchar(50) COLLATE utf8_polish_ci NOT NULL,
-  `contents` longblob NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product` (`product`)
-) ENGINE=InnoDB AUTO_INCREMENT=595 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `contents` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_card_templates`;
-CREATE TABLE IF NOT EXISTS `catalog_card_templates` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_card_templates` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8_polish_ci NOT NULL,
-  `contents` text COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `contents` text COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_categories`;
-CREATE TABLE IF NOT EXISTS `catalog_categories` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_categories` (
+  `id` int(10) UNSIGNED NOT NULL,
   `parent` int(10) UNSIGNED DEFAULT NULL,
-  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_name` (`parent`,`name`),
-  KEY `parent` (`parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `catalog_manufacturers`;
-CREATE TABLE IF NOT EXISTS `catalog_manufacturers` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_manufacturers` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
   `nr` smallint(5) UNSIGNED NOT NULL,
-  `label` varchar(100) COLLATE utf8_polish_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nr` (`nr`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `label` varchar(100) COLLATE utf8_polish_ci NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_products`;
-CREATE TABLE IF NOT EXISTS `catalog_products` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_products` (
+  `id` int(10) UNSIGNED NOT NULL,
   `category` int(10) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `updatedAt` int(10) UNSIGNED NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '0',
+  `public` tinyint(1) NOT NULL DEFAULT 0,
   `nr` varchar(30) COLLATE utf8_polish_ci NOT NULL,
   `name` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   `description` text COLLATE utf8_polish_ci NOT NULL,
@@ -95,122 +79,96 @@ CREATE TABLE IF NOT EXISTS `catalog_products` (
   `markings` varchar(100) COLLATE utf8_polish_ci NOT NULL DEFAULT '',
   `kind` int(10) UNSIGNED DEFAULT NULL,
   `manufacturer` int(10) UNSIGNED DEFAULT NULL,
-  `revision` tinyint(3) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `image` (`image`),
-  KEY `category` (`category`),
-  KEY `manufacturer` (`manufacturer`),
-  KEY `kind` (`kind`)
-) ENGINE=InnoDB AUTO_INCREMENT=742 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `revision` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_product_documentations`;
-CREATE TABLE IF NOT EXISTS `catalog_product_documentations` (
+CREATE TABLE `catalog_product_documentations` (
   `product` int(10) UNSIGNED NOT NULL,
-  `documentation` smallint(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`product`,`documentation`),
-  KEY `documentation` (`documentation`)
+  `documentation` smallint(5) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_product_files`;
-CREATE TABLE IF NOT EXISTS `catalog_product_files` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_product_files` (
+  `id` int(10) UNSIGNED NOT NULL,
   `product` int(10) UNSIGNED NOT NULL,
   `uploader` tinyint(3) UNSIGNED NOT NULL,
   `uploadedAt` int(10) UNSIGNED NOT NULL,
   `file` varchar(250) COLLATE utf8_polish_ci NOT NULL,
-  `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product` (`product`),
-  KEY `uploader` (`uploader`)
-) ENGINE=InnoDB AUTO_INCREMENT=426 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `name` varchar(200) COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `catalog_product_images`;
-CREATE TABLE IF NOT EXISTS `catalog_product_images` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_product_images` (
+  `id` int(10) UNSIGNED NOT NULL,
   `product` int(10) UNSIGNED NOT NULL,
   `file` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `file` (`file`),
-  KEY `product` (`product`)
-) ENGINE=InnoDB AUTO_INCREMENT=900 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `catalog_product_kinds`;
-CREATE TABLE IF NOT EXISTS `catalog_product_kinds` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `catalog_product_kinds` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
-  `nr` smallint(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nr` (`nr`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `nr` smallint(5) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `declaration_templates`;
-CREATE TABLE IF NOT EXISTS `declaration_templates` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `declaration_templates` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
   `pattern` varchar(200) COLLATE utf8_polish_ci NOT NULL,
-  `code` text COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `code` text COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `documentations`;
-CREATE TABLE IF NOT EXISTS `documentations` (
-  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `documentations` (
+  `id` smallint(5) UNSIGNED NOT NULL,
   `machine` varchar(64) DEFAULT NULL,
   `device` varchar(64) DEFAULT NULL,
   `title` varchar(128) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `machine` (`machine`),
-  KEY `device` (`device`)
-) ENGINE=InnoDB AUTO_INCREMENT=390 DEFAULT CHARSET=utf8;
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `documentation_files`;
-CREATE TABLE IF NOT EXISTS `documentation_files` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `documentation` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `documentation_files` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `documentation` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
   `file` varchar(128) NOT NULL DEFAULT '',
-  `name` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `documentation` (`documentation`)
-) ENGINE=InnoDB AUTO_INCREMENT=1210 DEFAULT CHARSET=utf8;
+  `name` varchar(128) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `emails`;
-CREATE TABLE IF NOT EXISTS `emails` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `emails` (
+  `id` int(10) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `subject` varchar(200) COLLATE utf8_polish_ci NOT NULL,
   `from` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   `to` varchar(50) COLLATE utf8_polish_ci NOT NULL,
-  `body` text COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `to` (`to`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `body` text COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `email_attachments`;
-CREATE TABLE IF NOT EXISTS `email_attachments` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `email_attachments` (
+  `id` int(10) UNSIGNED NOT NULL,
   `email` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   `type` varchar(60) COLLATE utf8_polish_ci NOT NULL,
   `size` int(10) UNSIGNED NOT NULL,
-  `data` blob NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `data` blob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `engines`;
-CREATE TABLE IF NOT EXISTS `engines` (
+CREATE TABLE `engines` (
   `id` varchar(64) NOT NULL DEFAULT '',
   `machine` varchar(64) NOT NULL DEFAULT '',
   `name` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`,`machine`),
-  KEY `machine` (`machine`)
+  `owner` tinyint(3) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `events`;
-CREATE TABLE IF NOT EXISTS `events` (
-  `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `events` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `name` varchar(128) NOT NULL DEFAULT '',
   `variable` varchar(64) NOT NULL DEFAULT '',
   `factory` tinyint(3) UNSIGNED DEFAULT NULL,
@@ -218,80 +176,61 @@ CREATE TABLE IF NOT EXISTS `events` (
   `device` varchar(64) DEFAULT NULL,
   `operator` enum('==','!=','<','<=','>','>=') NOT NULL DEFAULT '==',
   `valueType` enum('concrete','min','max') NOT NULL DEFAULT 'concrete',
-  `value` float(9,5) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `variable` (`variable`),
-  KEY `factory` (`factory`),
-  KEY `machine` (`machine`),
-  KEY `device` (`device`)
+  `value` float(9,5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `event_actions`;
-CREATE TABLE IF NOT EXISTS `event_actions` (
-  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `event` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `event_actions` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `event` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `type` varchar(32) NOT NULL DEFAULT '',
-  `data` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `event` (`event`)
+  `data` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `factories`;
-CREATE TABLE IF NOT EXISTS `factories` (
-  `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `factories` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `name` varchar(128) NOT NULL DEFAULT '',
-  `latitude` decimal(18,15) NOT NULL DEFAULT '0.000000000000000',
-  `longitude` decimal(18,15) NOT NULL DEFAULT '0.000000000000000',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+  `latitude` decimal(18,15) NOT NULL DEFAULT 0.000000000000000,
+  `longitude` decimal(18,15) NOT NULL DEFAULT 0.000000000000000
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `grid_views`;
-CREATE TABLE IF NOT EXISTS `grid_views` (
+CREATE TABLE `grid_views` (
   `grid` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `view` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `creator` tinyint(3) UNSIGNED NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '0',
+  `public` tinyint(1) NOT NULL DEFAULT 0,
   `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `options` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`view`),
-  KEY `creator` (`creator`),
-  KEY `grid` (`grid`)
+  `options` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `grid_view_defaults`;
-CREATE TABLE IF NOT EXISTS `grid_view_defaults` (
+CREATE TABLE `grid_view_defaults` (
   `grid` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `view` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `user` tinyint(3) UNSIGNED NOT NULL,
-  PRIMARY KEY (`grid`,`user`),
-  KEY `view` (`view`),
-  KEY `user` (`user`)
+  `user` tinyint(3) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `help`;
-CREATE TABLE IF NOT EXISTS `help` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `help` (
+  `id` int(10) UNSIGNED NOT NULL,
   `parent` int(10) UNSIGNED DEFAULT NULL,
-  `position` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
+  `position` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
   `title` varchar(128) NOT NULL DEFAULT '',
-  `contents` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `parent` (`parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+  `contents` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `help_tags`;
-CREATE TABLE IF NOT EXISTS `help_tags` (
+CREATE TABLE `help_tags` (
   `tag` varchar(64) NOT NULL DEFAULT '',
-  `page` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`tag`,`page`),
-  KEY `tag` (`tag`),
-  KEY `page` (`page`)
+  `page` int(10) UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `issues`;
-CREATE TABLE IF NOT EXISTS `issues` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `issues` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `creator` tinyint(3) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `updatedAt` int(10) UNSIGNED NOT NULL,
@@ -304,194 +243,152 @@ CREATE TABLE IF NOT EXISTS `issues` (
   `relatedMachine` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `relatedDevice` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `relatedProduct` int(10) UNSIGNED DEFAULT NULL,
-  `priority` tinyint(1) NOT NULL DEFAULT '2',
-  `kind` tinyint(1) NOT NULL DEFAULT '3',
-  `type` tinyint(1) NOT NULL DEFAULT '4',
+  `priority` tinyint(1) NOT NULL DEFAULT 2,
+  `kind` tinyint(1) NOT NULL DEFAULT 3,
+  `type` tinyint(1) NOT NULL DEFAULT 4,
   `orderNumber` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `orderDate` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `orderInvoice` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `orderInvoiceDate` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `expectedFinishAt` date DEFAULT NULL,
   `percent` float DEFAULT NULL,
-  `quantity` decimal(10,4) UNSIGNED NOT NULL DEFAULT '1.0000',
+  `quantity` decimal(10,4) UNSIGNED NOT NULL DEFAULT 1.0000,
   `unit` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'szt.',
   `currency` char(3) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PLN',
-  `price` decimal(10,2) UNSIGNED NOT NULL DEFAULT '0.00',
-  `per` int(11) UNSIGNED NOT NULL DEFAULT '1',
-  `vat` tinyint(3) UNSIGNED NOT NULL DEFAULT '23',
-  PRIMARY KEY (`id`),
-  KEY `owner` (`owner`),
-  KEY `creator` (`creator`),
-  KEY `relatedFactory` (`relatedFactory`),
-  KEY `relatedMachine` (`relatedMachine`),
-  KEY `relatedDevice` (`relatedDevice`),
-  KEY `relatedProduct` (`relatedProduct`)
-) ENGINE=InnoDB AUTO_INCREMENT=1699 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `price` decimal(10,2) UNSIGNED NOT NULL DEFAULT 0.00,
+  `per` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  `vat` tinyint(3) UNSIGNED NOT NULL DEFAULT 23
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_assignees`;
-CREATE TABLE IF NOT EXISTS `issue_assignees` (
+CREATE TABLE `issue_assignees` (
   `issue` int(10) UNSIGNED NOT NULL,
   `assignee` tinyint(3) UNSIGNED NOT NULL,
   `stakes` decimal(10,2) UNSIGNED NOT NULL,
-  `stakesType` tinyint(1) UNSIGNED NOT NULL,
-  PRIMARY KEY (`issue`,`assignee`),
-  KEY `assignee` (`assignee`)
+  `stakesType` tinyint(1) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_emails`;
-CREATE TABLE IF NOT EXISTS `issue_emails` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `issue_emails` (
+  `id` int(11) NOT NULL,
+  `email` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_files`;
-CREATE TABLE IF NOT EXISTS `issue_files` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_files` (
+  `id` int(10) UNSIGNED NOT NULL,
   `issue` int(10) UNSIGNED NOT NULL,
   `uploader` tinyint(3) UNSIGNED NOT NULL,
   `uploadedAt` int(10) UNSIGNED NOT NULL,
   `file` varchar(60) COLLATE utf8_polish_ci NOT NULL,
-  `name` varchar(200) COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `issue` (`issue`),
-  KEY `uploader` (`uploader`)
-) ENGINE=InnoDB AUTO_INCREMENT=742 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `name` varchar(200) COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `issue_history`;
-CREATE TABLE IF NOT EXISTS `issue_history` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_history` (
+  `id` int(10) UNSIGNED NOT NULL,
   `issue` int(10) UNSIGNED NOT NULL,
   `parent` int(10) UNSIGNED DEFAULT NULL,
-  `system` tinyint(1) NOT NULL DEFAULT '0',
+  `system` tinyint(1) NOT NULL DEFAULT 0,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `createdBy` tinyint(3) UNSIGNED NOT NULL,
-  `changes` text COLLATE utf8_unicode_ci,
-  `tasks` text COLLATE utf8_unicode_ci,
-  `comment` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `issue` (`issue`),
-  KEY `createdBy` (`createdBy`),
-  KEY `parent` (`parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=4667 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `changes` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tasks` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_relations`;
-CREATE TABLE IF NOT EXISTS `issue_relations` (
+CREATE TABLE `issue_relations` (
   `issue1` int(10) UNSIGNED NOT NULL,
-  `issue2` int(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`issue1`,`issue2`),
-  KEY `issue2` (`issue2`)
+  `issue2` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_subscribers`;
-CREATE TABLE IF NOT EXISTS `issue_subscribers` (
+CREATE TABLE `issue_subscribers` (
   `issue` int(10) UNSIGNED NOT NULL,
   `user` tinyint(3) UNSIGNED NOT NULL,
-  `recentlyNotifiedAt` int(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`issue`,`user`),
-  KEY `user` (`user`)
+  `recentlyNotifiedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_tasks`;
-CREATE TABLE IF NOT EXISTS `issue_tasks` (
-  `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_tasks` (
+  `id` int(1) UNSIGNED NOT NULL,
   `issue` int(1) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `createdBy` tinyint(3) UNSIGNED NOT NULL,
   `assignedTo` tinyint(3) UNSIGNED DEFAULT NULL,
   `completedAt` int(10) UNSIGNED DEFAULT NULL,
   `completedBy` tinyint(3) UNSIGNED DEFAULT NULL,
-  `completed` tinyint(1) NOT NULL DEFAULT '0',
+  `completed` tinyint(1) NOT NULL DEFAULT 0,
   `summary` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `position` smallint(6) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `issue` (`issue`),
-  KEY `completedBy` (`completedBy`),
-  KEY `createdBy` (`createdBy`),
-  KEY `assignedTo` (`assignedTo`)
-) ENGINE=InnoDB AUTO_INCREMENT=1275 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `position` smallint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `issue_templates`;
-CREATE TABLE IF NOT EXISTS `issue_templates` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_templates` (
+  `id` int(10) UNSIGNED NOT NULL,
   `createdBy` tinyint(3) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `createdBy` (`createdBy`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `name` varchar(255) COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `issue_template_tasks`;
-CREATE TABLE IF NOT EXISTS `issue_template_tasks` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_template_tasks` (
+  `id` int(10) UNSIGNED NOT NULL,
   `template` int(10) UNSIGNED NOT NULL,
   `summary` varchar(255) COLLATE utf8_polish_ci NOT NULL,
-  `description` text COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `template` (`template`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `description` text COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 DROP TABLE IF EXISTS `issue_times`;
-CREATE TABLE IF NOT EXISTS `issue_times` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `issue_times` (
+  `id` int(10) UNSIGNED NOT NULL,
   `issue` int(10) UNSIGNED NOT NULL,
   `user` tinyint(3) UNSIGNED NOT NULL,
   `createdAt` int(10) UNSIGNED NOT NULL,
   `timeSpent` int(10) UNSIGNED NOT NULL,
-  `comment` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `issue` (`issue`),
-  KEY `user` (`user`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `comment` varchar(250) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `limits`;
-CREATE TABLE IF NOT EXISTS `limits` (
+CREATE TABLE `limits` (
   `machine` varchar(64) NOT NULL DEFAULT '',
   `device` varchar(64) NOT NULL DEFAULT '',
   `variable` varchar(64) NOT NULL DEFAULT '',
-  `min` float(9,5) NOT NULL DEFAULT '0.00000',
-  `max` float(9,5) NOT NULL DEFAULT '0.00000',
-  PRIMARY KEY (`device`,`variable`,`machine`),
-  KEY `variable` (`variable`),
-  KEY `machine` (`machine`)
+  `min` float(9,5) NOT NULL DEFAULT 0.00000,
+  `max` float(9,5) NOT NULL DEFAULT 0.00000
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `logs`;
-CREATE TABLE IF NOT EXISTS `logs` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `logs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
   `user` tinyint(3) UNSIGNED DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ip` varchar(40) NOT NULL DEFAULT '',
-  `message` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user` (`user`)
-) ENGINE=InnoDB AUTO_INCREMENT=15539 DEFAULT CHARSET=utf8;
+  `message` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `machines`;
-CREATE TABLE IF NOT EXISTS `machines` (
+CREATE TABLE `machines` (
   `id` varchar(64) NOT NULL DEFAULT '',
-  `factory` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `name` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `factory` (`factory`)
+  `factory` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `name` varchar(128) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `news`;
-CREATE TABLE IF NOT EXISTS `news` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `createdBy` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `news` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `createdBy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `createdAt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `title` varchar(128) NOT NULL DEFAULT '',
   `introduction` text NOT NULL,
-  `body` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `createdBy` (`createdBy`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `body` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `offers`;
-CREATE TABLE IF NOT EXISTS `offers` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `offers` (
+  `id` int(10) UNSIGNED NOT NULL,
   `issue` int(10) UNSIGNED DEFAULT NULL,
   `number` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `createdAt` date NOT NULL,
@@ -505,16 +402,13 @@ CREATE TABLE IF NOT EXISTS `offers` (
   `intro` text COLLATE utf8_unicode_ci NOT NULL,
   `outro` text COLLATE utf8_unicode_ci NOT NULL,
   `sentTo` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `cancelled` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `search` text CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `number` (`number`),
-  KEY `issue` (`issue`)
-) ENGINE=InnoDB AUTO_INCREMENT=1091 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `cancelled` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `search` text CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `offer_items`;
-CREATE TABLE IF NOT EXISTS `offer_items` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `offer_items` (
+  `id` int(10) UNSIGNED NOT NULL,
   `offer` int(10) UNSIGNED NOT NULL,
   `issue` int(10) UNSIGNED DEFAULT NULL,
   `position` tinyint(3) UNSIGNED NOT NULL,
@@ -522,229 +416,578 @@ CREATE TABLE IF NOT EXISTS `offer_items` (
   `quantity` decimal(10,4) UNSIGNED NOT NULL,
   `unit` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'szt.',
   `currency` char(3) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PLN',
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `per` int(11) NOT NULL DEFAULT '1',
-  `vat` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `offer` (`offer`),
-  KEY `issue` (`issue`)
-) ENGINE=InnoDB AUTO_INCREMENT=15881 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `per` int(11) NOT NULL DEFAULT 1,
+  `vat` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `offer_templates`;
-CREATE TABLE IF NOT EXISTS `offer_templates` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `offer_templates` (
+  `id` int(10) UNSIGNED NOT NULL,
   `type` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `template` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `template` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `plc_devices`;
-CREATE TABLE IF NOT EXISTS `plc_devices` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `machine` int(10) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `plc_devices` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `machine` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `initialValue` float(16,8) NOT NULL DEFAULT '0.00000000',
-  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `kind` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `initialValue` float(16,8) NOT NULL DEFAULT 0.00000000,
+  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `kind` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `comment1` text COLLATE utf8_unicode_ci NOT NULL,
   `comment2` text COLLATE utf8_unicode_ci NOT NULL,
-  `comment3` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `machine` (`machine`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `comment3` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `plc_machines`;
-CREATE TABLE IF NOT EXISTS `plc_machines` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `plc_machines` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `comments` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `comments` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `plc_modules`;
-CREATE TABLE IF NOT EXISTS `plc_modules` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `machine` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `type` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `type` (`type`),
-  KEY `machine` (`machine`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `plc_modules` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `machine` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `type` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `plc_module_elements`;
-CREATE TABLE IF NOT EXISTS `plc_module_elements` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `module` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `element` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `position` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `module_2` (`module`,`element`),
-  KEY `module` (`module`),
-  KEY `element` (`element`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `plc_module_elements` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `module` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `element` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `position` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `plc_module_types`;
-CREATE TABLE IF NOT EXISTS `plc_module_types` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `plc_module_types` (
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `inputs` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `outputs` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `inputs` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `outputs` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `roles`;
-CREATE TABLE IF NOT EXISTS `roles` (
+CREATE TABLE `roles` (
   `id` varchar(64) NOT NULL DEFAULT '',
-  `name` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `name` varchar(128) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `role_privilages`;
-CREATE TABLE IF NOT EXISTS `role_privilages` (
+CREATE TABLE `role_privilages` (
   `role` varchar(64) NOT NULL DEFAULT '',
-  `privilage` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`role`,`privilage`)
+  `privilage` varchar(128) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `storages`;
-CREATE TABLE IF NOT EXISTS `storages` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `owner` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `owner` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `storages` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `owner` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `storage_products`;
-CREATE TABLE IF NOT EXISTS `storage_products` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `storage` int(10) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `storage_products` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `storage` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `index` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `quantity` int(11) NOT NULL DEFAULT '0',
-  `price` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `quantity` int(11) NOT NULL DEFAULT 0,
+  `price` decimal(12,2) NOT NULL DEFAULT 0.00,
   `supplier` text COLLATE utf8_unicode_ci NOT NULL,
-  `contact` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_uniq_in_storage` (`storage`,`index`),
-  KEY `storage` (`storage`)
-) ENGINE=InnoDB AUTO_INCREMENT=847 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `contact` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
   `role` varchar(64) DEFAULT NULL,
-  `super` tinyint(1) NOT NULL DEFAULT '0',
+  `super` tinyint(1) NOT NULL DEFAULT 0,
   `email` varchar(128) NOT NULL DEFAULT '',
   `password` varchar(64) NOT NULL DEFAULT '',
   `name` varchar(128) NOT NULL DEFAULT '',
   `createdAt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastVisitAt` datetime DEFAULT NULL,
-  `allowedFactories` text,
-  `allowedMachines` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `credentials` (`email`,`password`),
-  KEY `role` (`role`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+  `allowedFactories` text DEFAULT NULL,
+  `allowedMachines` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `values`;
-CREATE TABLE IF NOT EXISTS `values` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `values` (
+  `id` bigint(20) UNSIGNED NOT NULL,
   `machine` varchar(64) NOT NULL DEFAULT '',
   `engine` varchar(64) NOT NULL DEFAULT '',
   `variable` varchar(64) NOT NULL DEFAULT '',
-  `value` float(10,2) NOT NULL DEFAULT '0.00',
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `variable` (`variable`),
-  KEY `machine` (`machine`),
-  KEY `engine` (`engine`),
-  KEY `dev_var` (`variable`,`machine`,`engine`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+  `value` float(10,2) NOT NULL DEFAULT 0.00,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `variables`;
-CREATE TABLE IF NOT EXISTS `variables` (
+CREATE TABLE `variables` (
   `id` varchar(64) NOT NULL DEFAULT '',
-  `name` varchar(128) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `name` varchar(128) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `vis_factories`;
-CREATE TABLE IF NOT EXISTS `vis_factories` (
-  `factory` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '640',
-  `height` smallint(5) UNSIGNED NOT NULL DEFAULT '480',
+CREATE TABLE `vis_factories` (
+  `factory` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `width` smallint(5) UNSIGNED NOT NULL DEFAULT 640,
+  `height` smallint(5) UNSIGNED NOT NULL DEFAULT 480,
   `fg_color` varchar(32) NOT NULL DEFAULT 'black',
   `bg_color` varchar(32) NOT NULL DEFAULT 'transparent',
   `bg_image` varchar(128) NOT NULL DEFAULT 'none',
   `bg_position` varchar(32) NOT NULL DEFAULT 'center center',
-  `bg_repeat` varchar(9) NOT NULL DEFAULT 'no-repeat',
-  PRIMARY KEY (`factory`)
+  `bg_repeat` varchar(9) NOT NULL DEFAULT 'no-repeat'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `vis_factory_machines`;
-CREATE TABLE IF NOT EXISTS `vis_factory_machines` (
+CREATE TABLE `vis_factory_machines` (
   `machine` varchar(64) NOT NULL DEFAULT '',
-  `top` smallint(6) NOT NULL DEFAULT '0',
-  `left` smallint(6) NOT NULL DEFAULT '0',
-  `zindex` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+  `top` smallint(6) NOT NULL DEFAULT 0,
+  `left` smallint(6) NOT NULL DEFAULT 0,
+  `zindex` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
   `image` varchar(128) NOT NULL DEFAULT 'default.gif',
-  `image_width` int(11) NOT NULL DEFAULT '200',
-  `image_height` int(11) NOT NULL DEFAULT '200',
-  `image_max_width` int(11) NOT NULL DEFAULT '400',
-  `image_max_height` int(11) NOT NULL DEFAULT '450',
+  `image_width` int(11) NOT NULL DEFAULT 200,
+  `image_height` int(11) NOT NULL DEFAULT 200,
+  `image_max_width` int(11) NOT NULL DEFAULT 400,
+  `image_max_height` int(11) NOT NULL DEFAULT 450,
   `fg_color` varchar(32) NOT NULL DEFAULT 'inherit',
-  `bg_color` varchar(32) NOT NULL DEFAULT 'transparent',
-  PRIMARY KEY (`machine`)
+  `bg_color` varchar(32) NOT NULL DEFAULT 'transparent'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `vis_machines`;
-CREATE TABLE IF NOT EXISTS `vis_machines` (
+CREATE TABLE `vis_machines` (
   `machine` varchar(64) NOT NULL DEFAULT '',
-  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '640',
-  `height` smallint(5) UNSIGNED NOT NULL DEFAULT '480',
+  `width` smallint(5) UNSIGNED NOT NULL DEFAULT 640,
+  `height` smallint(5) UNSIGNED NOT NULL DEFAULT 480,
   `fg_color` varchar(32) NOT NULL DEFAULT 'black',
   `bg_color` varchar(32) NOT NULL DEFAULT 'transparent',
   `bg_image` varchar(128) NOT NULL DEFAULT 'none',
   `bg_position` varchar(32) NOT NULL DEFAULT 'center center',
-  `bg_repeat` varchar(9) NOT NULL DEFAULT 'no-repeat',
-  PRIMARY KEY (`machine`)
+  `bg_repeat` varchar(9) NOT NULL DEFAULT 'no-repeat'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `vis_machine_devices`;
-CREATE TABLE IF NOT EXISTS `vis_machine_devices` (
+CREATE TABLE `vis_machine_devices` (
   `machine` varchar(64) NOT NULL DEFAULT '',
   `device` varchar(64) NOT NULL DEFAULT '',
-  `top` smallint(6) NOT NULL DEFAULT '0',
-  `left` smallint(6) NOT NULL DEFAULT '0',
-  `zindex` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+  `top` smallint(6) NOT NULL DEFAULT 0,
+  `left` smallint(6) NOT NULL DEFAULT 0,
+  `zindex` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
   `image` varchar(128) NOT NULL DEFAULT 'default.gif',
-  `image_width` int(11) NOT NULL DEFAULT '200',
-  `image_height` int(11) NOT NULL DEFAULT '200',
-  `image_max_width` int(11) NOT NULL DEFAULT '400',
-  `image_max_height` int(11) NOT NULL DEFAULT '450',
+  `image_width` int(11) NOT NULL DEFAULT 200,
+  `image_height` int(11) NOT NULL DEFAULT 200,
+  `image_max_width` int(11) NOT NULL DEFAULT 400,
+  `image_max_height` int(11) NOT NULL DEFAULT 450,
   `fg_color` varchar(32) NOT NULL DEFAULT 'inherit',
   `bg_color` varchar(32) NOT NULL DEFAULT 'transparent',
   `variables_fg_color` varchar(32) NOT NULL DEFAULT 'inherit',
-  `variables_bg_color` varchar(32) NOT NULL DEFAULT 'transparent',
-  PRIMARY KEY (`device`,`machine`),
-  KEY `machine` (`machine`)
+  `variables_bg_color` varchar(32) NOT NULL DEFAULT 'transparent'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `vis_machine_device_variables`;
-CREATE TABLE IF NOT EXISTS `vis_machine_device_variables` (
+CREATE TABLE `vis_machine_device_variables` (
   `machine` varchar(64) NOT NULL DEFAULT '',
   `device` varchar(64) NOT NULL DEFAULT '',
-  `variable` varchar(64) NOT NULL DEFAULT '',
-  PRIMARY KEY (`device`,`variable`,`machine`),
-  KEY `variable` (`variable`)
+  `variable` varchar(64) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+ALTER TABLE `cases`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `supporter` (`supporter`),
+  ADD KEY `createdBy` (`createdBy`),
+  ADD KEY `factory` (`factory`),
+  ADD KEY `machine` (`machine`),
+  ADD KEY `device` (`device`);
+
+ALTER TABLE `case_categories`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `parent` (`parent`);
+
+ALTER TABLE `catalog_card_pages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product` (`product`);
+
+ALTER TABLE `catalog_card_templates`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `catalog_categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_name` (`parent`,`name`),
+  ADD KEY `parent` (`parent`);
+
+ALTER TABLE `catalog_manufacturers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nr` (`nr`);
+
+ALTER TABLE `catalog_products`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `image` (`image`),
+  ADD KEY `category` (`category`),
+  ADD KEY `manufacturer` (`manufacturer`),
+  ADD KEY `kind` (`kind`);
+
+ALTER TABLE `catalog_product_documentations`
+  ADD PRIMARY KEY (`product`,`documentation`),
+  ADD KEY `documentation` (`documentation`);
+
+ALTER TABLE `catalog_product_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product` (`product`),
+  ADD KEY `uploader` (`uploader`);
+
+ALTER TABLE `catalog_product_images`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `file` (`file`),
+  ADD KEY `product` (`product`);
+
+ALTER TABLE `catalog_product_kinds`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nr` (`nr`);
+
+ALTER TABLE `declaration_templates`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `documentations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `machine` (`machine`),
+  ADD KEY `device` (`device`);
+
+ALTER TABLE `documentation_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `documentation` (`documentation`);
+
+ALTER TABLE `emails`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `to` (`to`);
+
+ALTER TABLE `email_attachments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `email` (`email`);
+
+ALTER TABLE `engines`
+  ADD PRIMARY KEY (`id`,`machine`),
+  ADD KEY `machine` (`machine`),
+  ADD KEY `owner` (`owner`);
+
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `variable` (`variable`),
+  ADD KEY `factory` (`factory`),
+  ADD KEY `machine` (`machine`),
+  ADD KEY `device` (`device`);
+
+ALTER TABLE `event_actions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `event` (`event`);
+
+ALTER TABLE `factories`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `grid_views`
+  ADD PRIMARY KEY (`view`),
+  ADD KEY `creator` (`creator`),
+  ADD KEY `grid` (`grid`);
+
+ALTER TABLE `grid_view_defaults`
+  ADD PRIMARY KEY (`grid`,`user`),
+  ADD KEY `view` (`view`),
+  ADD KEY `user` (`user`);
+
+ALTER TABLE `help`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `parent` (`parent`);
+
+ALTER TABLE `help_tags`
+  ADD PRIMARY KEY (`tag`,`page`),
+  ADD KEY `tag` (`tag`),
+  ADD KEY `page` (`page`);
+
+ALTER TABLE `issues`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `owner` (`owner`),
+  ADD KEY `creator` (`creator`),
+  ADD KEY `relatedFactory` (`relatedFactory`),
+  ADD KEY `relatedMachine` (`relatedMachine`),
+  ADD KEY `relatedDevice` (`relatedDevice`),
+  ADD KEY `relatedProduct` (`relatedProduct`);
+
+ALTER TABLE `issue_assignees`
+  ADD PRIMARY KEY (`issue`,`assignee`),
+  ADD KEY `assignee` (`assignee`);
+
+ALTER TABLE `issue_emails`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `issue_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `issue` (`issue`),
+  ADD KEY `uploader` (`uploader`);
+
+ALTER TABLE `issue_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `issue` (`issue`),
+  ADD KEY `createdBy` (`createdBy`),
+  ADD KEY `parent` (`parent`);
+
+ALTER TABLE `issue_relations`
+  ADD PRIMARY KEY (`issue1`,`issue2`),
+  ADD KEY `issue2` (`issue2`);
+
+ALTER TABLE `issue_subscribers`
+  ADD PRIMARY KEY (`issue`,`user`),
+  ADD KEY `user` (`user`);
+
+ALTER TABLE `issue_tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `issue` (`issue`),
+  ADD KEY `completedBy` (`completedBy`),
+  ADD KEY `createdBy` (`createdBy`),
+  ADD KEY `assignedTo` (`assignedTo`);
+
+ALTER TABLE `issue_templates`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `createdBy` (`createdBy`);
+
+ALTER TABLE `issue_template_tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `template` (`template`);
+
+ALTER TABLE `issue_times`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `issue` (`issue`),
+  ADD KEY `user` (`user`);
+
+ALTER TABLE `limits`
+  ADD PRIMARY KEY (`device`,`variable`,`machine`),
+  ADD KEY `variable` (`variable`),
+  ADD KEY `machine` (`machine`);
+
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user` (`user`);
+
+ALTER TABLE `machines`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `factory` (`factory`);
+
+ALTER TABLE `news`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `createdBy` (`createdBy`);
+
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `number` (`number`),
+  ADD KEY `issue` (`issue`);
 ALTER TABLE `offers` ADD FULLTEXT KEY `fulltext` (`search`);
+
+ALTER TABLE `offer_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `offer` (`offer`),
+  ADD KEY `issue` (`issue`);
+
+ALTER TABLE `offer_templates`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `plc_devices`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `machine` (`machine`);
+
+ALTER TABLE `plc_machines`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `plc_modules`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `type` (`type`),
+  ADD KEY `machine` (`machine`);
+
+ALTER TABLE `plc_module_elements`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `module_2` (`module`,`element`),
+  ADD KEY `module` (`module`),
+  ADD KEY `element` (`element`);
+
+ALTER TABLE `plc_module_types`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `role_privilages`
+  ADD PRIMARY KEY (`role`,`privilage`);
+
+ALTER TABLE `storages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `owner` (`owner`);
+
+ALTER TABLE `storage_products`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idx_uniq_in_storage` (`storage`,`index`),
+  ADD KEY `storage` (`storage`);
+
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `credentials` (`email`,`password`),
+  ADD KEY `role` (`role`);
+
+ALTER TABLE `values`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `variable` (`variable`),
+  ADD KEY `machine` (`machine`),
+  ADD KEY `engine` (`engine`),
+  ADD KEY `dev_var` (`variable`,`machine`,`engine`);
+
+ALTER TABLE `variables`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `vis_factories`
+  ADD PRIMARY KEY (`factory`);
+
+ALTER TABLE `vis_factory_machines`
+  ADD PRIMARY KEY (`machine`);
+
+ALTER TABLE `vis_machines`
+  ADD PRIMARY KEY (`machine`);
+
+ALTER TABLE `vis_machine_devices`
+  ADD PRIMARY KEY (`device`,`machine`),
+  ADD KEY `machine` (`machine`);
+
+ALTER TABLE `vis_machine_device_variables`
+  ADD PRIMARY KEY (`device`,`variable`,`machine`),
+  ADD KEY `variable` (`variable`);
+
+
+ALTER TABLE `cases`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `case_categories`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_card_pages`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_card_templates`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_categories`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_manufacturers`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_products`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_product_files`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_product_images`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `catalog_product_kinds`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `declaration_templates`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `documentations`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `documentation_files`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `emails`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `email_attachments`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `events`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `event_actions`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `factories`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `help`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issues`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_emails`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_files`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_history`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_tasks`
+  MODIFY `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_templates`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_template_tasks`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `issue_times`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `logs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `news`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `offers`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `offer_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `offer_templates`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `plc_devices`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `plc_machines`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `plc_modules`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `plc_module_elements`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `plc_module_types`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `storages`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `storage_products`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `users`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `values`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 
 ALTER TABLE `cases`

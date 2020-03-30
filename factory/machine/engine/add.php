@@ -30,11 +30,20 @@ if (isset($_POST['engine']))
 
   if (empty($errors))
   {
-    $bindings = array(1 => $_POST['engine']['id'], $_POST['engine']['name'], $_GET['machine']);
+    $owner = is_numeric($_POST['engine']['owner']) && (int)$_POST['engine']['owner'] > 0
+      ? (int)$_POST['engine']['owner']
+      : null;
+
+    $bindings = array(
+      1 => $_POST['engine']['id'],
+      $_POST['engine']['name'],
+      $_GET['machine'],
+      $owner
+    );
 
     try
     {
-      exec_stmt('INSERT INTO engines SET id=?, name=?, machine=?', $bindings);
+      exec_stmt('INSERT INTO engines SET id=?, name=?, machine=?, owner=?', $bindings);
 
       log_info('Dodano urządzenie <%s>.', $_POST['engine']['name']);
 
@@ -44,7 +53,7 @@ if (isset($_POST['engine']))
       {
         output_json(array('status' => true,
                           'data' => array('id' => $bindings[1],
-                                            'name' => $bindings[2])));
+                                          'name' => $bindings[2])));
       }
       else
       {
@@ -68,14 +77,48 @@ if (isset($_POST['engine']))
 
   $name = e($_POST['engine']['name']);
   $id = e($_POST['engine']['id']);
+  $owner = e($_POST['engine']['owner']);
+  $ownerName = e($_POST['engine']['ownerName']);
 }
 else
 {
   $name = '';
   $id = '';
+  $owner = '0';
+  $ownerName = '';
 }
 
 ?>
+
+<? begin_slot('js') ?>
+<script type="text/javascript">
+  $(function()
+  {
+    function fixAutocomplete(e, ui)
+    {
+      $(this).data('autocomplete').menu.element.css('width', $(this).width() + 'px');
+    }
+
+    $('#engine-owner-search').autocomplete({
+      source: '<?= url_for('factory/fetch_people.php') ?>',
+      minLength: 2,
+      open: fixAutocomplete,
+      select: function(e, ui)
+      {
+        this.value = ui.item ? ui.item.label : '';
+
+        e.preventDefault();
+      },
+      change: function(e, ui)
+      {
+        this.value = ui.item ? ui.item.label : '';
+
+        $('#engine-owner').val(ui.item ? ui.item.value : 0);
+      }
+    });
+  });
+</script>
+<? append_slot() ?>
 
 <? decorate('Dodawanie urządzenia do maszyny') ?>
 
@@ -104,6 +147,10 @@ else
             <label for="engine-name">Nazwa<span class="form-field-required" title="Wymagane">*</span></label>
             <input id="engine-name" name="engine[name]" type="text" maxlength="128" value="<?= $name ?>">
             <p class="form-field-help">Od 1 do 128 znaków.</p>
+          <li>
+            <label for="engine-owner-search">Domyślny właściciel:</label>
+            <input id="engine-owner-search" name="engine[ownerName]" type="text" maxlength="128" value="<?= $ownerName ?>">
+            <input id="engine-owner" name="engine[owner]" type="hidden" value="<?= $owner ?>">
           <li>
             <ol class="form-actions">
               <li><input type="submit" value="Dodaj urządzenie">
