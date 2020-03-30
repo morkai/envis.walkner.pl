@@ -203,7 +203,7 @@ $i = -1;
 
 ?>
 <? begin_slot('head') ?>
-<link rel="stylesheet" href="<?= url_for_media('uploadify/2.1.4/uploadify.css', true) ?>">
+<link rel="stylesheet" href="<?= url_for_media('uppy/uppy.min.css', true) ?>">
 <style>
 .doc-fileList {
   margin-left: 0;
@@ -281,13 +281,13 @@ $i = -1;
             </ul>
           <? endif ?>
           <li>
-            <label for="doc-files">Nowe pliki</label>
+            <label>Nowe pliki</label>
             <ul id="doc-fileList" class="doc-fileList">
             <? foreach ($doc['filepaths'] as $i => $filepath): ?>
               <li><input name="doc[filepaths][<?= $i ?>]" type="checkbox" checked="checked" value="<?= $filepath ?>"><input name="doc[filenames][<?= $i ?>]" type="text" value="<?= $doc['filenames'][$i] ?>">
             <? endforeach ?>
             </ul>
-            <input id="doc-files" type="file">
+            <div id="doc-files"></div>
           <li>
             <ol class="form-actions">
               <li><input type="submit" value="Edytuj dokumentację">
@@ -299,8 +299,7 @@ $i = -1;
   </div>
 </div>
 <? begin_slot('js') ?>
-<script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
-<script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
+<script src="<?= url_for_media("uppy/uppy.min.js", true) ?>"></script>
 <script>
   $(function()
   {
@@ -395,27 +394,61 @@ $i = -1;
       );
     });
 
-    var fileList = $('#doc-fileList');
+    var $fileList = $('#doc-fileList');
     var fileCount = <?= $i + 1 ?>;
 
-    $('#doc-files').uploadify({
-      uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
-      script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
-      cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
-      folder: '/documentation-tmp',
-      auto: true,
-      multi: true,
-      buttonText: 'Wybierz pliki',
-      fileDesc: 'Plik dokumentacji',
-      fileExt: '*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.odt;*.zip;*.rar;*.gz;*.7z;*.png;*.jpg;*.jpeg;*.gif;*.txt;*.csv;*.md',
-      scriptData: {id: '<?= $doc['id'] ?>'},
-      onComplete   : function(e, id, file, response, data)
-      {
-        fileList.append(render(
-          '<li><input name="doc[filepaths][${i}]" type="checkbox" checked="checked" value="${file}"><input name="doc[filenames][${i}]" type="text" value="${name}">',
-          {i: fileCount++, file: response, name: file.name}
-        ));
+    var uppy = Uppy.Core({
+      autoProceed: true,
+      meta: {
+        folder: '/documentation-tmp'
+      },
+      restrictions: {
+        allowedFileTypes: '.pdf;.doc;.docx;.xls;.xlsx;.odt;.zip;.rar;.gz;.7z;.png;.jpg;.jpeg;.gif;.txt;.csv;.md;.mp4'.split(';')
       }
+    });
+
+    uppy.use(Uppy.FileInput, {
+      target: '#doc-files',
+      pretty: false,
+      replaceTargetContent: true,
+      limit: 1
+    });
+
+    uppy.use(Uppy.XHRUpload, {
+      endpoint: '<?= url_for_media("uppy/uppy.php", true) ?>',
+      formData: true,
+      fieldName: 'file'
+    });
+
+    uppy.on('file-added', file =>
+    {
+      var i = fileCount++;
+
+      $fileList.append(`
+<li data-id="${file.id}">
+  <input name="doc[filepaths][${i}]" type="checkbox" checked="checked" disabled>
+  <input name="doc[filenames][${i}]" type="text" value="${file.name}" disabled>
+</li>
+      `);
+    });
+
+    uppy.on('upload-error', (file) =>
+    {
+      $fileList.find('li[data-id="' + file.id + '"]').remove();
+    });
+
+    uppy.on('upload-success', (file, res) =>
+    {
+      var $li = $fileList.find('li[data-id="' + file.id + '"]');
+
+      $li.find('input[type="checkbox"]').val(res.body.file).prop('disabled', false);
+      $li.find('input[type="text"]').prop('disabled', false);
+    });
+
+    uppy.on('complete', (result) =>
+    {
+      result.failed.forEach(f => uppy.removeFile(f.id));
+      result.successful.forEach(f => uppy.removeFile(f.id));
     });
   });
 </script>

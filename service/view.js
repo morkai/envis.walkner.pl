@@ -61,7 +61,7 @@ $(function()
     $('#updateIssueFormComment').focus();
 
     return false;
-  })
+  });
 
   function fetchActivity()
   {

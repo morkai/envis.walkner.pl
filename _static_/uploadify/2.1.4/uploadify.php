@@ -1,5 +1,7 @@
 <?php
 
+exit(1);
+
 if (empty($_FILES))
 {
   exit;

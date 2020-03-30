@@ -104,18 +104,18 @@
       <thead>
       <tr>
         <th>Temat</th>
-        <th>Status</th>
-        <th>Nr zamówienia</th>
-        <th>Nr faktury</th>
+        <th class="min">Status</th>
+        <th class="min">Nr zamówienia</th>
+        <th class="min">Nr faktury</th>
       </tr>
       </thead>
       <tbody>
         <? foreach ($product->issues as $issue): ?>
       <tr>
         <td class="clickable"><a href="<?= url_for("service/view.php?id={$issue->id}") ?>"><?= e($issue->subject) ?></a></td>
-        <td><?= $statuses[$issue->status] ?></td>
-        <td><?= dash_if_empty($issue->orderNumber) ?></td>
-        <td><?= dash_if_empty($issue->orderInvoice) ?></td>
+        <td class="min"><?= $statuses[$issue->status] ?></td>
+        <td class="min"><?= dash_if_empty($issue->orderNumber) ?></td>
+        <td class="min"><?= dash_if_empty($issue->orderInvoice) ?></td>
       </tr>
         <? endforeach ?>
       </tbody>
@@ -140,7 +140,7 @@
       <? endforeach ?>
     </ul>
     <? if ($canManageProducts): ?>
-    <input id="productImageFile" name=file type=file>
+    <div id="productImageFile"></div>
     <? endif ?>
   </div>
   <div id="docs">
@@ -176,9 +176,10 @@
     <table>
       <thead>
         <tr>
-          <th>Nazwa
-          <th>Typ
-          <th>Czas wysłania
+          <th class="min">Nazwa
+          <th class="min">Typ
+          <th class="min">Czas wysłania
+          <th>
           <th>Akcje
       <tbody id="productFiles">
         <? if (empty($product->files)): ?>
@@ -187,9 +188,10 @@
         <? endif ?>
         <? foreach ($product->files as $file): ?>
         <tr>
-          <td class="name clickable"><a href="<?= url_for("catalog/products/files/download.php?product={$product->id}&id={$file->id}") ?>"><?= e($file->name) ?></a>
-          <td><?= $file->type ?>
-          <td><?= date('Y-m-d, H:i', $file->uploadedAt) ?>
+          <td class="min name clickable"><a target="_blank" href="<?= url_for("catalog/products/files/download.php?product={$product->id}&id={$file->id}") ?>"><?= e($file->name) ?></a>
+          <td class="min"><?= $file->type ?>
+          <td class="min"><?= date('Y-m-d, H:i', $file->uploadedAt) ?>
+          <td></td>
           <td class="actions">
             <? if ($canManageProducts): ?>
             <ul>
@@ -200,8 +202,8 @@
           <? endforeach ?>
     </table>
     <? if ($canManageProducts): ?>
+    <div id="productFile" style="margin-top: 1em"></div>
     <input id="productFileUrl" name=fileUrl type=button value="Dodaj zewnętrzne pliki">
-    <input id="productFile" name=file type=file>
     <form id="productFileUrlForm" action="<?= url_for("/catalog/products/files/upload.php?product={$product->id}") ?>" method="post">
       <ol class="form-fields">
         <li class="horizontal">
@@ -231,15 +233,17 @@
     <img src="<?= url_for('/catalog/products/images/thumb.php?file=${file}') ?>" alt="">
   </a>
   <div class="actions">
+    <? if ($canManageProducts): ?>
     <?= fff('Ustaw jako domyślne', 'bullet_tick', "catalog/products/images/default.php?product={$product->id}&id=\${id}", null, 'default') ?>
     <?= fff('Usuń obraz', 'bullet_cross', "catalog/products/images/delete.php?product={$product->id}&id=\${id}", null, 'delete') ?>
     <?= fff('Obróć o 90°', 'arrow_rotate_clockwise', "catalog/products/files/rotate.php?product={$product->id}&id=\${id}", null, 'rotate') ?>
+    <? endif ?>
   </div>
 </script>
 
 <script id="productFileTpl" type="template">
 <tr>
-  <td class="name clickable"><a href="<?= url_for("catalog/products/files/download.php?id=\${id}") ?>">${name}</a>
+  <td class="name clickable"><a target="_blank" href="<?= url_for("catalog/products/files/download.php?id=\${id}") ?>">${name}</a>
   <td>${type}
   <td>${uploadedAt}
   <td class="actions">

@@ -5,7 +5,7 @@ include __DIR__ . '/../_common.php';
 bad_request_if(empty($_GET['id']) || !is_numeric($_GET['id']));
 
 $query = <<<SQL
-SELECT f.id, f.issue, i.uploader, i.owner
+SELECT f.id, f.issue, f.uploader, i.owner
 FROM issue_files f
 INNER JOIN issues i ON i.id=f.issue
 WHERE f.id=?

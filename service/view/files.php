@@ -57,7 +57,7 @@ $canManageFiles = function($file) use($currentUser, $issue)
       <? endif ?>
       <? foreach ($files as $file): ?>
       <tr>
-        <td class="name clickable"><a href="<?= url_for("service/files/download.php?id={$file->id}{$docsViewerSuffix}") ?>"><?= e($file->name) ?></a>
+        <td class="name clickable"><a target="_blank" href="<?= url_for("service/files/download.php?id={$file->id}{$docsViewerSuffix}") ?>"><?= e($file->name) ?></a>
         <td><?= $file->type ?>
         <td><?= date('Y-m-d, H:i', $file->uploadedAt) ?>
         <td><a href="<?= url_for("user/view.php?id={$file->uploader}") ?>"><?= e($file->uploaderName) ?></a>
@@ -70,11 +70,10 @@ $canManageFiles = function($file) use($currentUser, $issue)
           <? endif ?>
       <? endforeach ?>
   </table>
-  <input id="issueFile" name=file type=file>
+  <div id="issueFiles" style="margin-top: 1em"></div>
 </div>
 
-<script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
-<script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
+<script src="<?= url_for_media("uppy/uppy.min.js", true) ?>"></script>
 <script>
 $(function()
 {
@@ -92,9 +91,17 @@ $(function()
     $.ajax({
       type: 'DELETE',
       url: me.href,
-      success: function()
+      success: () =>
       {
-        $(me).closest('tr').fadeOut(function() { $(this).remove(); });
+        $(me).closest('tr').fadeOut(function()
+        {
+          $(this).remove();
+
+          if ($('#files tbody')[0].childElementCount === 0)
+          {
+            $('#files tbody').append('<tr class=nofiles><td colspan=5>Brak plików');
+          }
+        });
       }
     });
 
@@ -153,42 +160,80 @@ $(function()
     return false;
   });
 
-  $('#issueFile').uploadify({
-    uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
-    script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
-    cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
-    folder: '/issues',
-    auto: true,
-    multi: true,
-    buttonText: 'Dodaj pliki',
-    onComplete: function(e, id, file, response, data)
-    {
-      $.ajax({
-        type: 'POST',
-        url: '<?= url_for("service/files/upload.php") ?>',
-        data: {
-          issue: <?= $issue->id ?>,
-          file: response,
-          name: file.name
-        },
-        success: function(data)
-        {
-          $('#files .nofiles').remove();
-
-          $('#files tbody').append('<tr>'
-            + '<td class="name clickable"><a href="<?= url_for("service/files/download.php?id=") ?>' + data.id + '<?= $docsViewerSuffix ?>">' + data.name + '</a>'
-            + '<td>' + file.type.toUpperCase().substr(1)
-            + '<td>' + data.uploadedAt
-            + '<td><a href="<?= url_for("user/view.php?id=") ?>' + data.uploader + '">' + data.uploaderName + '</a>'
-            + '<td class="actions">'
-            + '<ul>'
-            + '<li class="edit"><a href="<?= url_for("/service/files/edit.php?id=") ?>' + data.id + '"><img src="<?= url_for_media("fff/bullet_edit.png") ?>" alt="Edytuj nazwę" title="Edytuj nazwę"></a>'
-            + '<li class="delete"><a href="<?= url_for("/service/files/delete.php?id=") ?>' + data.id + '"><img src="<?= url_for_media("fff/bullet_cross.png") ?>" alt="Usuń plik" title="Usuń plik"></a>'
-            + '</ul>'
-          );
-        }
-      });
+  var uppy = Uppy.Core({
+    autoProceed: true,
+    meta: {
+      folder: '/issues'
     }
+  });
+
+  uppy.use(Uppy.FileInput, {
+    target: '#issueFiles',
+    pretty: false,
+    replaceTargetContent: true,
+    limit: 1
+  });
+
+  uppy.use(Uppy.XHRUpload, {
+    endpoint: '<?= url_for_media("uppy/uppy.php", true) ?>',
+    formData: true,
+    fieldName: 'file'
+  });
+
+  uppy.on('file-added', file =>
+  {
+    $('#files .nofiles').remove();
+
+    $('#files tbody').append(`
+<tr data-id="${file.id}">
+  <td class="name">${file.name}</td>
+  <td>${file.type}</td>
+  <td></td>
+  <td></td>
+  <td class="actions"></td>
+</tr>
+    `);
+  });
+
+  uppy.on('upload-error', (file, error, response) =>
+  {
+    $('#files tr[data-id="' + file.id + '"]').css('color', 'red');
+  });
+
+  uppy.on('upload-success', (file, res) =>
+  {
+    $.ajax({
+      type: 'POST',
+      url: '<?= url_for("service/files/upload.php") ?>',
+      data: {
+        issue: <?= $issue->id ?>,
+        file: res.body.file,
+        name: res.body.name
+      },
+      success: function(data)
+      {
+        $('#files tr[data-id="' + file.id + '"]').replaceWith(`
+<tr data-id="${file.id}">
+  <td class="name clickable"><a target="_blank" href="<?= url_for("service/files/download.php?id=") ?>${data.id}<?= $docsViewerSuffix ?>">${data.name}</td>
+  <td>${file.type}</td>
+  <td>${data.uploadedAt}</td>
+  <td><a href="<?= url_for("user/view.php?id=") ?>${data.uploader}">${data.uploaderName}</a></td>
+  <td class="actions">
+    <ul>
+      <li class="edit"><a href="<?= url_for("/service/files/edit.php?id=") ?>${data.id}"><img src="<?= url_for_media("fff/bullet_edit.png") ?>" alt="Edytuj nazwę" title="Edytuj nazwę"></a>
+      <li class="delete"><a href="<?= url_for("/service/files/delete.php?id=") ?>${data.id}"><img src="<?= url_for_media("fff/bullet_cross.png") ?>" alt="Usuń plik" title="Usuń plik"></a>
+    </ul>
+  </td>
+</tr>
+    `);
+      }
+    });
+  });
+
+  uppy.on('complete', (result) =>
+  {
+    result.failed.forEach(f => uppy.removeFile(f.id));
+    result.successful.forEach(f => uppy.removeFile(f.id));
   });
 });
 </script>

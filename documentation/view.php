@@ -61,7 +61,7 @@ $canDelete = is_allowed_to('documentation/delete');
     <dl class="files">
       <dt>Dostępne pliki
       <? foreach ($files as $file): ?>
-      <dd><a href="<?= url_for('documentation/download.php?id=' . $file->id) ?>"><?= $file->name ?></a>
+      <dd><a target="_blank" href="<?= url_for('documentation/download.php?id=' . $file->id) ?>"><?= $file->name ?></a>
       <? endforeach ?>
     </dl>
     <? endif ?>

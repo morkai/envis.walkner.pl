@@ -76,7 +76,9 @@
 }
 #productImages .thumb {
   display: block;
-  padding: .5em;
+  padding: 7px;
+  max-width: 192px;
+  max-height: 114px;
   background: #666;
 }
 #productImages .thumb:hover {
@@ -92,16 +94,16 @@
 #productImages .actions {
   margin-top: .25em;
 }
-#productImageFileUploader,
-#productFileUploader {
-  margin-top: 1em;
-}
 #gallery {
   padding: .75em 1em;
 }
 #issues,
 #files {
   padding: 1em;
+}
+#issues .min,
+#files .min {
+  padding-right: 1em;
 }
 .product-description {
   border-top: 1px dotted #CCC;

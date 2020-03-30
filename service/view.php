@@ -134,7 +134,7 @@ escape_vars($issue->subject);
 <? append_slot() ?>
 
 <? begin_slot('head') ?>
-<link rel=stylesheet href="<?= url_for_media("uploadify/2.1.4/uploadify.css", true) ?>">
+<link rel=stylesheet href="<?= url_for_media("uppy/uppy.min.css", true) ?>">
 <link rel=stylesheet href="<?= url_for("service/view.css") ?>">
 <? append_slot() ?>
 

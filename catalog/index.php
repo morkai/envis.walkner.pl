@@ -133,7 +133,7 @@ $productId = empty($product) ? '' : $product->id;
 ?>
 <? begin_slot('head') ?>
 <? if ($canManageProducts): ?>
-<link rel="stylesheet" href="<?= url_for_media("uploadify/2.1.4/uploadify.css", true) ?>">
+<link rel="stylesheet" href="<?= url_for_media('uppy/uppy.min.css', true) ?>">
 <? endif ?>
 <link rel="stylesheet" href="<?= url_for_media('jquery-plugins/lightbox/2.51/css/lightbox.css') ?>">
 <link rel="stylesheet" href="<?= url_for("catalog/_static_/main.css") ?>">
@@ -146,16 +146,13 @@ $productId = empty($product) ? '' : $product->id;
 <? if ($canManageProducts && $showProduct): ?>
 <script>
 var PRODUCT_FILE_UPLOADER_CONFIG = {
-  uploader: '<?= url_for_media("uploadify/2.1.4/uploadify.swf", true) ?>',
-  script: '<?= url_for_media("uploadify/2.1.4/uploadify.php", true) ?>',
-  cancelImg: '<?= url_for_media("uploadify/2.1.4/cancel.png", true) ?>',
+  script: '<?= url_for_media("uppy/uppy.php", true) ?>',
   uploadImageUrl: '<?= url_for("catalog/products/images/upload.php") ?>',
   uploadFileUrl: '<?= url_for("catalog/products/files/upload.php") ?>',
   currentProduct: <?= $product->id ?>
 };
 </script>
-<script src="<?= url_for_media("uploadify/2.1.4/swfobject.js", true) ?>"></script>
-<script src="<?= url_for_media("uploadify/2.1.4/jquery.uploadify.min.js", true) ?>"></script>
+<script src="<?= url_for_media("uppy/uppy.min.js", true) ?>"></script>
 <? endif ?>
 <script src="<?= url_for_media('jquery-plugins/lightbox/2.51/js/lightbox.js') ?>"></script>
 <script src="<?= url_for("catalog/_static_/main.js") ?>"></script>

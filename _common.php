@@ -1163,5 +1163,4 @@ function pre_var_dump($var)
   print '<pre>';
   var_dump($var);
   print '</pre>';
-  exit;
 }

@@ -14,6 +14,7 @@ $(function()
 
   var $productImages = $('#productImages');
   var $productFiles = $('#productFiles');
+  var productFileTpl = $('#productFileTpl').html();
 
   $('#catalog.collapsed .block-header').click(function(e)
   {
@@ -158,55 +159,10 @@ $(function()
     window.PRODUCT_FILE_UPLOADER_CONFIG = {};
   }
 
-  if (typeof $.fn.uploadify === 'function')
+  if (window.Uppy)
   {
-    var productImageTpl = $('#productImageTpl').html();
-
-    $('#productImageFile').uploadify({
-      uploader: PRODUCT_FILE_UPLOADER_CONFIG.uploader || 'uploadify/2.1.4/uploadify.swf',
-      script: PRODUCT_FILE_UPLOADER_CONFIG.script || 'uploadify/2.1.4/uploadify.php',
-      cancelImg: PRODUCT_FILE_UPLOADER_CONFIG.cancelImg || 'uploadify/2.1.4/cancel.png',
-      folder: '/products',
-      auto: true,
-      multi: true,
-      buttonText: 'Dodaj obrazy',
-      fileDesc: 'Obraz (png, jpg, gif)',
-      fileExt: '*.png;*.jpg;*.jpeg;*.gif',
-      onComplete: function(e, id, file, response, data)
-      {
-        $.ajax({
-          type: 'POST',
-          url: PRODUCT_FILE_UPLOADER_CONFIG.uploadImageUrl || 'catalog/products/images/upload.php',
-          data: {
-            product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
-            file: response,
-            name: file.name
-          },
-          success: function(data)
-          {
-            var $productImage = $(render(productImageTpl, data)).hide();
-
-            $productImage.appendTo($productImages).fadeIn();
-          }
-        });
-      }
-    });
-
-    var productFileTpl = $('#productFileTpl').html();
-
-    $('#productFile').uploadify({
-      uploader: PRODUCT_FILE_UPLOADER_CONFIG.uploader || 'uploadify/2.1.4/uploadify.swf',
-      script: PRODUCT_FILE_UPLOADER_CONFIG.script || 'uploadify/2.1.4/uploadify.php',
-      cancelImg: PRODUCT_FILE_UPLOADER_CONFIG.cancelImg || 'uploadify/2.1.4/cancel.png',
-      folder: '/products',
-      auto: true,
-      multi: true,
-      buttonText: 'Dodaj lokalne pliki',
-      onComplete: function(e, id, file, response)
-      {
-        uploadFile(file.name, response);
-      }
-    });
+    setUpImageUploader();
+    setUpFileUploader();
 
     var $productFileUrlForm = $('#productFileUrlForm');
 
@@ -234,7 +190,166 @@ $(function()
     });
   }
 
-  function uploadFile(name, file)
+  function setUpImageUploader()
+  {
+    var productImageTpl = $('#productImageTpl').html();
+
+    var uppy = Uppy.Core({
+      autoProceed: true,
+      meta: {
+        folder: '/products'
+      },
+      restrictions: {
+        allowedFileTypes: ['image/*']
+      }
+    });
+
+    uppy.use(Uppy.FileInput, {
+      target: '#productImageFile',
+      pretty: false,
+      replaceTargetContent: true,
+      limit: 1
+    });
+
+    uppy.use(Uppy.XHRUpload, {
+      endpoint: PRODUCT_FILE_UPLOADER_CONFIG.script,
+      formData: true,
+      fieldName: 'file'
+    });
+
+    uppy.on('file-added', (file) =>
+    {
+      var r = new FileReader();
+
+      r.onload = e =>
+      {
+        var $productImage = $(render(productImageTpl, {
+          id: '',
+          description: '',
+          file: ''
+        }));
+
+        $productImage.hide().attr('data-id', file.id);
+        $productImage.find('.actions').remove();
+        $productImage
+          .find('.thumb')
+          .attr('rel', null)
+          .prop('href', 'javascript:void(0)')
+          .find('img')
+          .prop('src', e.target.result);
+
+        $productImage.appendTo($productImages).fadeIn();
+      };
+
+      r.readAsDataURL(file.data);
+    });
+
+    uppy.on('upload-error', (file) =>
+    {
+      $productImages.find('li[data-id="' + file.id + '"]').remove();
+    });
+
+    uppy.on('upload-success', (file, res) =>
+    {
+      $.ajax({
+        type: 'POST',
+        url: PRODUCT_FILE_UPLOADER_CONFIG.uploadImageUrl || 'catalog/products/images/upload.php',
+        data: {
+          product: PRODUCT_FILE_UPLOADER_CONFIG.currentProduct,
+          file: res.body.file,
+          name: res.body.name
+        },
+        success: function(data)
+        {
+          var $old = $productImages.find('li[data-id="' + file.id + '"]');
+          var $new = $(render(productImageTpl, data));
+
+          if ($old.length)
+          {
+            $old.replaceWith($new);
+          }
+          else
+          {
+            $new.hide().appendTo($productImages).fadeIn();
+          }
+        }
+      });
+    });
+
+    uppy.on('complete', (result) =>
+    {
+      result.failed.forEach(f => uppy.removeFile(f.id));
+      result.successful.forEach(f => uppy.removeFile(f.id));
+    });
+  }
+
+  function setUpFileUploader()
+  {
+    var uppy = Uppy.Core({
+      autoProceed: true,
+      meta: {
+        folder: '/products'
+      },
+      restrictions: {
+        allowedFileTypes: ['image/*']
+      }
+    });
+
+    uppy.use(Uppy.FileInput, {
+      target: '#productFile',
+      pretty: false,
+      replaceTargetContent: true,
+      limit: 1
+    });
+
+    uppy.use(Uppy.XHRUpload, {
+      endpoint: PRODUCT_FILE_UPLOADER_CONFIG.script,
+      formData: true,
+      fieldName: 'file'
+    });
+
+    uppy.on('file-added', (file) =>
+    {
+      $productFiles.find('.nofiles').remove();
+
+      var $productFile = $(render(productFileTpl, {
+        id: 0,
+        name: file.name,
+        type: file.type,
+        uploadedAt: ''
+      })).hide();
+
+      $productFile.attr('data-id', file.id);
+
+      $productFile
+        .find('.name')
+        .removeClass('clickable')
+        .find('a')
+        .replaceWith(file.name);
+
+      $productFile.find('.actions').html('');
+
+      $productFile.appendTo($productFiles).fadeIn();
+    });
+
+    uppy.on('upload-error', (file) =>
+    {
+      $productFiles.find('tr[data-id="' + file.id + '"]').css('color', 'red');
+    });
+
+    uppy.on('upload-success', (file, res) =>
+    {
+      uploadFile(res.body.name, res.body.file, file.id);
+    });
+
+    uppy.on('complete', (result) =>
+    {
+      result.failed.forEach(f => uppy.removeFile(f.id));
+      result.successful.forEach(f => uppy.removeFile(f.id));
+    });
+  }
+
+  function uploadFile(name, file, id)
   {
     $.ajax({
       type: 'POST',
@@ -248,9 +363,17 @@ $(function()
       {
         $productFiles.find('.nofiles').remove();
 
-        var $productFile = $(render(productFileTpl, data)).hide();
+        var $old = $productFiles.find('tr[data-id="' + id + '"]');
+        var $new = $(render(productFileTpl, data));
 
-        $productFile.appendTo($productFiles).fadeIn();
+        if ($old.length)
+        {
+          $old.replaceWith($new);
+        }
+        else
+        {
+          $new.hide().appendTo($productFiles).fadeIn();
+        }
       }
     });
   }

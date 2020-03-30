@@ -32,10 +32,10 @@ function render(template, data)
 		template = el.html();
 	}
 
-	for (var key in data)
-	{
-		template = template.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), data[key]);
-	}
+  Object.keys(data).forEach(function(key)
+  {
+    template = template.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), data[key]);
+  });
 
 	if (el != null)
 	{
@@ -204,17 +204,19 @@ $(function()
 
     this.delegate('td.clickable', 'mouseup', function(e)
     {
-      var href = $(this).find('a').attr('href');
+      var $a = $(this).find('a');
 
-      if (!$(this).find('a')[0])
+      if (!$a[0])
       {
         return false;
       }
 
+      var href = $a.attr('href');
+
       switch (e.button)
       {
         case 0:
-          if (e.ctrlKey)
+          if (e.ctrlKey || $a.attr('target') === '_blank')
           {
             window.open(href);
           }
