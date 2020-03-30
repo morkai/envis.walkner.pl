@@ -1063,9 +1063,10 @@ function markdown($text)
 
   if (!$parser)
   {
-    include __DIR__ . '/_lib_/markdown/markdown.custom.php';
+    include __DIR__ . '/_lib_/php-markdown/Michelf/MarkdownExtra.inc.php';
 
-    $parser = new MarkdownExtra_Parser();
+    $parser = new Michelf\MarkdownExtra();
+    $parser->hard_wrap = true;
   }
 
   return $parser->transform($text);
