@@ -39,6 +39,8 @@ $errors = array();
 if (!empty($_POST['newIssue']))
 {
   $newIssue = $issue = array_merge($newIssue, $_POST['newIssue']);
+  $owner = null;
+  $assignees = array();
 
   if (is_empty($issue['subject']))
   {
@@ -51,7 +53,21 @@ if (!empty($_POST['newIssue']))
   {
     $issue['owner'] = null;
     $issue['assignees'] = array();
-    $informPeople = false;
+
+    if (!empty($newIssue['relatedDevice']))
+    {
+      $owner = fetch_one(
+        'SELECT u.id, u.email, u.name FROM engines e INNER JOIN users u ON u.id=e.owner WHERE e.id=? LIMIT 1',
+        array(1 => $newIssue['relatedDevice'])
+      );
+
+      if (!empty($owner))
+      {
+        $issue['owner'] = (int)$owner->id;
+      }
+    }
+
+    $informPeople = !empty($issue['owner']) || !empty($issue['assignees']);
   }
   else
   {
@@ -117,10 +133,18 @@ if (!empty($_POST['newIssue']))
     $receivers = empty($assignees) ? array()
                                    : array_map(function($assignee) { return $assignee->email; }, $assignees);
 
-    if (!empty($owner->email)) $receivers[] = $owner->email;
+    if (!empty($owner) && !empty($owner->email))
+    {
+      $receivers[] = $owner->email;
+    }
 
     foreach ((array)array_search($_SESSION['user']->getEmail(), $receivers) as $key)
-      unset($receivers[$key]);
+    {
+      if ($key !== false)
+      {
+        unset($receivers[$key]);
+      }
+    }
 
     send_assign_email($receivers, $issue['subject'], $issueId);
   }
@@ -318,6 +342,12 @@ $(function()
       else
       {
         relatedMachine.append(options).fadeIn();
+
+        if (relatedMachine[0].options.length === 2)
+        {
+          relatedMachine[0].options[1].selected = true;
+          relatedMachine.change();
+        }
       }
     });
   });
@@ -353,9 +383,21 @@ $(function()
       else
       {
         relatedDevice.append(options).fadeIn();
+
+        if (relatedDevice[0].options.length === 2)
+        {
+          relatedDevice[0].options[1].selected = true;
+          relatedDevice.change();
+        }
       }
     });
   });
+
+  if ($('#newIssueRelatedFactory')[0].options.length === 2)
+  {
+    $('#newIssueRelatedFactory')[0].options[1].selected = true;
+    $('#newIssueRelatedFactory').change();
+  }
 
   <? if ($canAddDevice): ?>
   function restoreNewDeviceForm()

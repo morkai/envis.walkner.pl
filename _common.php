@@ -404,6 +404,7 @@ function output_json($value = array(), $callback = null)
   {
     echo $callback, '(', json_encode($value), ');';
   }
+
   exit;
 }
 
@@ -1154,4 +1155,12 @@ function get_file_type_from_name($name)
   }
 
   return '?';
+}
+
+function pre_var_dump($var)
+{
+  print '<pre>';
+  var_dump($var);
+  print '</pre>';
+  exit;
 }
