@@ -326,7 +326,7 @@ SQL;
           $field = 'creatorName';
           break;
 
-        default: continue;
+        default: continue 2;
       }
 
       $orderBy[] = $field . ' ' . ($options['o']['d'][$k] == 1 ? 'ASC' : 'DESC');

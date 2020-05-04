@@ -836,16 +836,16 @@ function label($for, $text, $required = false)
 
 function create_email_attachment($fromPath, $filename)
 {
-  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
+  require_once __DIR__ . '/vendor/autoload.php';
 
   return Swift_Attachment::fromPath($fromPath)->setFilename($filename);
 }
 
 function create_email($receivers, $subject, $message, $replyTo = null)
 {
-  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
+  require_once __DIR__ . '/vendor/autoload.php';
 
-  $message = Swift_Message::newInstance()
+  $message = (new Swift_Message())
     ->setSubject($subject)
     ->setFrom(ENVIS_SMTP_FROM_EMAIL, ENVIS_SMTP_FROM_NAME)
     ->setTo($receivers)
@@ -872,15 +872,16 @@ function send_email_message(Swift_Message $message)
 {
   static $mailer = null;
 
-  require_once __DIR__ . '/_lib_/swiftmailer/swift_required.php';
+  require_once __DIR__ . '/vendor/autoload.php';
 
   if ($mailer === null)
   {
-    $transport = Swift_SmtpTransport::newInstance(ENVIS_SMTP_HOST, ENVIS_SMTP_PORT, ENVIS_SMTP_SECURITY)
+    $transport = (new Swift_SmtpTransport(ENVIS_SMTP_HOST, ENVIS_SMTP_PORT, ENVIS_SMTP_SECURITY))
+      ->setAuthMode(ENVIS_SMTP_AUTH_MODE)
       ->setUsername(ENVIS_SMTP_USER)
       ->setPassword(ENVIS_SMTP_PASS);
 
-    $mailer = Swift_Mailer::newInstance($transport);
+    $mailer = new Swift_Mailer($transport);
   }
 
   $mailer->send($message);
