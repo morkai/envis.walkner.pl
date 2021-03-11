@@ -373,6 +373,7 @@ html {
 }
 ul.block-header {
   margin: 0;
+  display: flex;
 }
 ul.block-header li > * {
   margin-left: 0.5em;
@@ -384,11 +385,11 @@ ul.block-header h1 {
 }
 .block-header li {
   list-style: none;
-  display: table-cell;
-  width: 1%;
+  flex: 0 0 auto;
   vertical-align: middle;
 }
 .block-header li:first-child {
+  flex: 1 1 auto;
   width: auto;
   white-space: nowrap;
 }

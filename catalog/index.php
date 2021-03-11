@@ -8,7 +8,7 @@ $category = empty($_GET['category']) || !is_numeric($_GET['category']) ? null : 
 $product = empty($_GET['product']) || !is_numeric($_GET['product']) ? null : (int)$_GET['product'];
 
 $page = !isset($_GET['page']) || ($_GET['page'] < 1) ? 1 : (int)$_GET['page'];
-$perPage = 15;
+$perPage = 24;
 
 $categoryPath = array();
 $subcategories = array();
@@ -34,7 +34,7 @@ SQL;
   $totalProductCount = fetch_one($q, array(':category' => $category->id))->totalCount;
 
   $q = <<<SQL
-SELECT p.id, p.category, p.name, p.type, p.nr
+SELECT p.id, p.category, p.name, p.type, p.nr, p.image
 FROM catalog_products p
 WHERE p.category=:category
 ORDER BY p.name ASC
@@ -42,6 +42,35 @@ LIMIT {$pagedProducts->getOffset()}, {$pagedProducts->getPerPage()}
 SQL;
 
   $products = fetch_all($q, array(':category' => $category->id));
+
+  $productMap = array();
+
+  foreach ($products as $categoryProduct)
+  {
+    $categoryProduct->thumb = null;
+    $productMap[$categoryProduct->id] = $categoryProduct;
+  }
+
+  if (!empty($products))
+  {
+    $productIds = join(',', array_keys($productMap));
+
+    $q = <<<SQL
+SELECT * FROM catalog_product_images WHERE product IN($productIds)
+SQL;
+
+    $images = fetch_all($q);
+
+    foreach ($images as $image)
+    {
+      $categoryProduct = $productMap[$image->product];
+
+      if ($categoryProduct->image === $image->id || !$categoryProduct->thumb)
+      {
+        $categoryProduct->thumb = $image;
+      }
+    }
+  }
 
   $pagedProducts->fill($totalProductCount, $products);
 }

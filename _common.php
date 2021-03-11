@@ -515,7 +515,7 @@ function escape_array(array &$data)
 
 function fff($alt, $src, $href = null, $id = null, $class = null)
 {
-  $code = '<img' . (!$href && $id ? ' id="' . $id . '"' : '') . ' src="' . url_for_media('fff/' . $src . '.png') . '" alt="' . $alt . '" title="' . $alt . '">';
+  $code = '<img' . (!$href && $id ? ' id="' . $id . '"' : '') . ' src="' . url_for_media('fff/' . $src . '.png') . '" alt="' . $alt . '" title="' . $alt . '" width=16 height=16>';
 
   if ($href)
   {

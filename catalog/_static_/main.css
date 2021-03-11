@@ -63,6 +63,40 @@
 #catalog.collapsed .block-body {
   display: none;
 }
+#productGallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+.productGallery-item {
+  margin: 15px;
+  flex: 0 0 auto;
+  width: 210px;
+  text-align: center;
+}
+.productGallery-item a {
+  text-decoration: none;
+}
+.productGallery-thumb {
+  margin-bottom: 7px;
+}
+.productGallery-details {
+  line-height: 1.4;
+}
+.productGallery-details-name {
+  display: block;
+  font-weight: bold;
+}
+.productGallery-details-type {
+  display: block;
+}
+.productGallery-details-nr {
+  display: block;
+  font-family: Consolas, "Lucida Console", Monaco, monospace;
+}
+#productGallery-paging {
+  margin-top: 10px;
+  text-align: right;
+}
 #productImages {
   margin: 0;
 }

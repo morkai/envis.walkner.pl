@@ -27,46 +27,39 @@
     <? endif ?>
     <? endif ?>
     <? else: ?>
-    <table>
-      <thead>
-        <tr>
-          <th>Nazwa</th>
-          <th>Typ</th>
-          <th>Nr</th>
-          <th class="actions">Akcje</th>
-        </tr>
-      </thead>
-      <? if (!empty($pagedProducts)): ?>
-      <tfoot>
-        <tr>
-          <td colspan="99" class="table-options">
-            <?= $pagedProducts->render(url_for("catalog/?category={$categoryId}&product={$productId}")) ?>
-          </td>
-        </tr>
-      </tfoot>
-      <? endif ?>
-      <? if (!empty($pagedProducts)): ?>
-      <tbody id="products">
-        <? foreach ($pagedProducts as $categoryProduct): ?>
-        <tr>
-          <td class="clickable"><a href="<?= url_for("catalog/?category={$categoryProduct->category}&product={$categoryProduct->id}&page={$pagedProducts->getPage()}") ?>"><?= e($categoryProduct->name) ?></a></td>
-          <td><?= dash_if_empty($categoryProduct->type) ?></td>
-          <td><?= dash_if_empty($categoryProduct->nr) ?></td>
-          <td class="actions">
-            <ul>
-              <? if ($canManageProducts): ?>
-              <li><?= fff('Pokaż produkt', 'page', "catalog/?product={$categoryProduct->id}") ?></li>
-              <li><?= fff('Edytuj produkt', 'page_edit', "catalog/products/edit.php?id={$categoryProduct->id}") ?></li>
-              <li><?= fff('Usuń produkt', 'page_delete', "catalog/products/delete.php?id={$categoryProduct->id}") ?></li>
-              <? endif ?>
-              <li><?= fff('Pokaż kartę katalogową', 'page_white', "catalog/products/card/?id={$categoryProduct->id}") ?></li>
-            </ul>
-          </td>
-        </tr>
-        <? endforeach ?>
-      </tbody>
-      <? endif ?>
-    </table>
+    <div id="productGallery">
+      <? foreach ($pagedProducts as $categoryProduct): ?>
+      <div class="productGallery-item">
+        <div class="productGallery-thumb">
+          <? if ($categoryProduct->thumb): ?>
+          <a href="<?= url_for("/_files_/products/{$categoryProduct->thumb->file}") ?>" rel="lightbox[<?= $categoryId ?>]" title="<?= e($categoryProduct->name) ?>" data-id="<?= e($categoryProduct->thumb->id) ?>">
+            <img src="<?= url_for("/catalog/products/images/thumb.php?file={$categoryProduct->thumb->file}") ?>" alt="" height="100">
+          </a>
+          <? else: ?>
+          <a href="javascript:void(0)">
+            <img src="<?= url_for('/_static_/img/no-image.png') ?>" alt="" width="100" height="100">
+          </a>
+          <? endif ?>
+        </div>
+        <div class="productGallery-details">
+          <a class="productGallery-details-name" href="<?= url_for("catalog/?category={$categoryProduct->category}&product={$categoryProduct->id}&page={$pagedProducts->getPage()}") ?>"><?= e($categoryProduct->name) ?></a>
+          <? if (!empty($categoryProduct->type)): ?>
+            <span class="productGallery-details-type"><?= $categoryProduct->type ?></span>
+          <? endif ?>
+          <? if (!empty($categoryProduct->nr)): ?>
+            <span class="productGallery-details-nr"><?= $categoryProduct->nr ?></span>
+          <? endif ?>
+        </div>
+      </div>
+      <? endforeach ?>
+    </div>
+
+    <? if (!empty($pagedProducts)): ?>
+    <div id="productGallery-paging">
+      <?= $pagedProducts->render(url_for("catalog/?category={$categoryId}&product={$productId}")) ?>
+    </div>
+    <? endif ?>
+
     <? endif ?>
   </div>
 </div>

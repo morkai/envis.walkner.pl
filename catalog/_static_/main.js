@@ -8,7 +8,7 @@ $(function()
   $('#productTabs').tabs({
     select: function(e, ui)
     {
-      window.location.hash = ui.panel.id;
+      //window.location.hash = ui.panel.id;
     }
   });
 
