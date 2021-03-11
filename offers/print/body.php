@@ -110,6 +110,15 @@ $en = !empty($_GET['lang']) && $_GET['lang'] === 'en';
       margin-top: .75em;
       line-height: 1.4;
     }
+    #intro ul,
+    #intro ol {
+      padding-left: 20px;
+    }
+    #intro > ul,
+    #intro > ol {
+      padding-left: 0;
+      list-style-position: inside;
+    }
     #items {
       page-break-inside: avoid;
     }
