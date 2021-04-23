@@ -17,7 +17,8 @@ $errors = array();
 $mail = array_merge(array(
   'subject' => strpos(strtolower($offer->title), 'oferta') === false ? ('Oferta Walkner: ' . $offer->title) : $offer->title,
   'to' => empty($matches[1]) ? '' : $matches[1],
-  'text' => ''
+  'text' => '',
+  'replyTo' => ENVIS_SMTP_REPLY_EMAIL
 ), empty($_POST['mail']) ? array() : $_POST['mail']);
 $lang = !empty($_POST['lang']) && $_POST['lang'] === 'en' ? 'en' : 'pl';
 
@@ -97,7 +98,12 @@ if (is('post'))
     if (!empty($mail['to']))
     {
       $attachment = create_email_attachment($offerPdfFile, str_replace(array('/', '\\'), '-', $offer->number) . '.pdf');
-      $message = create_email($mail['to'], $mail['subject'], $mail['text'])->attach($attachment);
+      $message = create_email(
+        $mail['to'],
+        $mail['subject'],
+        $mail['text'],
+        array_map(function($s) { return trim($s); }, explode(',', $mail['replyTo']))
+      )->attach($attachment);
 
       send_email_message($message);
     }
@@ -150,12 +156,15 @@ li.form-choice ol.form-fields {
       <? if (!$offer->closedAt): ?>
       <p>Jeżeli chcesz wysłać i zamknąć ofertę <strong><?= $offer->number ?></strong> wypełnij poniższe pola.
          Do danego adresata zostanie wysłana wiadomość o podanej treści i kopia oferty w formacie PDF jako załącznik.</p>
-      <p>W przypadku, gdy chcesz jedynie zamknąć ofertę na zmiany, pozostaw pole <em>Adresat</em> puste.</p>
+      <p>W przypadku, gdy chcesz jedynie zamknąć ofertę na zmiany, pozostaw pole <em>Odbiorca</em> puste.</p>
       <? endif ?>
       <fieldset>
         <ol class="form-fields">
           <li>
-            <?= label('mailTo', 'Adresat') ?>
+            <?= label('mailReplyTo', 'Nadawca (Reply-To)') ?>
+            <input id="mailReplyTo" name="mail[replyTo]" type="text" value="<?= e($mail['replyTo']) ?>" required>
+          <li>
+            <?= label('mailTo', 'Odbiorca') ?>
             <input id="mailTo" name="mail[to]" type="text" value="<?= e($mail['to']) ?>" <?= $offer->closedAt ? 'required' : '' ?>>
           <li>
             <?= label('mailSubject', 'Temat') ?>
