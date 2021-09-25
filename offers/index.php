@@ -66,9 +66,14 @@ if ($q !== '' || $f !== 'all')
     {
       $where .= " o.number LIKE " . get_conn()->quote("%{$q}%");
     }
-    else if (preg_match('/^([0-9]{6}|[0-9]{10})$/', $q))
+    else if (preg_match('/^([0-9]{5,6}|[0-9]{10})$/', $q))
     {
       $where .= " i.orderNumber LIKE " . get_conn()->quote("%{$q}%");
+    }
+    else if (preg_match('/^FV\s*[0-9]{1,4}\/[0-9]{4}/i', $q))
+    {
+      $fv = preg_replace('/^FV\s*/', '', $q);
+      $where .= " i.orderInvoice LIKE " . get_conn()->quote("%{$fv}%");
     }
     else
     {
