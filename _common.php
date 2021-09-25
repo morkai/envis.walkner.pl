@@ -38,8 +38,9 @@ function auth()
 {
   $domain = preg_match('/^localhost/', ENVIS_DOMAIN) ? '' : ENVIS_DOMAIN;
 
+  ini_set('session.gc_maxlifetime', 3600 * 24 * 14);
   session_name('envis');
-  session_set_cookie_params(time() + 3600, ENVIS_BASE_URL, $domain, false, true);
+  session_set_cookie_params(3600 * 24 * 14, ENVIS_BASE_URL, $domain, false, true);
 
   if (isset($_REQUEST[session_name()]))
   {
