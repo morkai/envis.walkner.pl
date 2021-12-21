@@ -45,7 +45,10 @@ $columnNames = array(
   'orderDate' => 'Data PO',
   'orderInvoice' => 'Numer FV',
   'orderInvoiceDate' => 'Data FV',
-  'relatedProduct' => 'Powiązany produkt'
+  'relatedProduct' => 'Powiązany produkt',
+  'relatedFactory' => 'Powiązana fabryka',
+  'relatedMachine' => 'Powiązana maszyna',
+  'relatedDevice' => 'Powiązane urządzenie'
 );
 
 function send_assign_email($receivers, $subject, $issue)

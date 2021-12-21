@@ -45,7 +45,15 @@ function construct_issues_grid_queries(array $options)
 
   if (!empty($options['f']['c']))
   {
-    foreach ($options['f']['c'] as $k => $column)
+    foreach ($options['f']['c'] as $_ => $column)
+    {
+      $usedColumns[$column] = true;
+    }
+  }
+
+  if (!empty($options['o']))
+  {
+    foreach ($options['o']['f'] as $_ => $column)
     {
       $usedColumns[$column] = true;
     }
@@ -61,6 +69,18 @@ function construct_issues_grid_queries(array $options)
 
       case 'creator':
         $query .= "\nINNER JOIN users c ON c.id=i.creator";
+        break;
+
+      case 'relatedFactory':
+        $query .= "\nLEFT JOIN factories relatedFactory ON relatedFactory.id=i.relatedFactory";
+        break;
+
+      case 'relatedMachine':
+        $query .= "\nLEFT JOIN machines relatedMachine ON relatedMachine.id=i.relatedMachine";
+        break;
+
+      case 'relatedDevice':
+        $query .= "\nLEFT JOIN `engines` relatedDevice ON relatedDevice.id=i.relatedDevice";
         break;
 
       case 'relatedProduct':
@@ -111,6 +131,13 @@ function construct_issues_grid_queries(array $options)
           'allTasks' => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id) AS allTasks',
           'completedTasks' => '(SELECT COUNT(*) FROM issue_tasks t WHERE t.issue=i.id AND t.completed=1) AS completedTasks',
         );
+        break;
+
+      case 'relatedFactory':
+      case 'relatedProduct':
+      case 'relatedDevice':
+        $columns[$column] = "i.${column}";
+        $columns["{$column}Name"] = "{$column}.name AS {$column}Name";
         break;
 
       case 'relatedProduct':
@@ -303,6 +330,20 @@ SQL;
 
           $conditions[] = $condition;
           break;
+
+        case 'relatedFactory':
+        case 'relatedMachine':
+        case 'relatedDevice':
+          if (!empty($bindingValue))
+          {
+            $conditions[] = "i.${column} = $bindingKey";
+            $bindings[$bindingKey] = $bindingValue;
+          }
+          break;
+
+        case 'relatedProduct':
+          $conditions[] = "i.relatedProduct IN($bindingValue)";
+          break;
       }
     }
 
@@ -346,11 +387,12 @@ SQL;
           break;
 
         case 'owner':
-          $field = 'ownerName';
-          break;
-
         case 'creator':
-          $field = 'creatorName';
+        case 'relatedFactory':
+        case 'relatedMachine':
+        case 'relatedDevice':
+        case 'relatedProduct':
+          $field = "{$field}Name";
           break;
 
         default: continue 2;

@@ -287,6 +287,28 @@ $(function()
           };
         }
         break;
+
+      case 'relatedProduct':
+        multiline = false;
+        multiple = false
+
+        html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="text" value="" pattern="^ *[0-9]+( *, *[0-9]+)* *$">';
+        break;
+
+      case 'relatedFactory':
+      case 'relatedMachine':
+        multiline = false;
+        multiple = false
+
+        html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="text" value="" pattern="^[0-9]+$">';
+        break;
+
+      case 'relatedDevice':
+        multiline = false;
+        multiple = false
+
+        html += '<li><input class="value" name="v[f][v][' + viewFilterCount + ']" type="text" value="" pattern="^[a-zA-Z0-9_-]+$">';
+        break;
     }
 
     var parent = column.parent().removeClass('multiline');
