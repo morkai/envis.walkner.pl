@@ -36,6 +36,39 @@ function construct_issues_grid_queries(array $options)
   $columns = array();
   $query = "SELECT %s\nFROM issues i ";
 
+  $usedColumns = array();
+
+  foreach ($options['c'] as $column)
+  {
+    $usedColumns[$column] = true;
+  }
+
+  if (!empty($options['f']['c']))
+  {
+    foreach ($options['f']['c'] as $k => $column)
+    {
+      $usedColumns[$column] = true;
+    }
+  }
+
+  foreach ($usedColumns as $column => $_)
+  {
+    switch ($column)
+    {
+      case 'owner':
+        $query .= "\nLEFT JOIN users o ON o.id=i.owner";
+        break;
+
+      case 'creator':
+        $query .= "\nINNER JOIN users c ON c.id=i.creator";
+        break;
+
+      case 'relatedProduct':
+        $query .= "\nLEFT JOIN catalog_products p ON p.id=i.relatedProduct";
+        break;
+    }
+  }
+
   foreach ($options['c'] as $column)
   {
     switch ($column)
@@ -64,15 +97,11 @@ function construct_issues_grid_queries(array $options)
       case 'owner':
         $columns['owner'] = 'i.owner';
         $columns['ownerName'] = 'o.name AS ownerName';
-
-        $query .= "\nLEFT JOIN users o ON o.id=i.owner";
         break;
 
       case 'creator':
         $columns['creator'] = 'i.creator';
         $columns['creatorName'] = 'c.name AS creatorName';
-
-        $query .= "\nINNER JOIN users c ON c.id=i.creator";
         break;
 
       case 'percent':
@@ -87,8 +116,6 @@ function construct_issues_grid_queries(array $options)
       case 'relatedProduct':
         $columns['relatedProduct'] = 'i.relatedProduct';
         $columns['relatedProductName'] = 'p.name AS relatedProductName';
-
-        $query .= "\nLEFT JOIN catalog_products p ON p.id=i.relatedProduct";
         break;
     }
   }
