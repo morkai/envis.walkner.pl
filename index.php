@@ -79,11 +79,9 @@ $canAddFactory = is_allowed_to('factory/add');
 
 <div id="factory"></div>
 <? begin_slot('js') ?>
-<script src="https://www.google.com/jsapi?key=<?= ENVIS_GOOGLE_KEY ?>"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=<?= ENVIS_GOOGLE_KEY ?>&callback=initialize"></script>
 <script src="<?= url_for_media('jquery-plugins/simplemodal/1.3/jquery.simplemodal.min.js') ?>"></script>
 <script>
-  google.load("maps", "2.x");
-
   var factories = new Array();
 <? foreach ($factories as $factory): ?>
   <? if (has_access_to_factory($factory->id)): ?>
@@ -104,17 +102,16 @@ $canAddFactory = is_allowed_to('factory/add');
 
     $('#factory').hide();
 
-    map = new google.maps.Map2(document.getElementById('map'));
-    <? if ($canAddFactory): ?>map.disableDoubleClickZoom();<? endif ?>
-    map.setCenter(new google.maps.LatLng(52.069167, 19.480556), 7);
-    map.addControl(new GLargeMapControl3D());
-
-    new GKeyboardHandler(map);
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 52.069167, lng: 19.480556},
+      zoom: 7,
+      disableDoubleClickZoom: <? if ($canAddFactory): ?>true<? else: ?>false<? endif ?>
+    });
 
     <? if ($canAddFactory): ?>
-    GEvent.addListener(map, 'dblclick', function(overlay, location)
+    map.addListener('dblclick', function(e)
     {
-      lastLoc = location;
+      lastLoc = e.latLng;
 
       $('#newFactoryName').val('');
 
@@ -135,22 +132,18 @@ $canAddFactory = is_allowed_to('factory/add');
 
     for (var id in factories)
     {
-      map.addOverlay(createFactoryMarker(id, new GLatLng(factories[id].latitude, factories[id].longitude)));
+      createFactoryMarker(id, new google.maps.LatLng(factories[id].latitude, factories[id].longitude));
     }
   }
 
   function resizeMap()
   {
-    var height = $(window).height() - $('#ft').outerHeight(true) - 60;
-
-    if ($('body').hasClass('sos'))
-    {
-      height -= $('#submenu').size() ? $('#submenu').outerHeight(true) : 0;
-    }
-    else
-    {
-      height -= $('#hd').outerHeight(true);
-    }
+    var height = window.innerHeight
+      - $('#menu').outerHeight(true)
+      - $('#submenu').outerHeight(true)
+      - $('#hd').outerHeight(true)
+      - $('#ft').outerHeight(true)
+      - 70;
 
     $('#map').height(height);
     $('#logsBlock .block-body').height(height - 30 - $('#logsBlock .block-header').outerHeight(true));
@@ -170,7 +163,7 @@ $canAddFactory = is_allowed_to('factory/add');
           {
             factories[data.factory.id] = data.factory;
 
-            map.addOverlay(createFactoryMarker(data.factory.id, new GLatLng(data.factory.latitude, data.factory.longitude)));
+            createFactoryMarker(data.factory.id, {lat: data.factory.latitude, lng: data.factory.longitude});
           }
 
           $.modal.close();
@@ -189,19 +182,28 @@ $canAddFactory = is_allowed_to('factory/add');
     <? endif ?>
   }
 
-  function createFactoryMarker(id, location)
+  function createFactoryMarker(id, position)
   {
-    var marker = new GMarker(location, {draggable: <?= is_allowed_to('factory/edit') ? 'true' : 'false' ?>, title: factories[id].name});
+    var marker = new google.maps.Marker({
+      map: map,
+      position: position,
+      draggable: <?= is_allowed_to('factory/edit') ? 'true' : 'false' ?>,
+      title: factories[id].name
+    });
     marker.factoryId = id;
 
     <? if (is_allowed_to('factory/edit')): ?>
-    GEvent.addListener(marker, 'dragend', function()
+    marker.addListener('dragend', function()
     {
-      $.post('<?= url_for('factory/move.php') ?>', {id: marker.factoryId, latitude: marker.getLatLng().lat(), longitude: marker.getLatLng().lng()});
+      $.post('<?= url_for('factory/move.php') ?>', {
+        id: marker.factoryId,
+        latitude: marker.getPosition().lat(),
+        longitude: marker.getPosition().lng()
+      });
     });
     <? endif ?>
     <? if (is_allowed_to('vis/factory')): ?>
-    GEvent.addListener(marker, 'click', function()
+    marker.addListener('click', function()
     {
       window.location.href = '<?= url_for('factory.php') ?>?id=' + marker.factoryId;
     });
@@ -209,7 +211,5 @@ $canAddFactory = is_allowed_to('factory/add');
 
     return marker;
   }
-
-  google.setOnLoadCallback(initialize);
 </script>
 <? append_slot() ?>
