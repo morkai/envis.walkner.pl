@@ -35,6 +35,11 @@ if (isset($_POST['login']) && isset($_POST['password']))
 
       log_info('Zalogowano.');
 
+      if (empty($_GET['referer']) && is_allowed_to('service*'))
+      {
+        $referer = '/service/';
+      }
+
       go_to(urldecode($referer));
     }
     else
