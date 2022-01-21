@@ -104,6 +104,10 @@ SQL;
       continue;
     }
 
+    WideImage::loadFromFile($filesDir . $file)
+      ->resize(1920, 1080, 'inside', 'down')
+      ->saveToFile($filesDir . $file);
+
     $name = preg_replace('/\.' . preg_quote($attachment['ext']) . '$/i', '', $attachment['name']);
 
     exec_stmt($stmt, array(
@@ -114,4 +118,5 @@ SQL;
   }
 }
 
-$replyText .= " do produktu {$product->id}: {$product->name}";
+$productUrl = url_for('/catalog/?product=' . $product->id, true);
+$replyText .= " do produktu {$product->id}: {$product->name}\r\n${productUrl}";

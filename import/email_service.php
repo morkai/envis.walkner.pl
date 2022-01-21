@@ -46,6 +46,11 @@ SQL;
   $stmt = prepare_stmt($sql);
   $filesDir = ENVIS_UPLOADS_PATH . '/issues/';
   $total = 0;
+  $imageTypes = array(
+    'image/gif',
+    'image/jpeg',
+    'image/png'
+  );
 
   foreach ($attachments as $attachment)
   {
@@ -54,6 +59,13 @@ SQL;
     if (file_put_contents($filesDir . $file, $attachment['data']) === false)
     {
       continue;
+    }
+
+    if (in_array($attachment['type'], $imageTypes))
+    {
+      WideImage::loadFromFile($filesDir . $file)
+        ->resize(1920, 1080, 'inside', 'down')
+        ->saveToFile($filesDir . $file);
     }
 
     $name = preg_replace('/\.' . preg_quote($attachment['ext']) . '$/i', '', $attachment['name']);
@@ -69,5 +81,6 @@ SQL;
     ++$total;
   }
 
-  $replyText = "Dodano {$total} plików do zgłoszenia {$issue->id}: {$issue->subject}";
+  $issueUrl = url_for('/service/view.php?id=' . $issue->id, true);
+  $replyText = "Dodano {$total} plików do zgłoszenia {$issue->id}: {$issue->subject}\r\n${issueUrl}";
 }

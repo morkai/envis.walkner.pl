@@ -1,4 +1,4 @@
-#! /usr/bin/php-5.3
+#!/usr/bin/php-7.4
 <?php
 
 define('ENVIS_IMPORT_EMAIL_FALLBACK', 'import@envis.walkner.pl');
@@ -18,12 +18,13 @@ fclose($fd);
 
 $fromImport = true;
 
-include_once __DIR__ . '/../_lib_/mime-mail-parser/MimeMailParser.php';
 include_once __DIR__ . '/../_common.php';
+include_once __DIR__ . '/../_lib_/mime-mail-parser/MimeMailParser.php';
+include_once __DIR__ . '/../_lib_/wideimage/lib/WideImage.php';
 
 if (!function_exists('mailparse_msg_create'))
 {
-  dl('mailparse-php-5.3.so');
+  dl('mailparse-php-7.4.so');
 }
 
 function extract_email($email)
@@ -92,8 +93,7 @@ try
       break;
 
     default:
-      throw new Exception("Nierozpoznany nadawca: {$toEmail}");
-      break;
+      throw new Exception("Nierozpoznany odbiorca: {$toEmail}");
   }
 
   $db->commit();
@@ -107,12 +107,12 @@ catch (Exception $x)
   $replyText = "Nie udało się zaimportować plików.\r\n{$x->getMessage()}";
 }
 
-if (!empty($replyText) && !empty($fromEmail) && !empty($toEmail))
-{
-  send_email($fromEmail, "Re: {$subject}", $replyText, $toEmail);
-}
-
 if ($err)
 {
   file_put_contents(ENVIS_UPLOADS_PATH . '/import.txt', $replyText);
+}
+
+if (!empty($replyText) && !empty($fromEmail) && !empty($toEmail))
+{
+  send_email($fromEmail, "Re: {$subject}", $replyText, $toEmail);
 }

@@ -18,6 +18,7 @@ define('ENVIS_SMTP_REPLY_NAME', 'Some One');
 define('ENVIS_SUB_EMAIL', null);
 define('ENVIS_SUB_NAME', null);
 
+define('ENVIS_URL_SCHEME', 'http');
 define('ENVIS_DOMAIN', 'localhost');
 define('ENVIS_BASE_URL', '/');
 define('ENVIS_MEDIA_URL', 'http://cdn.localhost/');
