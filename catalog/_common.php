@@ -312,7 +312,7 @@ function catalog_generate_product_nr($product)
   }
   else
   {
-    $nr .= str_pad($product['id'], 3, '0');
+    $nr .= str_pad($product['id'], 3, '0', STR_PAD_LEFT);
   }
 
   return $nr;
