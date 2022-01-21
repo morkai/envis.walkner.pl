@@ -15,7 +15,15 @@ ini_set('default_charset', 'utf-8');
 $__start__ = microtime(true);
 $__debug__ = '';
 
-include_once __DIR__ . '/_config.php';
+if (file_exists(__DIR__ . '/_config.prod.php'))
+{
+  include_once __DIR__ . '/_config.prod.php';
+}
+else
+{
+  include_once __DIR__ . '/_config.php';
+}
+
 include_once __DIR__ . '/_lib_/User.php';
 include_once __DIR__ . '/_common_url.php';
 

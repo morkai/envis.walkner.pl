@@ -1,6 +1,13 @@
 <?php
 
-include_once __DIR__ . '/_config.php';
+if (file_exists(__DIR__ . '/_config.prod.php'))
+{
+  include_once __DIR__ . '/_config.prod.php';
+}
+else
+{
+  include_once __DIR__ . '/_config.php';
+}
 
 function url_for($href, $abs = false)
 {
