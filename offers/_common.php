@@ -158,8 +158,8 @@ function prepare_offer($offer)
     $item->description = nl2br(e($item->description));
     $item->priceFmt = $curFmt->formatCurrency((float)$item->price, $item->currency);
     $item->quantityFmt = $qtyFmt->format((float)$item->quantity);
+    $item->valueFmt = $curFmt->formatCurrency((float)$item->quantity * (float)$item->price / (float)$item->per, $item->currency);
     $item->perFmt = $qtyFmt->format((float)$item->per);
-    $item->valueFmt = $curFmt->formatCurrency((float)$item->price * (float)$item->quantity, $item->currency);
     $item->unit = e($item->unit === 'szt.' ? 'PCE' : $item->unit);
   }
 }
