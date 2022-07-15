@@ -149,7 +149,7 @@ MARKDOWN;
     );
 
     $mainIssue['currency'] = $item['currency'];
-    $mainIssue['price'] += (float)$item['price'];
+    $mainIssue['price'] += $item['quantity'] * (float)$item['price'] / $item['per'];
   }
 
   $conn = get_conn();
