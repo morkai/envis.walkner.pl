@@ -114,7 +114,7 @@ $week = 24 * 3600 * 7;
 
 <div id=entries>
   <? foreach ($history as $i => $entry): ?>
-  <div id=entry-<?= $entry->id ?> data-id=<?= $entry->id ?> class="entry <?= $entry->system ? '' : 'quotable' ?> <?= $now - $entry->createdAt > $week ? 'collapsed' : '' ?> <?= $i < 2 ? 'expanded' : '' ?>">
+  <div id=entry-<?= $entry->id ?> data-id=<?= $entry->id ?> class="entry <?= $entry->system ? '' : 'quotable' ?> <?= $now - $entry->createdAt > $week && $i >= 5 ? 'collapsed' : '' ?> <?= $i < 2 ? 'expanded' : '' ?>">
     <h3><a href="<?= url_for("user/view.php?id={$entry->createdBy}") ?>"><?= $entry->creator ?></a>, <span title="<?= $entry->creationTime ?>"><?= $entry->timeAgo ?></span>:</h3>
     <? if ($entry->showChanges): ?>
     <ul class="changes">
