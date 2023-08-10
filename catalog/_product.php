@@ -246,6 +246,7 @@
   <td class="name clickable"><a target="_blank" href="<?= url_for("catalog/products/files/download.php?id=\${id}") ?>">${name}</a>
   <td>${type}
   <td>${uploadedAt}
+  <td></td>
   <td class="actions">
     <? if ($canManageProducts): ?>
     <ul>

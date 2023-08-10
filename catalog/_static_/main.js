@@ -291,7 +291,12 @@ $(function()
         folder: '/products'
       },
       restrictions: {
-        allowedFileTypes: ['image/*']
+        allowedFileTypes: [
+          'image/*',
+          '.rar', '.zip', '.7z',
+          '.txt', '.md', '.docx', '.doc', '.xlsx', '.xls',
+          '.pcb', '.prj', '.stl', '.3mf'
+        ]
       }
     });
 
