@@ -1,5 +1,8 @@
 $(function()
 {
+  let maxPanelHeight = 0;
+  let prevScrollY = window.scrollY;
+
   $('#newAssignee').autocomplete({
     source: function(request, response)
     {
@@ -40,20 +43,45 @@ $(function()
     }
   }).tabs({
     cache: true,
-    load: function (e, ui)
+    load(e, ui)
     {
       $(ui.panel).find(".ui-tabs-loading").remove();
-    },
-    select: function (e, ui)
-    {
-      var $panel = $(ui.panel);
 
-      if ($panel.is(":empty"))
+      adjustViewportHeight(ui.panel);
+    },
+    select(e, ui)
+    {
+      const $newPanel = $(ui.panel).data('oldTab', $('#issueTabs .ui-state-active a').attr('href'));
+
+      if ($newPanel.is(":empty"))
       {
-        $panel.append('<div class="ui-tabs-loading">Ładowanie...</div>');
+        $newPanel.append('<div class="ui-tabs-loading">Ładowanie...</div>');
       }
+
+      prevScrollY = document.scrollingElement.scrollTop;
+    },
+    show(e, ui)
+    {
+      adjustViewportHeight(ui.panel);
     }
   });
+
+  function adjustViewportHeight(panelEl)
+  {
+    const panelHeight = panelEl.getBoundingClientRect().height;
+
+    if (panelHeight === maxPanelHeight)
+    {
+      return;
+    }
+
+    const diff = maxPanelHeight - panelHeight;
+
+    maxPanelHeight = Math.max(maxPanelHeight, panelHeight);
+
+    document.body.style.marginBottom = Math.max(0, diff) + 'px';
+    document.scrollingElement.scrollTop = prevScrollY;
+  }
 
   $('#goToUpdateIssueForm').click(function()
   {
