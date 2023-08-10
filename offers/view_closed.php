@@ -120,10 +120,8 @@ $(() =>
           <dd><?= $offer->createdAt ?></dd>
           <dt>Data zamknięcia</dt>
           <dd><?= $offer->closedAt ?></dd>
-          <? if (!empty($offer->sentTo)): ?>
-          <dt>Adresat oferty</dt>
-          <dd><?= e($offer->sentTo) ?></dd>
-          <? endif ?>
+          <dt>Odbiorca oferty</dt>
+          <dd><?= empty($offer->sentTo) ? 'Niewysłana' : e($offer->sentTo) ?></dd>
         </dl>
       </div>
     </div>
