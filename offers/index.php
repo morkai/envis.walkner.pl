@@ -135,10 +135,13 @@ $items = fetch_all(sprintf("%s LIMIT %s,%s", $query, $offers->getOffset(), $offe
 $offers->fill($totalOffers, $items);
 
 $offerIds = array();
+$currentYear = date('Y');
 
 foreach ($items as $item)
 {
   $offerIds[] = $item->id;
+
+  $item->old = substr($item->createdAt, 0, 4) !== $currentYear;
 }
 
 $offerIds = join(',', $offerIds);
@@ -201,6 +204,9 @@ $href = url_for("offers/") . "?" . http_build_query(array('f' => $f, 'q' => $q))
 #query input {
   width: 200px;
 }
+.is-old {
+  color: #999;
+}
 </style>
 <? append_slot() ?>
 
@@ -258,7 +264,7 @@ $(function()
         <? foreach ($offers as $offer): ?>
         <tr class="<?= $offer->cancelled ? 'is-cancelled' : '' ?>">
           <td class="min"><?= $offer->number ?>
-          <td class="min"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
+          <td class="min <?= $offer->old ? 'is-old' : '' ?>"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
           <td class="min">
             <? if ($offer->issue): ?>
             <?= $statuses[$offer->status] ?>
