@@ -5,6 +5,7 @@ $_menu = array(
   //'report' => array('Raporty',      'report*'),
   'offers' => array('Oferty',       'offers*'),
   'service' => array('Serwis',       'service*'),
+  'tasks' => array('Zadania',      'tasks/edit'),
   'factory' => array('Fabryki',      'factory*'),
   //'counter' => array('Liczniki',     'counter*'),
   'documentation' => array('Dokumentacje', 'documentation*'),
