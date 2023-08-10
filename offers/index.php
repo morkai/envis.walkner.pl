@@ -9,6 +9,7 @@ include_once '../_lib_/PagedData.php';
 $filters = array(
   'all' => 'Wszystkie',
   'unsent' => 'Niewysłane',
+  'accepted' => 'Zaakceptowane',
   'no-order' => 'Brak zamówienia',
   'no-po' => 'Brak PO',
   'no-invoice' => 'Brak FV',
@@ -30,7 +31,7 @@ if ($q !== '' || $f !== 'all')
   switch ($f)
   {
     case 'unsent':
-      $where .= ' AND o.cancelled=0 AND o.closedAt IS NULL';
+      $where .= " AND o.cancelled=0 AND o.sentTo=''";
       break;
 
     case 'no-order':
@@ -45,8 +46,12 @@ if ($q !== '' || $f !== 'all')
       $where .= " AND o.issue IS NOT NULL AND (i.orderInvoice='' OR i.orderInvoice IS NULL) AND i.status<>3";
       break;
 
+    case 'accepted':
+      $where .= " AND o.issue IS NOT NULL AND i.status IN(0, 1)";
+      break;
+
     case 'started':
-      $where .= " AND o.issue IS NOT NULL AND i.status IN(0, 1, 2, 5, 6, 7, 8, 9)";
+      $where .= " AND o.issue IS NOT NULL AND i.status IN(2, 5, 6, 7, 8, 9)";
       break;
 
     case 'finished':
@@ -118,6 +123,7 @@ SELECT
   o.number,
   o.createdAt,
   o.closedAt,
+  o.sentTo,
   o.issue,
   o.cancelled,
   i.status,
@@ -267,17 +273,21 @@ $(function()
           <td class="min <?= $offer->old ? 'is-old' : '' ?>"><?= $offer->closedAt ? $offer->closedAt : '-' ?>
           <td class="min">
             <? if ($offer->issue): ?>
-            <?= $statuses[$offer->status] ?>
+              <? if (empty($offer->sentTo)): ?>
+                <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>" title="Otwórz zamówienie">Niewysłane</a> <?= fff('Wyślij', 'email', "offers/close.php?id={$offer->id}") ?>
+              <? else: ?>
+                <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>" title="Otwórz zamówienie"><?= $statuses[$offer->status] ?></a>
+              <? endif ?>
             <? elseif ($offer->closedAt): ?>
-            <i>Brak zamówienia</i>
+              <i>Brak zamówienia</i>
             <? else: ?>
-            <i>Niewysłane</i>
+              <i>Niewysłane</i>
             <? endif ?>
           <td class="min">
             <? if ($offer->issue): ?>
               <? if ($offer->orderNumber): ?>
                 <?= fff('Edytuj zamówienie', 'pencil', "service/edit.php?id={$offer->issue}") ?>
-                <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>"><?= $offer->orderNumber ?></a>
+                <a href="<?= url_for("service/view.php?id={$offer->issue}") ?>" title="Otwórz zamówienie"><?= $offer->orderNumber ?></a>
               <? elseif ($canEditIssues): ?>
                 <?= fff_link('ustaw', 'pencil', "service/edit.php?id={$offer->issue}") ?>
               <? else: ?>

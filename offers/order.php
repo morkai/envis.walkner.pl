@@ -82,7 +82,7 @@ MARKDOWN;
   $currentUser = $_SESSION['user'];
 
   $mainIssue = array(
-    'status' => 1,
+    'status' => empty($offer->sentTo) ? 2 : 1,
     'creator' => $currentUser->getId(),
     'createdAt' => time(),
     'updatedAt' => time(),
@@ -127,7 +127,7 @@ Jednostka
 MARKDOWN;
 
     $itemIssues[$item['id']] = array(
-      'status' => 1,
+      'status' => $mainIssue['status'],
       'creator' => $currentUser->getId(),
       'createdAt' => time(),
       'updatedAt' => time(),
@@ -135,9 +135,9 @@ MARKDOWN;
       'subject' => $item['description'],
       'description' => $description,
       'relatedFactory' => $DEFAULT_RELATED_FACTORY,
-      'priority' => 2,
-      'kind' => 3,
-      'type' => 4,
+      'priority' => $mainIssue['priority'],
+      'kind' => $mainIssue['kind'],
+      'type' => $mainIssue['type'],
       'orderNumber' => $order['number'],
       'orderDate' => date('Y-m-d'),
       'quantity' => $item['quantity'],
