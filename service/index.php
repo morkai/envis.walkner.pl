@@ -673,13 +673,6 @@ unset($v);
   }
   tr:hover .over100, tr:hover .lt100, tr:hover .lt75 { color: #FFF; }
   #view { font-size: 1em; }
-  #query {
-    display: inline-block;
-    margin: 0;
-    white-space: nowrap;
-    position: relative;
-  }
-  #query input { width: 200px; }
   #queryHelp {
     position: absolute;
     top: 24px;
@@ -773,7 +766,7 @@ $(function()
         <input type="hidden" name="relate" value="<?= $related->id ?>">
         <? endif ?>
         <?= fff('OCB?', 'help', '/service/#queryHelp', 'toggleQueryHelp') ?>
-        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
+        <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj..."><button type="submit">&#x1F50E;&#xFE0E;</button>
         <div id="queryHelp">
           <p>
             <code>{FIELD}={VALUE}</code>

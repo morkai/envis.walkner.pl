@@ -200,16 +200,6 @@ $href = url_for("offers/") . "?" . http_build_query(array('f' => $f, 'q' => $q))
 .is-cancelled {
   text-decoration: line-through;
 }
-#query {
-  display: flex;
-}
-#query select {
-  font-size: 1em;
-  margin-left: 1em;
-}
-#query input {
-  width: 200px;
-}
 .is-old {
   color: #999;
 }
@@ -240,6 +230,7 @@ $(function()
     <li>
       <form id="query" action="<?= url_for("/offers/") ?>">
         <input type="text" name="q" value="<?= e(isset($_GET['q']) ? $_GET['q'] : '') ?>" autofocus placeholder="Szukaj...">
+        <button type="submit">&#x1F50E;&#xFE0E;</button>
         <select id="filter" name="f">
           <? foreach ($filters as $k => $v): ?>
           <option value="<?= $k ?>" <?= $k === $f ? 'selected' : '' ?>><?= $v ?></option>

@@ -530,3 +530,22 @@ ul.block-header h1 {
 #documentationsOptions {
   padding: 1em;
 }
+#query {
+  position: relative;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+#query input {
+  width: 200px;
+}
+#query button[type="submit"] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#filter,
+#view {
+  font-size: 1em;
+  margin-left: 1em;
+  padding: 0.25em;
+}
