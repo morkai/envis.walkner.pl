@@ -195,6 +195,24 @@ $templates = fetch_offer_templates();
         .autoResize({extraSpace: 22});
     });
 
+    const clientTemplatesEl = $('#templatesClient')[0];
+    const clientOptions = [];
+
+    for (const option of clientTemplatesEl.options)
+    {
+      clientOptions.push(option);
+    }
+
+    clientOptions.sort((a, b) => a.textContent.localeCompare(b.textContent, 'pl-PL', {
+      ignorePunctuation: true,
+      numeric: true
+    }));
+
+    for (const option of clientOptions)
+    {
+      clientTemplatesEl.appendChild(option);
+    }
+
     $('#templatesIntro').change(function()
     {
       var tpl = JSON.parse($(this[this.selectedIndex]).attr('data-template'));
